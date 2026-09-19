@@ -134,5 +134,178 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+// CREATE new employee
+router.post("/", async (req, res) => {
+    try {
+        const {
+            employee_code,
+            first_name,
+            last_name,
+            email,
+            phone,
+            department_id,
+            role_id,
+            work_status_id,
+            employment_status,
+            joining_date,
+            salary_amount,
+            salary_status
+        } = req.body;
+
+        // Basic validation
+        if (
+            !employee_code ||
+            !first_name ||
+            !last_name ||
+            !email ||
+            !department_id ||
+            !role_id ||
+            !employment_status ||
+            !joining_date
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Required employee fields are missing"
+            });
+        }
+
+        const result = await pool.query(`
+            INSERT INTO employees (
+                employee_code,
+                first_name,
+                last_name,
+                email,
+                phone,
+                department_id,
+                role_id,
+                work_status_id,
+                employment_status,
+                joining_date,
+                salary_amount,
+                salary_status
+            )
+            VALUES (
+                $1, $2, $3, $4, $5, $6,
+                $7, $8, $9, $10, $11, $12
+            )
+            RETURNING employee_id;
+        `, [
+            employee_code,
+            first_name,
+            last_name,
+            email,
+            phone || null,
+            department_id,
+            role_id,
+            work_status_id || null,
+            employment_status,
+            joining_date,
+            salary_amount || null,
+            salary_status || null
+        ]);
+
+        res.status(201).json({
+            success: true,
+            message: "Employee created successfully",
+            employee_id: result.rows[0].employee_id
+        });
+
+    } catch (error) {
+        console.error("Error creating employee:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to create employee"
+        });
+    }
+});
+// UPDATE employee
+router.put("/:id", async (req, res) => {
+    try {
+        const employeeId = req.params.id;
+
+        const {
+            first_name,
+            last_name,
+            email,
+            phone,
+            department_id,
+            role_id,
+            work_status_id,
+            employment_status,
+            joining_date,
+            salary_amount,
+            salary_status
+        } = req.body;
+
+        if (
+            !first_name ||
+            !last_name ||
+            !email ||
+            !department_id ||
+            !role_id ||
+            !employment_status ||
+            !joining_date
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Required employee fields are missing"
+            });
+        }
+
+        const result = await pool.query(`
+            UPDATE employees
+            SET
+                first_name = $1,
+                last_name = $2,
+                email = $3,
+                phone = $4,
+                department_id = $5,
+                role_id = $6,
+                work_status_id = $7,
+                employment_status = $8,
+                joining_date = $9,
+                salary_amount = $10,
+                salary_status = $11,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE employee_id = $12
+            RETURNING employee_id;
+        `, [
+            first_name,
+            last_name,
+            email,
+            phone || null,
+            department_id,
+            role_id,
+            work_status_id || null,
+            employment_status,
+            joining_date,
+            salary_amount || null,
+            salary_status || null,
+            employeeId
+        ]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Employee not found"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Employee updated successfully",
+            employee_id: result.rows[0].employee_id
+        });
+
+    } catch (error) {
+        console.error("Error updating employee:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to update employee"
+        });
+    }
+});
 
 module.exports = router;
