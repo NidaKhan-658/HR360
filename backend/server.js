@@ -3,6 +3,7 @@ const pool = require("./db");
 const employeeRoutes = require("./routes/employees");
 const departmentRoutes = require("./routes/departments");
 const jobRoleRoutes = require("./routes/jobRoles");
+const workStatusRoutes = require("./routes/workStatuses");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/employees", employeeRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/job-roles", jobRoleRoutes);
+app.use("/api/work-statuses", workStatusRoutes);
 
 // Health check + database test
 app.get("/api/health", async (req, res) => {
