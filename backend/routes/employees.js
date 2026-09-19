@@ -307,5 +307,65 @@ router.put("/:id", async (req, res) => {
         });
     }
 });
+// PATCH employee employment status
+router.patch("/:id/status", async (req, res) => {
+    try {
+        const employeeId = req.params.id;
+        const { employment_status } = req.body;
+
+        const allowedStatuses = [
+            "EMPLOYED",
+            "PROBATION",
+            "ON_LEAVE",
+            "RESIGNED",
+            "TERMINATED",
+            "RETIRED"
+        ];
+
+        if (!employment_status) {
+            return res.status(400).json({
+                success: false,
+                message: "employment_status is required"
+            });
+        }
+
+        if (!allowedStatuses.includes(employment_status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid employment status"
+            });
+        }
+
+        const result = await pool.query(`
+            UPDATE employees
+            SET
+                employment_status = $1,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE employee_id = $2
+            RETURNING employee_id, employee_code, employment_status;
+        `, [employment_status, employeeId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Employee not found"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Employee employment status updated successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("Error updating employee status:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to update employee status"
+        });
+    }
+});
 
 module.exports = router;
