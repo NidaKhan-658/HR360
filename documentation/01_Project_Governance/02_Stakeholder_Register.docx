@@ -1,0 +1,503 @@
+# HR360 — Human Resource Management & Analytics System
+
+## STAKEHOLDER REGISTER
+
+**Document ID:** HR360-GOV-002
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Document Owner:** Nida Khan
+**Business Analyst:** Nida Khan
+**Project:** HR360 — Human Resource Management & Analytics System
+
+---
+
+# 1. Purpose
+
+The purpose of this Stakeholder Register is to identify, classify and document individuals and stakeholder groups who have an interest in, influence over, or are affected by the HR360 project.
+
+The register supports stakeholder analysis, communication planning, requirements elicitation, decision-making and stakeholder engagement throughout the project lifecycle.
+
+The register will be reviewed and updated when new stakeholders are identified or when stakeholder responsibilities change.
+
+---
+
+# 2. Stakeholder Identification Approach
+
+Stakeholders have been identified across the following categories:
+
+* Project governance
+* Business ownership
+* HR operations
+* Operations
+* Finance
+* Recruitment
+* Management
+* End users
+* Technical delivery
+
+Stakeholders are classified according to their expected level of influence and impact on the project.
+
+---
+
+# 3. Stakeholder Register
+
+| ID      | Stakeholder / Role                    | Department / Area    | Project Role                    | Interest | Influence | Impact | Engagement     |
+| ------- | ------------------------------------- | -------------------- | ------------------------------- | -------- | --------- | ------ | -------------- |
+| STK-001 | Nida Khan                             | Project / Technology | BA, Developer, PM, Scrum Master | High     | High      | High   | Manage Closely |
+| STK-002 | HR Business Stakeholder               | HR                   | Product Owner                   | High     | High      | High   | Manage Closely |
+| STK-003 | HR Manager                            | HR                   | HR Process Owner                | High     | High      | High   | Manage Closely |
+| STK-004 | Operations Manager                    | Operations           | Business Stakeholder            | High     | High      | High   | Manage Closely |
+| STK-005 | Finance Manager                       | Finance              | Business Stakeholder            | High     | Medium    | High   | Keep Engaged   |
+| STK-006 | Recruitment / Talent Acquisition Lead | Recruitment          | Process Stakeholder             | High     | Medium    | High   | Keep Engaged   |
+| STK-007 | Senior Management                     | Management           | Reporting Stakeholder           | High     | High      | Medium | Keep Satisfied |
+| STK-008 | HR Users                              | HR                   | End Users                       | High     | Medium    | High   | Keep Informed  |
+| STK-009 | Operations Users                      | Operations           | End Users                       | High     | Medium    | High   | Keep Informed  |
+| STK-010 | Finance Users                         | Finance              | End Users                       | Medium   | Low       | Medium | Keep Informed  |
+| STK-011 | Recruitment Users                     | Recruitment          | End Users                       | High     | Low       | High   | Keep Informed  |
+
+---
+
+# 4. Detailed Stakeholder Analysis
+
+## STK-001 — Nida Khan
+
+**Role:** Business Analyst / Developer / Project Manager / Scrum Master
+
+**Primary Responsibilities:**
+
+* Business requirements analysis
+* Requirement documentation
+* Process analysis and mapping
+* User story creation
+* Database design
+* Backend development
+* API development
+* Frontend coordination
+* Technical implementation
+* Sprint planning
+* Sprint coordination
+* Risk and issue management
+* Git/GitHub source control
+* Project documentation
+
+**Interest:** High
+
+**Influence:** High
+
+**Impact:** High
+
+**Engagement Strategy:** Manage Closely
+
+**Information Required:**
+
+* Business requirements
+* Stakeholder decisions
+* Technical requirements
+* Sprint progress
+* Defects
+* Risks
+* Scope changes
+* Acceptance results
+
+**Communication:** Continuous / Daily during active development
+
+---
+
+# 5. STK-002 — HR Business Stakeholder
+
+**Role:** Product Owner
+
+**Primary Responsibilities:**
+
+* Define business priorities
+* Prioritize product backlog
+* Clarify HR requirements
+* Review delivered functionality
+* Validate acceptance criteria
+* Approve business requirements
+* Participate in Sprint Reviews
+* Provide business decisions
+
+**Interest:** High
+
+**Influence:** High
+
+**Impact:** High
+
+**Engagement Strategy:** Manage Closely
+
+**Information Required:**
+
+* Product backlog
+* Business requirements
+* Sprint progress
+* Demonstrations
+* Business-rule changes
+* UAT results
+* Release readiness
+
+**Communication:** Weekly / Sprint-based
+
+**Decision Authority:**
+
+The Product Owner provides business priority and acceptance decisions for the product within the agreed project governance model.
+
+---
+
+# 6. STK-003 — HR Manager
+
+**Role:** HR Process Owner
+
+**Primary Responsibilities:**
+
+* Validate HR workflows
+* Review employee lifecycle requirements
+* Validate attendance and leave processes
+* Review performance and PIP requirements
+* Validate training requirements
+* Participate in UAT
+
+**Interest:** High
+
+**Influence:** High
+
+**Impact:** High
+
+**Engagement Strategy:** Manage Closely
+
+**Information Required:**
+
+* HR workflows
+* Business rules
+* Functional requirements
+* Process maps
+* UAT scenarios
+* HR dashboards
+
+**Communication:** Weekly and during requirement/UAT activities
+
+---
+
+# 7. STK-004 — Operations Manager
+
+**Role:** Operations Business Stakeholder
+
+**Primary Responsibilities:**
+
+* Validate operational workforce processes
+* Validate work-status definitions
+* Review employee availability requirements
+* Validate Operations active-status rules
+* Review operational dashboards
+
+**Interest:** High
+
+**Influence:** High
+
+**Impact:** High
+
+**Engagement Strategy:** Manage Closely
+
+**Communication:** During requirements, Sprint Reviews and UAT
+
+---
+
+# 8. STK-005 — Finance Manager
+
+**Role:** Finance Business Stakeholder
+
+**Primary Responsibilities:**
+
+* Validate finance-related employee information
+* Validate salary-status requirements
+* Review Finance active-status business rule
+* Validate finance-related reporting requirements
+
+**Interest:** High
+
+**Influence:** Medium
+
+**Impact:** High
+
+**Engagement Strategy:** Keep Engaged
+
+**Communication:** During finance requirement discussions, reviews and UAT
+
+---
+
+# 9. STK-006 — Recruitment / Talent Acquisition Lead
+
+**Role:** Recruitment Process Stakeholder
+
+**Primary Responsibilities:**
+
+* Validate candidate management
+* Validate application workflow
+* Review interview process
+* Validate job-offer process
+* Validate recruitment pipeline reporting
+
+**Interest:** High
+
+**Influence:** Medium
+
+**Impact:** High
+
+**Engagement Strategy:** Keep Engaged
+
+**Communication:** Recruitment module development and UAT cycles
+
+---
+
+# 10. STK-007 — Senior Management
+
+**Role:** Management / Reporting Stakeholder
+
+**Primary Responsibilities:**
+
+* Review management KPIs
+* Validate reporting expectations
+* Review workforce analytics
+* Review departmental summaries
+* Provide strategic reporting requirements
+
+**Interest:** High
+
+**Influence:** High
+
+**Impact:** Medium
+
+**Engagement Strategy:** Keep Satisfied
+
+**Information Required:**
+
+* Workforce overview
+* Department analytics
+* Attendance trends
+* Leave information
+* Performance indicators
+* Training metrics
+* Recruitment pipeline
+* Management dashboards
+
+**Communication:** Milestone and Sprint Review level
+
+---
+
+# 11. STK-008 — HR Users
+
+**Role:** End Users
+
+**Primary Responsibilities:**
+
+* Perform day-to-day HR transactions
+* Maintain employee information
+* Process attendance/leave activities
+* Manage performance and training records
+* Provide usability feedback
+* Participate in UAT
+
+**Interest:** High
+
+**Influence:** Medium
+
+**Impact:** High
+
+**Engagement Strategy:** Keep Informed
+
+**Communication:** Training, UAT and release communication
+
+---
+
+# 12. STK-009 — Operations Users
+
+**Role:** End Users
+
+**Primary Responsibilities:**
+
+* Review operational employee information
+* Monitor workforce status
+* Maintain relevant operational records
+* Provide workflow feedback
+* Participate in UAT
+
+**Interest:** High
+
+**Influence:** Medium
+
+**Impact:** High
+
+**Engagement Strategy:** Keep Informed
+
+---
+
+# 13. STK-010 — Finance Users
+
+**Role:** End Users
+
+**Primary Responsibilities:**
+
+* Review finance-related employee information
+* Maintain applicable salary-status information
+* Validate Finance workflows
+* Participate in UAT
+
+**Interest:** Medium
+
+**Influence:** Low
+
+**Impact:** Medium
+
+**Engagement Strategy:** Keep Informed
+
+---
+
+# 14. STK-011 — Recruitment Users
+
+**Role:** End Users
+
+**Primary Responsibilities:**
+
+* Manage candidates
+* Manage job applications
+* Coordinate interviews
+* Track job offers
+* Maintain recruitment information
+* Participate in recruitment UAT
+
+**Interest:** High
+
+**Influence:** Low
+
+**Impact:** High
+
+**Engagement Strategy:** Keep Informed
+
+---
+
+# 15. Power / Interest Analysis
+
+The following stakeholder classification will be used to determine the level of engagement required.
+
+| Category                     | Stakeholder Groups                                       | Engagement Approach |
+| ---------------------------- | -------------------------------------------------------- | ------------------- |
+| High Power / High Interest   | Product Owner, HR Manager, Operations Manager, Nida Khan | Manage Closely      |
+| High Power / Lower Interest  | Senior Management                                        | Keep Satisfied      |
+| Lower Power / High Interest  | HR Users, Operations Users, Recruitment Users            | Keep Informed       |
+| Medium Power / High Interest | Finance Manager, Recruitment Lead                        | Keep Engaged        |
+
+---
+
+# 16. Stakeholder Engagement Strategy
+
+## Manage Closely
+
+Stakeholders in this category should be actively involved in:
+
+* Requirement decisions
+* Business-rule validation
+* Sprint Reviews
+* UAT
+* Scope decisions
+* Acceptance activities
+
+## Keep Satisfied
+
+Stakeholders should receive concise management-level information including:
+
+* Project progress
+* Major risks
+* KPI requirements
+* Milestones
+* Release status
+
+## Keep Engaged
+
+Stakeholders should be involved when requirements or functionality directly affect their business area.
+
+## Keep Informed
+
+End users should receive:
+
+* Process information
+* UAT schedules
+* Release information
+* Training information
+* Known changes affecting their workflows
+
+---
+
+# 17. Communication Matrix
+
+| Stakeholder        | Information                            | Method                  | Frequency       | Owner     |
+| ------------------ | -------------------------------------- | ----------------------- | --------------- | --------- |
+| Product Owner      | Backlog, requirements, sprint progress | Meeting / Review        | Weekly / Sprint | Nida Khan |
+| HR Manager         | HR requirements and UAT                | Meeting / Documentation | Weekly          | Nida Khan |
+| Operations Manager | Operations requirements                | Meeting / Review        | Sprint-based    | Nida Khan |
+| Finance Manager    | Finance requirements                   | Meeting / Review        | As Required     | Nida Khan |
+| Recruitment Lead   | Recruitment requirements               | Meeting / Review        | Sprint-based    | Nida Khan |
+| Senior Management  | Progress and KPI reporting             | Dashboard / Review      | Milestone-based | Nida Khan |
+| End Users          | UAT and release information            | Email / Training / Demo | As Required     | Nida Khan |
+| Project Team       | Development and blockers               | Scrum Ceremony          | Daily / Sprint  | Nida Khan |
+
+---
+
+# 18. Stakeholder Decision and Approval Responsibilities
+
+| Decision Area          | Primary Stakeholder           | Supporting Stakeholders                    |
+| ---------------------- | ----------------------------- | ------------------------------------------ |
+| Product priorities     | Product Owner                 | HR Manager, Nida Khan                      |
+| HR business rules      | HR Manager / Product Owner    | Nida Khan                                  |
+| Operations rules       | Operations Manager            | Nida Khan                                  |
+| Finance rules          | Finance Manager               | Nida Khan                                  |
+| Recruitment workflow   | Recruitment Lead              | Product Owner                              |
+| Technical architecture | Nida Khan                     | Product Owner where business impact exists |
+| Sprint scope           | Product Owner / Scrum Team    | Nida Khan                                  |
+| UAT acceptance         | Relevant Business Stakeholder | End Users                                  |
+| Management KPIs        | Senior Management             | Product Owner, Nida Khan                   |
+| Release readiness      | Product Owner                 | Nida Khan, Business Stakeholders           |
+
+---
+
+# 19. Stakeholder Management Principles
+
+The following principles will be applied throughout the project:
+
+1. Business requirements will be validated with the appropriate process owner.
+2. Technical decisions will consider documented business requirements.
+3. Stakeholder decisions affecting scope will be recorded.
+4. Requirement changes will be reflected in the product backlog and traceability documentation.
+5. UAT participants will represent the users of the affected business process.
+6. Stakeholder feedback will be reviewed during Sprint Reviews and requirement refinement.
+7. Conflicting requirements will be documented and escalated to the Product Owner for prioritization.
+
+---
+
+# 20. Review and Maintenance
+
+This Stakeholder Register will be reviewed:
+
+* At project initiation
+* During major scope changes
+* When a new stakeholder is identified
+* Before major UAT cycles
+* Before project closure
+
+Any material stakeholder changes will be reflected in the document version history.
+
+---
+
+# 21. Document Control
+
+| Version | Date        | Author    | Change Description           | Status           |
+| ------- | ----------- | --------- | ---------------------------- | ---------------- |
+| 1.0     | 20-Sep-2026 | Nida Khan | Initial stakeholder register | Draft for Review |
+
+---
+
+**End of Document**
+
+**Document Owner:** Nida Khan
+**Document ID:** HR360-GOV-002
+**Version:** 1.0

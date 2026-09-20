@@ -1,0 +1,579 @@
+# HR360 — Process Flow Diagrams
+
+**Document ID:** HR360-BA-006
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Role:** Business Analyst / Developer / Project Manager / Scrum Master
+**Product Owner:** HR Business Stakeholder
+
+---
+
+## 1. Purpose
+
+This document defines the logical process flows for the HR360 Human Resource Management and Analytics System.
+
+The flows provide a controlled business-analysis reference for:
+
+* Process understanding
+* Functional requirements
+* User stories
+* Acceptance criteria
+* API design
+* Database design
+* Testing and UAT
+* Frontend workflow design
+* Analytics and reporting
+
+---
+
+## 2. Flow Notation
+
+| Notation      | Meaning                                                             |
+| ------------- | ------------------------------------------------------------------- |
+| START         | Beginning of process                                                |
+| Activity      | Business or system action                                           |
+| Decision      | Business rule or validation decision                                |
+| System        | HR360 application/API/database action                               |
+| Business User | Action performed by HR, manager, recruiter or other authorized user |
+| END           | Completion of process                                               |
+
+---
+
+# 3. Employee Management Flow
+
+```text
+START
+  ↓
+HR User selects Employee Management
+  ↓
+Create / View / Update Employee
+  ↓
+Validate Employee Data
+  ↓
+Valid?
+ ├── NO → Return Validation Error → END
+ └── YES
+        ↓
+Save Employee Record
+        ↓
+Assign Department
+        ↓
+Assign Job Role
+        ↓
+Assign Work Status
+        ↓
+Assign Employment Status
+        ↓
+Employee Available in HR360
+        ↓
+END
+```
+
+---
+
+# 4. Employee Lifecycle Flow
+
+```text
+START
+  ↓
+Employee Record
+  ↓
+Lifecycle Event
+  ↓
+Update Employment Status
+  ↓
+Validate Status
+  ↓
+Valid?
+ ├── NO → Return Error → END
+ └── YES
+        ↓
+Persist Status Change
+        ↓
+Refresh Relevant Analytics
+        ↓
+END
+```
+
+Supported lifecycle states include:
+
+* CANDIDATE
+* PROBATION
+* EMPLOYED
+* ON_LEAVE
+* RESIGNED
+* TERMINATED
+* RETIRED
+
+---
+
+# 5. Department-Specific Active Status Flow
+
+```text
+START
+  ↓
+Employee Record
+  ↓
+Identify Department
+  ↓
+Is Department HR?
+ ├── YES → employment_status = EMPLOYED?
+ │              ├── YES → ACTIVE
+ │              └── NO → NOT ACTIVE
+ │
+ └── NO
+       ↓
+Is Department Operations?
+ ├── YES → work_status = WORKING or ONLINE?
+ │              ├── YES → ACTIVE
+ │              └── NO → NOT ACTIVE
+ │
+ └── NO
+       ↓
+Is Department Finance?
+ ├── YES → salary_status = PAID?
+ │              ├── YES → ACTIVE
+ │              └── NO → NOT ACTIVE
+ │
+ └── NO → NOT ACTIVE
+```
+
+The active status is derived from business rules and is not a universal manually maintained employee status.
+
+---
+
+# 6. Attendance Management Flow
+
+```text
+START
+  ↓
+Select Employee
+  ↓
+Select Attendance Date
+  ↓
+Enter Attendance Status
+  ↓
+Enter Check-in / Check-out
+  ↓
+Enter Remarks if Required
+  ↓
+Validate Attendance Data
+  ↓
+Valid?
+ ├── NO → Validation Error → END
+ └── YES
+        ↓
+Save Attendance
+        ↓
+Calculate / Store Working Hours
+        ↓
+Attendance Analytics
+        ↓
+END
+```
+
+Supported statuses:
+
+* PRESENT
+* ABSENT
+* LATE
+* HALF_DAY
+* ON_LEAVE
+* HOLIDAY
+
+---
+
+# 7. Leave Management Flow
+
+```text
+START
+  ↓
+Employee
+  ↓
+Select Leave Type
+  ↓
+Enter Start Date / End Date
+  ↓
+Enter Reason
+  ↓
+Validate Request
+  ↓
+Submit Request
+  ↓
+Approver Reviews Request
+  ↓
+Approved?
+ ├── NO → REJECTED → END
+ └── YES → APPROVED
+             ↓
+        Update Leave Records
+             ↓
+        Reporting / Analytics
+             ↓
+            END
+```
+
+---
+
+# 8. Performance Review Flow
+
+```text
+START
+  ↓
+Manager / HR
+  ↓
+Select Employee
+  ↓
+Define Review Period
+  ↓
+Enter Rating
+  ↓
+Enter Feedback
+  ↓
+Validate Rating
+  ↓
+Valid Rating 1–5?
+ ├── NO → Validation Error → END
+ └── YES
+        ↓
+Save Performance Review
+        ↓
+Performance Analytics
+        ↓
+END
+```
+
+---
+
+# 9. Performance Improvement Plan Flow
+
+```text
+START
+  ↓
+Performance Concern Identified
+  ↓
+Manager / HR Creates PIP
+  ↓
+Define Start Date
+  ↓
+Define End Date
+  ↓
+Define Review Cadence
+  ↓
+PIP Active
+  ↓
+Periodic Review
+  ↓
+Progress Evaluation
+  ↓
+Progress Satisfactory?
+ ├── YES → Complete PIP → END
+ └── NO
+       ↓
+Continue / Extend PIP
+       ↓
+Next Review
+```
+
+---
+
+# 10. Training Management Flow
+
+```text
+START
+  ↓
+Create Training Program
+  ↓
+Select Employee
+  ↓
+Enroll Employee
+  ↓
+Record Attendance
+  ↓
+Training Completed?
+ ├── NO → Continue Training
+ └── YES
+        ↓
+Record Completion
+        ↓
+Record Score
+        ↓
+Certificate Issued?
+        ↓
+Update Employee Training Record
+        ↓
+Training Analytics
+        ↓
+END
+```
+
+---
+
+# 11. Recruitment Pipeline Flow
+
+```text
+START
+  ↓
+Candidate Created
+  ↓
+Application Created
+  ↓
+Screening
+  ↓
+Shortlisted?
+ ├── NO → REJECTED / WITHDRAWN → END
+ └── YES
+        ↓
+Interview
+        ↓
+Interview Result
+        ↓
+PASS?
+ ├── NO → REJECTED → END
+ └── YES
+        ↓
+Job Offer
+        ↓
+Candidate Decision
+        ↓
+Accepted?
+ ├── NO → DECLINED → END
+ └── YES
+        ↓
+Joining Process
+        ↓
+Employee Creation
+        ↓
+END
+```
+
+---
+
+# 12. Interview Management Flow
+
+```text
+START
+  ↓
+Select Application
+  ↓
+Schedule Interview
+  ↓
+Assign Interviewer
+  ↓
+Define Interview Round
+  ↓
+Conduct Interview
+  ↓
+Record Rating
+  ↓
+Record Feedback
+  ↓
+Record Result
+  ↓
+PASS / FAIL / PENDING
+  ↓
+Update Application Pipeline
+  ↓
+END
+```
+
+---
+
+# 13. Job Offer Flow
+
+```text
+START
+  ↓
+Eligible Application
+  ↓
+Create Offer
+  ↓
+Validate Salary and Dates
+  ↓
+Offer Valid?
+ ├── NO → Validation Error → END
+ └── YES
+        ↓
+Send Offer
+        ↓
+Candidate Decision
+        ↓
+Accepted?
+ ├── YES → ACCEPTED → Joining Process
+ └── NO
+       ↓
+DECLINED / EXPIRED / CANCELLED
+       ↓
+END
+```
+
+---
+
+# 14. Recruitment-to-Employee Transition
+
+```text
+Candidate
+   ↓
+Application
+   ↓
+Screening
+   ↓
+Interview
+   ↓
+Offer
+   ↓
+Offer Accepted
+   ↓
+Joining Date
+   ↓
+Employee Record
+   ↓
+Department Assignment
+   ↓
+Role Assignment
+   ↓
+Work Status
+   ↓
+Employment Status
+   ↓
+Employee Available in HR360
+```
+
+This is a target-state process and will be further refined during frontend and onboarding design.
+
+---
+
+# 15. HR Analytics Flow
+
+```text
+START
+  ↓
+Operational HR360 Data
+  ↓
+Employees / Attendance / Leave
+Performance / Training / Recruitment
+  ↓
+Analytics API
+  ↓
+KPI / Aggregation Queries
+  ↓
+Structured Analytics Response
+  ↓
+HR360 Dashboard / Power BI
+  ↓
+Management Reporting
+  ↓
+END
+```
+
+Analytics areas include:
+
+* Workforce overview
+* Department analytics
+* Attendance
+* Leave
+* Performance
+* Training
+* Recruitment
+
+---
+
+# 16. API Request Lifecycle
+
+```text
+Client / Frontend
+      ↓
+REST API Endpoint
+      ↓
+Request Validation
+      ↓
+Business / Data Operation
+      ↓
+PostgreSQL
+      ↓
+Success?
+ ├── NO → Controlled Error Response
+ └── YES → Structured JSON Response
+      ↓
+Frontend / Consumer
+```
+
+---
+
+# 17. Key Business Decision Rules
+
+| Decision                 | Condition                      | Outcome               |
+| ------------------------ | ------------------------------ | --------------------- |
+| HR Active Status         | HR + EMPLOYED                  | ACTIVE                |
+| HR Non-active            | HR + not EMPLOYED              | NOT ACTIVE            |
+| Operations Active Status | Operations + WORKING/ONLINE    | ACTIVE                |
+| Operations Non-active    | Operations + other work status | NOT ACTIVE            |
+| Finance Active Status    | Finance + salary PAID          | ACTIVE                |
+| Finance Non-active       | Finance + salary not PAID      | NOT ACTIVE            |
+| Interview Result         | Interview outcome recorded     | PASS / FAIL / PENDING |
+| Offer Accepted           | Candidate accepts offer        | ACCEPTED              |
+| Offer Declined           | Candidate declines offer       | DECLINED              |
+| Leave Approved           | Approver approves request      | APPROVED              |
+| Leave Rejected           | Approver rejects request       | REJECTED              |
+
+---
+
+# 18. Exception and Validation Paths
+
+HR360 processes must handle the following conditions:
+
+* Duplicate employee code
+* Duplicate email
+* Invalid department reference
+* Invalid job role reference
+* Invalid work status
+* Invalid employment status
+* Invalid attendance status
+* Invalid leave information
+* Invalid performance rating
+* Invalid interview rating
+* Invalid candidate/application status
+* Invalid salary values
+* Invalid offer dates
+* Invalid foreign-key references
+* Database failures
+* API request validation failures
+
+Errors should be returned through controlled API responses without exposing credentials, database passwords or internal secrets.
+
+---
+
+# 19. Process-to-System Interaction
+
+The target HR360 architecture follows this logical interaction:
+
+```text
+Business User
+     ↓
+HR360 Frontend
+     ↓
+REST API Layer
+     ↓
+Business Rules / Validation
+     ↓
+PostgreSQL Database
+     ↓
+Analytics APIs
+     ↓
+HR360 Dashboard / Power BI
+```
+
+The backend REST APIs and PostgreSQL database are already established in the current implementation. The frontend and Power BI layers are planned project components.
+
+---
+
+# 20. Document Control
+
+**Document Owner:** Nida Khan
+**Review Authority:** HR Business Stakeholder / Product Owner
+**Version:** 1.0
+**Status:** Draft for Review
+
+These logical flows provide the controlled process reference for the HR360 Functional Requirements Document, User Stories, Acceptance Criteria and Testing/UAT documentation.

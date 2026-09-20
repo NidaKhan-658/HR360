@@ -1,0 +1,157 @@
+# HR360 — AS-IS PROCESS MAPPING
+
+**Document ID:** HR360-BA-003
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Author:** Nida Khan
+
+# 1. Purpose
+
+This document describes the current-state HR operating model that HR360 is intended to improve.
+
+The As-Is model provides the baseline for identifying process gaps and defining the future-state HR360 solution.
+
+# 2. Current-State Overview
+
+The current-state model represents HR information as distributed across multiple operational records and manually coordinated processes.
+
+```text
+HR / Business User
+        ↓
+Employee Information
+        ↓
+Separate Records
+        ↓
+Attendance Records
+        ↓
+Leave Records
+        ↓
+Performance Records
+        ↓
+Training Records
+        ↓
+Recruitment Records
+        ↓
+Manual Consolidation
+        ↓
+Management Reporting
+```
+
+# 3. Employee Management — As-Is
+
+```text
+Employee joins
+      ↓
+Employee details captured
+      ↓
+Department / Role assigned
+      ↓
+Information maintained in records
+      ↓
+Employee status manually reviewed
+      ↓
+HR reporting
+```
+
+# 4. Workforce Status — As-Is
+
+```text
+Employee information
+        ↓
+Department checked
+        ↓
+Employment / Work / Salary information checked
+        ↓
+Manual interpretation
+        ↓
+Active / Not Active classification
+        ↓
+Report
+```
+
+This creates a risk of inconsistent interpretation when different departments use different definitions.
+
+# 5. Attendance and Leave — As-Is
+
+```text
+Attendance information
+        ↓
+Attendance record
+        ↓
+Separate leave information
+        ↓
+Manual consolidation
+        ↓
+Attendance / Leave report
+```
+
+# 6. Performance and Training — As-Is
+
+```text
+Performance information
+        ↓
+Performance review records
+        ↓
+PIP information where applicable
+        ↓
+Separate training records
+        ↓
+Manual consolidation
+        ↓
+Employee development reporting
+```
+
+# 7. Recruitment — As-Is
+
+```text
+Candidate
+   ↓
+Application
+   ↓
+Screening
+   ↓
+Interview
+   ↓
+Offer
+   ↓
+Hiring
+```
+
+Recruitment stages may require manual coordination between candidate information, application information, interviews and offers.
+
+# 8. Management Reporting — As-Is
+
+```text
+Multiple HR Records
+       ↓
+Manual Data Collection
+       ↓
+Data Consolidation
+       ↓
+Manual KPI Calculation
+       ↓
+Management Report
+```
+
+# 9. Current-State Pain Points
+
+| Area             | Current-State Challenge              |
+| ---------------- | ------------------------------------ |
+| Employee data    | Distributed information              |
+| Workforce status | Manual interpretation                |
+| Attendance       | Separate records                     |
+| Leave            | Separate process                     |
+| Performance      | Limited centralized visibility       |
+| Training         | Separate tracking                    |
+| Recruitment      | Multiple disconnected stages         |
+| Reporting        | Manual consolidation                 |
+| KPIs             | Potentially inconsistent definitions |
+
+# 10. Business Analysis Conclusion
+
+The As-Is analysis identifies the need for a centralized HR platform with common data structures, standardized business rules, integrated workflows and analytics capabilities.
+
+The To-Be HR360 process will address these gaps through a centralized application and database.
+
+**End of Document**

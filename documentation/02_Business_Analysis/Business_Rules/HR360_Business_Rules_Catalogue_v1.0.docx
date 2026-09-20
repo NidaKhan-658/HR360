@@ -1,0 +1,302 @@
+# HR360 — Human Resource Management & Analytics System
+
+# BUSINESS RULES CATALOGUE
+
+**Document ID:** HR360-BA-002
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Author:** Nida Khan
+**Business Analyst:** Nida Khan
+**Developer / Technical Lead:** Nida Khan
+
+---
+
+# 1. Purpose
+
+This document defines the business rules governing HR360 processes.
+
+Business rules provide the logical conditions that determine how HR360 classifies, validates and processes business information.
+
+The rules in this document form a baseline for:
+
+* Database constraints
+* Backend business logic
+* API behavior
+* Frontend validation
+* Analytics calculations
+* Test scenarios
+* UAT
+
+---
+
+# 2. Employee Status Rules
+
+| Rule ID      | Rule                                                                                                            |
+| ------------ | --------------------------------------------------------------------------------------------------------------- |
+| RULE-EMP-001 | Employee lifecycle status must use an approved status value.                                                    |
+| RULE-EMP-002 | Approved lifecycle statuses include CANDIDATE, PROBATION, EMPLOYED, ON_LEAVE, RESIGNED, TERMINATED and RETIRED. |
+| RULE-EMP-003 | Employee department must reference an approved department.                                                      |
+| RULE-EMP-004 | Employee job role must reference an approved job role.                                                          |
+| RULE-EMP-005 | Employee work status must reference an approved work status.                                                    |
+
+---
+
+# 3. Department-Specific Active Status Rules
+
+## RULE-ACT-001 — HR
+
+For employees belonging to the HR department:
+
+```text
+IF employment_status = EMPLOYED
+THEN department_active_status = ACTIVE
+ELSE department_active_status = NOT ACTIVE
+```
+
+---
+
+## RULE-ACT-002 — Operations
+
+For employees belonging to the Operations department:
+
+```text
+IF work_status = WORKING
+OR work_status = ONLINE
+THEN department_active_status = ACTIVE
+ELSE department_active_status = NOT ACTIVE
+```
+
+---
+
+## RULE-ACT-003 — Finance
+
+For employees belonging to the Finance department:
+
+```text
+IF salary_status = PAID
+THEN department_active_status = ACTIVE
+ELSE department_active_status = NOT ACTIVE
+```
+
+---
+
+## RULE-ACT-004 — Other Departments
+
+Where a department does not currently have a defined active-status rule:
+
+```text
+department_active_status = NOT ACTIVE
+```
+
+unless an approved future business rule is introduced.
+
+---
+
+## RULE-ACT-005 — Derived Status
+
+`department_active_status` shall be calculated from the applicable business rule.
+
+It should not be maintained as a manually entered universal employee attribute.
+
+---
+
+# 4. Work Status Rules
+
+Approved work statuses are:
+
+* WORKING
+* ONLINE
+* TRAINING
+* ON_BENCH
+* PIP
+* ON_LEAVE
+* OFFLINE
+* REMOTE
+
+The work status represents the employee's current operational/work state.
+
+---
+
+# 5. Attendance Rules
+
+Approved attendance statuses are:
+
+* PRESENT
+* ABSENT
+* LATE
+* HALF_DAY
+* ON_LEAVE
+* HOLIDAY
+
+Working hours may be calculated or stored based on the approved attendance process.
+
+---
+
+# 6. Leave Rules
+
+Leave requests must reference a valid leave type.
+
+Initial leave types:
+
+* Annual Leave
+* Sick Leave
+* Casual Leave
+* Emergency Leave
+
+Leave requests must include:
+
+* Employee
+* Leave type
+* Start date
+* End date
+* Duration
+* Status
+
+---
+
+# 7. Performance Rules
+
+Performance ratings must remain within the defined rating range.
+
+Performance reviews must be linked to an employee.
+
+Performance Improvement Plans must identify:
+
+* Employee
+* Start date
+* End date
+* Status
+* Review frequency
+
+---
+
+# 8. Training Rules
+
+Employee training records must reference:
+
+* A valid employee
+* A valid training program
+
+Approved training participation statuses include:
+
+* ENROLLED
+* ATTENDED
+* COMPLETED
+* DID_NOT_ATTEND
+* CANCELLED
+
+Training scores must only be recorded where applicable.
+
+---
+
+# 9. Recruitment Rules
+
+Candidate statuses include:
+
+* NEW
+* SCREENING
+* SHORTLISTED
+* INTERVIEW
+* OFFERED
+* HIRED
+* REJECTED
+* WITHDRAWN
+
+Application statuses include:
+
+* APPLIED
+* SCREENING
+* SHORTLISTED
+* INTERVIEW
+* OFFERED
+* HIRED
+* REJECTED
+* WITHDRAWN
+
+---
+
+# 10. Interview Rules
+
+Interview status values include:
+
+* SCHEDULED
+* COMPLETED
+* CANCELLED
+* NO_SHOW
+
+Interview results include:
+
+* PASS
+* FAIL
+* PENDING
+
+Interview ratings must fall within the approved rating range.
+
+---
+
+# 11. Job Offer Rules
+
+Job offer statuses include:
+
+* DRAFT
+* SENT
+* ACCEPTED
+* DECLINED
+* EXPIRED
+* CANCELLED
+
+An accepted offer may contain an accepted date.
+
+Joining date must not precede the offer date.
+
+---
+
+# 12. Data Integrity Rules
+
+HR360 shall enforce:
+
+* Required employee fields
+* Unique employee codes
+* Valid foreign-key relationships
+* Valid status values
+* Valid dates
+* Valid salary values
+* Valid ratings
+* Valid recruitment relationships
+
+---
+
+# 13. Analytics Rules
+
+Analytics should use approved transactional data.
+
+KPI calculations must use documented definitions rather than independent calculations in individual dashboards.
+
+Where a KPI depends on a business rule, the corresponding business rule must be referenced.
+
+---
+
+# 14. Rule Governance
+
+Any change to a business rule must be:
+
+1. Identified
+2. Analysed
+3. Reviewed with the relevant business stakeholder
+4. Approved by the Product Owner/business owner
+5. Updated in this catalogue
+6. Reflected in requirements
+7. Implemented
+8. Tested
+9. Updated in analytics where applicable
+
+---
+
+# 15. Document Control
+
+| Version | Date        | Author    | Change                           |                  |
+| ------- | ----------- | --------- | -------------------------------- | ---------------- |
+| 1.0     | 20-Sep-2026 | Nida Khan | Initial Business Rules Catalogue | Draft for Review |
+
+**End of Document**

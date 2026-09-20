@@ -1,0 +1,587 @@
+# HR360 — Human Resource Management & Analytics System
+
+# BUSINESS REQUIREMENTS DOCUMENT
+
+**Document ID:** HR360-BA-001
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Business Analyst:** Nida Khan
+**Developer / Technical Lead:** Nida Khan
+**Project Manager:** Nida Khan
+**Scrum Master:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+---
+
+# 1. Document Purpose
+
+This Business Requirements Document defines the business needs, objectives, scope, business requirements, business rules and expected outcomes for the HR360 Human Resource Management & Analytics System.
+
+The document establishes the business baseline from which functional requirements, technical requirements, user stories, process maps, APIs, database structures, testing scenarios and analytics requirements will be developed.
+
+---
+
+# 2. Executive Summary
+
+HR360 is a centralized Human Resource Management and Analytics System intended to provide structured management of employee information and key HR processes.
+
+The system will provide a common platform for:
+
+* Employee management
+* Department and role management
+* Workforce status management
+* Attendance
+* Leave
+* Performance
+* Performance Improvement Plans
+* Training
+* Recruitment
+* Analytics
+* Management dashboards
+
+The solution will combine transactional HR capabilities with an analytics layer to provide operational visibility and management reporting.
+
+The system will use a PostgreSQL database as the central transactional data store, Node.js/Express.js REST APIs as the backend service layer and React/Vite as the frontend application layer. Microsoft Power BI is planned as the Business Intelligence layer.
+
+---
+
+# 3. Business Problem
+
+The HR function requires consistent access to employee and workforce information across multiple business processes.
+
+Without a centralized solution, the organization may experience:
+
+* Duplicate data maintenance
+* Inconsistent employee records
+* Manual workforce status calculations
+* Limited visibility of employee availability
+* Fragmented attendance and leave records
+* Difficulty tracking performance actions
+* Limited visibility into employee training
+* Manual recruitment pipeline monitoring
+* Time-consuming reporting
+* Inconsistent KPI calculations
+
+HR360 is intended to provide a structured solution to these business challenges.
+
+---
+
+# 4. Business Objectives
+
+| ID     | Objective                                             |
+| ------ | ----------------------------------------------------- |
+| BO-001 | Centralize employee information.                      |
+| BO-002 | Standardize employee lifecycle management.            |
+| BO-003 | Establish department-specific workforce status rules. |
+| BO-004 | Improve attendance and leave visibility.              |
+| BO-005 | Support structured performance management.            |
+| BO-006 | Track Performance Improvement Plans.                  |
+| BO-007 | Centralize employee training information.             |
+| BO-008 | Provide recruitment pipeline visibility.              |
+| BO-009 | Provide management-level HR analytics.                |
+| BO-010 | Establish a reliable data foundation for Power BI.    |
+
+---
+
+# 5. Current-State Business Situation
+
+The current-state model is assumed to rely on multiple operational records and manually coordinated HR activities.
+
+Typical activities include:
+
+```text
+Employee Information
+       ↓
+Department / Role Records
+       ↓
+Attendance / Leave
+       ↓
+Performance / Training
+       ↓
+Recruitment
+       ↓
+Manual Reporting
+```
+
+This model creates opportunities for inconsistent data, duplicate maintenance and manual reporting effort.
+
+The HR360 target state replaces fragmented processing with a centralized application and database.
+
+---
+
+# 6. Future-State Business Vision
+
+The future-state HR360 operating model is:
+
+```text
+Business Users
+      ↓
+HR360 Frontend
+      ↓
+REST API Layer
+      ↓
+Business Rules
+      ↓
+PostgreSQL Database
+      ↓
+Analytics APIs
+      ↓
+Management Dashboards / Power BI
+```
+
+This provides a consistent flow from operational transactions to management information.
+
+---
+
+# 7. Project Scope
+
+## 7.1 Employee Management
+
+The solution shall provide centralized employee records containing information such as:
+
+* Employee ID
+* Employee code
+* Name
+* Email
+* Phone
+* Department
+* Job role
+* Work status
+* Employment status
+* Joining date
+* Salary information
+* Salary status
+
+---
+
+## 7.2 Department and Role Management
+
+The system shall maintain controlled master data for:
+
+* Departments
+* Job roles
+* Work statuses
+
+Initial departments include:
+
+* HR
+* Operations
+* Finance
+* IT
+* Sales
+* Management
+
+---
+
+# 8. Employee Lifecycle Management
+
+The system shall support employee lifecycle statuses including:
+
+* CANDIDATE
+* PROBATION
+* EMPLOYED
+* ON_LEAVE
+* RESIGNED
+* TERMINATED
+* RETIRED
+
+Lifecycle status changes shall be traceable through controlled API operations.
+
+---
+
+# 9. Department-Specific Active Status
+
+HR360 shall not use one universal definition of an active employee.
+
+Active status shall be derived according to the employee's department.
+
+### HR
+
+```text
+employment_status = EMPLOYED
+        ↓
+ACTIVE
+```
+
+### Operations
+
+```text
+work_status = WORKING OR ONLINE
+        ↓
+ACTIVE
+```
+
+### Finance
+
+```text
+salary_status = PAID
+        ↓
+ACTIVE
+```
+
+Employees who do not satisfy the applicable department rule shall be classified as:
+
+```text
+NOT ACTIVE
+```
+
+The calculated value shall be treated as a derived business result rather than a manually maintained global active flag.
+
+---
+
+# 10. Attendance Management
+
+HR360 shall support:
+
+* Attendance date
+* Employee
+* Attendance status
+* Check-in time
+* Check-out time
+* Working hours
+* Remarks
+
+Supported attendance statuses include:
+
+* PRESENT
+* ABSENT
+* LATE
+* HALF_DAY
+* ON_LEAVE
+* HOLIDAY
+
+Attendance data shall support operational reporting and analytics.
+
+---
+
+# 11. Leave Management
+
+The system shall provide:
+
+* Leave type management
+* Leave request creation
+* Leave dates
+* Leave duration
+* Approval status
+* Approver information
+* Leave reporting
+
+Initial leave types include:
+
+* Annual Leave
+* Sick Leave
+* Casual Leave
+* Emergency Leave
+
+---
+
+# 12. Performance Management
+
+The system shall support:
+
+* Employee performance reviews
+* Review ratings
+* Review feedback
+* Review dates
+* Performance history
+
+The system shall also support Performance Improvement Plans.
+
+PIP records shall include information such as:
+
+* Employee
+* Start date
+* End date
+* PIP status
+* Review frequency
+* Objectives / review information
+
+---
+
+# 13. Training Management
+
+HR360 shall support:
+
+* Training program management
+* Employee enrollment
+* Attendance status
+* Completion
+* Training scores
+* Certificate status
+* Employee feedback
+
+Training participation shall be linked to employees and training programs.
+
+---
+
+# 14. Recruitment Management
+
+HR360 shall support the recruitment lifecycle through:
+
+```text
+Candidate
+   ↓
+Application
+   ↓
+Screening
+   ↓
+Shortlisting
+   ↓
+Interview
+   ↓
+Offer
+   ↓
+Hire
+```
+
+Recruitment modules include:
+
+* Candidates
+* Job applications
+* Interviews
+* Job offers
+
+Candidate and application statuses shall be controlled using approved status values.
+
+---
+
+# 15. Analytics Requirements
+
+HR360 shall provide analytics for:
+
+### Workforce
+
+* Employee count
+* Department distribution
+* Active status
+* Employment status
+
+### Attendance
+
+* Attendance status distribution
+* Working hours
+* Attendance trends
+
+### Leave
+
+* Leave requests
+* Leave status
+* Leave utilization
+
+### Performance
+
+* Average performance rating
+* Employee performance distribution
+* PIP monitoring
+
+### Training
+
+* Total training enrollments
+* Completion count
+* Enrollment count
+* Average training score
+
+### Recruitment
+
+* Candidate pipeline
+* Application status
+* Interview activity
+* Job offers
+* Offer status
+
+---
+
+# 16. Business Requirements
+
+| Requirement ID | Business Requirement                                                | Priority    |
+| -------------- | ------------------------------------------------------------------- | ----------- |
+| BR-001         | HR360 shall maintain a centralized employee master record.          | Must Have   |
+| BR-002         | HR360 shall maintain department master data.                        | Must Have   |
+| BR-003         | HR360 shall maintain job role master data.                          | Must Have   |
+| BR-004         | HR360 shall maintain controlled work-status values.                 | Must Have   |
+| BR-005         | HR360 shall support employee lifecycle management.                  | Must Have   |
+| BR-006         | HR360 shall calculate department-specific active status.            | Must Have   |
+| BR-007         | HR360 shall support attendance management.                          | Must Have   |
+| BR-008         | HR360 shall support leave management.                               | Must Have   |
+| BR-009         | HR360 shall support performance reviews.                            | Must Have   |
+| BR-010         | HR360 shall support Performance Improvement Plans.                  | Must Have   |
+| BR-011         | HR360 shall support training management.                            | Must Have   |
+| BR-012         | HR360 shall support candidate management.                           | Must Have   |
+| BR-013         | HR360 shall support job applications.                               | Must Have   |
+| BR-014         | HR360 shall support interviews.                                     | Must Have   |
+| BR-015         | HR360 shall support job offers.                                     | Must Have   |
+| BR-016         | HR360 shall expose approved HR functionality through REST APIs.     | Must Have   |
+| BR-017         | HR360 shall provide analytics APIs.                                 | Must Have   |
+| BR-018         | HR360 shall provide management dashboard requirements.              | Should Have |
+| BR-019         | HR360 shall provide Power BI integration requirements.              | Should Have |
+| BR-020         | HR360 shall maintain traceability between requirements and testing. | Must Have   |
+
+---
+
+# 17. Non-Functional Business Expectations
+
+The system is expected to provide:
+
+### Data Integrity
+
+HR records should maintain relational consistency and controlled values.
+
+### Availability
+
+The application should be available to authorized users during expected operational usage.
+
+### Maintainability
+
+The system should be modular so that additional HR functionality can be introduced without redesigning the entire solution.
+
+### Scalability
+
+The data model should support growth in employee, attendance, recruitment and training records.
+
+### Security
+
+Credentials and sensitive configuration values must not be stored in source code or documentation.
+
+### Traceability
+
+Business requirements should be traceable through functional requirements, implementation and testing.
+
+---
+
+# 18. Reporting and KPI Expectations
+
+Management reporting should support:
+
+* Total employees
+* Department employee count
+* Active workforce
+* Employment status distribution
+* Attendance distribution
+* Leave activity
+* Performance averages
+* PIP population
+* Training completion
+* Training scores
+* Recruitment pipeline
+* Interview activity
+* Offer activity
+
+KPI definitions will be formally documented in the Analytics/BI section.
+
+---
+
+# 19. Assumptions
+
+1. HR business stakeholders will validate business requirements.
+2. Business users will participate in UAT.
+3. PostgreSQL will remain the primary transactional database.
+4. Business rules will be documented before being considered baselined.
+5. Power BI will use approved HR360 data outputs.
+6. Users will access the system through supported web browsers.
+
+---
+
+# 20. Dependencies
+
+The project depends on:
+
+* PostgreSQL availability
+* Backend API availability
+* Frontend/API integration
+* Accurate master data
+* Stakeholder validation
+* Business-rule approval
+* UAT participation
+* Power BI data mapping for future BI implementation
+
+---
+
+# 21. Key Business Risks
+
+| Risk                           | Business Impact                 |
+| ------------------------------ | ------------------------------- |
+| Inconsistent employee data     | Incorrect HR reporting          |
+| Incorrect active-status logic  | Incorrect workforce visibility  |
+| Incomplete recruitment records | Poor hiring pipeline visibility |
+| Inconsistent KPI definitions   | Conflicting management reports  |
+| Delayed stakeholder validation | Sprint delays                   |
+| Insufficient UAT               | Production defects              |
+
+---
+
+# 22. Success Measures
+
+The business solution will be considered successful when:
+
+* Employee information is centralized.
+* Core HR processes are represented digitally.
+* Department-specific business rules operate correctly.
+* HR users can access required operational information.
+* Management can obtain defined HR KPIs.
+* Recruitment pipeline information is traceable.
+* Training and performance information can be analyzed.
+* Requirements can be traced to testing and acceptance.
+
+---
+
+# 23. Requirements Traceability Approach
+
+The HR360 requirements lifecycle will follow:
+
+```text
+Business Objective
+       ↓
+Business Requirement
+       ↓
+Functional Requirement
+       ↓
+User Story
+       ↓
+Acceptance Criteria
+       ↓
+Technical Implementation
+       ↓
+Test Scenario
+       ↓
+UAT
+       ↓
+Release
+```
+
+The formal Requirements Traceability Matrix will be maintained under:
+
+```text
+documentation/
+└── 03_Functional_Requirements/
+    └── RTM/
+```
+
+---
+
+# 24. Approval
+
+| Role                       | Representative          | Status         |
+| -------------------------- | ----------------------- | -------------- |
+| Business Analyst           | Nida Khan               | Prepared       |
+| Developer / Technical Lead | Nida Khan               | Prepared       |
+| Project Manager            | Nida Khan               | Prepared       |
+| Product Owner              | HR Business Stakeholder | Pending Review |
+| HR Process Owner           | HR Manager              | Pending Review |
+
+---
+
+# 25. Document Control
+
+| Version | Date        | Author    | Change            |                  |
+| ------- | ----------- | --------- | ----------------- | ---------------- |
+| 1.0     | 20-Sep-2026 | Nida Khan | Initial HR360 BRD | Draft for Review |
+
+---
+
+**End of Document**
+
+**Document ID:** HR360-BA-001
+**Document Owner:** Nida Khan
+**Version:** 1.0

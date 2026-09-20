@@ -1,0 +1,376 @@
+# HR360 — Human Resource Management & Analytics System
+
+## DOCUMENT CONTROL
+
+**Document ID:** HR360-GOV-004
+**Version:** 1.0
+**Status:** Active
+**Date:** 20 September 2026
+**Document Owner:** Nida Khan
+**Project:** HR360
+
+---
+
+# 1. Purpose
+
+The purpose of this Document Control standard is to establish a consistent approach for creating, naming, reviewing, approving, versioning and maintaining HR360 project documentation.
+
+The control process ensures that project documents remain traceable, current and aligned with approved requirements.
+
+---
+
+# 2. Documentation Repository
+
+All HR360 project documentation will be maintained within:
+
+```text
+HR360/
+└── documentation/
+```
+
+The documentation repository is organized by project discipline.
+
+```text
+documentation/
+│
+├── 01_Project_Governance/
+├── 02_Business_Analysis/
+├── 03_Functional_Requirements/
+├── 04_Backend/
+├── 05_Frontend/
+├── 06_Analytics_BI/
+├── 07_Agile_Scrum/
+├── 08_Testing_UAT/
+└── 09_Project_Closure/
+```
+
+---
+
+# 3. Documentation Structure
+
+| Folder                     | Purpose                                              |
+| -------------------------- | ---------------------------------------------------- |
+| 01_Project_Governance      | Charter, stakeholders, RACI and governance           |
+| 02_Business_Analysis       | BRD, business rules and process analysis             |
+| 03_Functional_Requirements | FRD, user stories, acceptance criteria and RTM       |
+| 04_Backend                 | API, database, ERD and backend process documentation |
+| 05_Frontend                | UI, screens, navigation and dashboard requirements   |
+| 06_Analytics_BI            | KPIs, analytics and Power BI documentation           |
+| 07_Agile_Scrum             | Epics, backlog, sprint and Scrum documentation       |
+| 08_Testing_UAT             | Test scenarios, UAT and defect management            |
+| 09_Project_Closure         | Final RTM, deployment and project summary            |
+
+---
+
+# 4. Document Identification Standard
+
+Each controlled document should have:
+
+* Document ID
+* Document title
+* Version
+* Status
+* Date
+* Author
+* Document owner
+* Review/approval information where applicable
+
+Document IDs will follow the pattern:
+
+```text
+HR360-[AREA]-[NUMBER]
+```
+
+Examples:
+
+```text
+HR360-GOV-001
+HR360-GOV-002
+HR360-BA-001
+HR360-FR-001
+HR360-BE-001
+HR360-FE-001
+HR360-BI-001
+HR360-UAT-001
+```
+
+---
+
+# 5. Version Control Standard
+
+The project will use controlled document versions.
+
+| Version | Meaning                                           |
+| ------- | ------------------------------------------------- |
+| 0.x     | Working draft / internal development              |
+| 1.0     | First approved baseline                           |
+| 1.1     | Minor update with no major requirement change     |
+| 1.2     | Additional minor revision                         |
+| 2.0     | Major approved change affecting document baseline |
+
+Example:
+
+```text
+BRD v0.1 → Initial working draft
+BRD v0.2 → BA review update
+BRD v0.3 → Stakeholder review update
+BRD v1.0 → Approved baseline
+BRD v1.1 → Minor approved change
+BRD v2.0 → Major scope revision
+```
+
+---
+
+# 6. Document Status
+
+The following statuses will be used:
+
+| Status           | Meaning                                    |
+| ---------------- | ------------------------------------------ |
+| Draft            | Document is under preparation              |
+| Draft for Review | Document is ready for stakeholder review   |
+| Under Review     | Formal review is in progress               |
+| Approved         | Document has been accepted/baselined       |
+| Superseded       | Replaced by a newer approved version       |
+| Archived         | Retained for historical/reference purposes |
+
+---
+
+# 7. Document Ownership
+
+| Responsibility                  | Assigned To                                   |
+| ------------------------------- | --------------------------------------------- |
+| Project documentation ownership | Nida Khan                                     |
+| Business analysis documentation | Nida Khan                                     |
+| Technical documentation         | Nida Khan                                     |
+| Requirements traceability       | Nida Khan                                     |
+| Document version management     | Nida Khan                                     |
+| Business approval               | Product Owner / Relevant Business Stakeholder |
+| Technical review                | Nida Khan                                     |
+| UAT documentation approval      | Relevant Business Stakeholder                 |
+
+---
+
+# 8. Review and Approval Process
+
+Controlled documents will generally follow:
+
+```text
+Create
+  ↓
+Internal Review
+  ↓
+Business / Technical Review
+  ↓
+Updates
+  ↓
+Approval
+  ↓
+Baseline
+  ↓
+Controlled Change Management
+```
+
+A document should not be treated as an approved baseline until the appropriate stakeholder has reviewed and accepted it.
+
+---
+
+# 9. Change Control
+
+Changes to approved documentation should be traceable.
+
+A material change should include:
+
+* Change description
+* Reason for change
+* Requestor
+* Impact assessment
+* Affected requirements
+* Affected documents
+* Approval decision
+* New document version
+
+Where applicable, the change should also be reflected in:
+
+* Product backlog
+* User stories
+* Acceptance criteria
+* RTM
+* Test scenarios
+* Process maps
+* Technical implementation
+
+---
+
+# 10. File Naming Convention
+
+Files should follow a consistent naming standard.
+
+Recommended format:
+
+```text
+HR360_[Document_Name]_v[Version]
+```
+
+Examples:
+
+```text
+HR360_Project_Charter_v1.0.docx
+HR360_Stakeholder_Register_v1.0.docx
+HR360_RACI_Matrix_v1.0.docx
+HR360_BRD_v1.0.docx
+HR360_FRD_v1.0.docx
+```
+
+Avoid:
+
+```text
+final.docx
+final2.docx
+latest.docx
+new_final.docx
+updated_final_v3.docx
+```
+
+This prevents ambiguity regarding the current baseline.
+
+---
+
+# 11. Document Review Frequency
+
+| Document Type          | Review Trigger                   |
+| ---------------------- | -------------------------------- |
+| Project Charter        | Major scope/governance change    |
+| Stakeholder Register   | New stakeholder or role change   |
+| RACI Matrix            | Responsibility change            |
+| BRD                    | Requirement or scope change      |
+| FRD                    | Functional requirement change    |
+| Business Rules         | Business-rule change             |
+| Process Maps           | Process change                   |
+| API Documentation      | API contract/change              |
+| Database Documentation | Schema change                    |
+| UI Requirements        | UI/process change                |
+| KPI Definitions        | KPI/business reporting change    |
+| Test Documentation     | Test scope or requirement change |
+| UAT Documentation      | UAT cycle/update                 |
+
+---
+
+# 12. Document Baseline
+
+The following documents form the initial governance baseline:
+
+| Document ID   | Document             | Version | Status           |
+| ------------- | -------------------- | ------: | ---------------- |
+| HR360-GOV-001 | Project Charter      |     1.0 | Draft for Review |
+| HR360-GOV-002 | Stakeholder Register |     1.0 | Draft for Review |
+| HR360-GOV-003 | RACI Matrix          |     1.0 | Draft for Review |
+| HR360-GOV-004 | Document Control     |     1.0 | Active           |
+
+Future approved documents will be added to the controlled baseline.
+
+---
+
+# 13. Source Code and Documentation Traceability
+
+Project documentation and source code should remain aligned.
+
+Where a requirement results in a software change, traceability should be maintained through:
+
+```text
+Business Requirement
+        ↓
+Functional Requirement
+        ↓
+User Story
+        ↓
+Acceptance Criteria
+        ↓
+Technical Implementation
+        ↓
+Test Scenario
+        ↓
+UAT
+        ↓
+Release
+```
+
+Git/GitHub commits should be used to provide additional implementation traceability.
+
+---
+
+# 14. Document Storage and Version Control
+
+The project documentation will be stored within the HR360 project repository.
+
+Source-code changes will be controlled through Git/GitHub.
+
+Documentation changes should also be committed to source control where appropriate.
+
+Example:
+
+```text
+git add documentation/
+git commit -m "Add HR360 project governance documentation"
+git push origin master
+```
+
+---
+
+# 15. Document Security
+
+Project documents may contain business-process information and should be treated as controlled project information.
+
+The following should not be stored in documentation:
+
+* Database passwords
+* API secrets
+* `.env` credentials
+* Authentication tokens
+* Private keys
+* Sensitive personal employee information
+
+Actual credentials must remain outside version-controlled documentation.
+
+---
+
+# 16. Document Control Responsibilities
+
+Nida Khan is responsible for maintaining document consistency across the project.
+
+The Product Owner and relevant business stakeholders are responsible for reviewing and approving business-facing documents within their areas of authority.
+
+Technical documentation should be maintained alongside implementation changes.
+
+---
+
+# 17. Document Control Principles
+
+HR360 documentation will follow these principles:
+
+1. One controlled source for each document.
+2. Clear document ownership.
+3. Consistent naming.
+4. Version tracking.
+5. Review and approval before baselining.
+6. Traceability of material changes.
+7. No credentials or secrets in documentation.
+8. Alignment between requirements, implementation and testing.
+9. Historical versions retained where required.
+10. Superseded documents clearly identified.
+
+---
+
+# 18. Document Change History
+
+| Version | Date        | Author    | Change Description                | Status |
+| ------- | ----------- | --------- | --------------------------------- | ------ |
+| 1.0     | 20-Sep-2026 | Nida Khan | Initial Document Control standard | Active |
+
+---
+
+**End of Document**
+
+**Document Owner:** Nida Khan
+**Document ID:** HR360-GOV-004
+**Version:** 1.0

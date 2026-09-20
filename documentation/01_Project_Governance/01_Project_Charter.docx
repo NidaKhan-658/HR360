@@ -1,0 +1,469 @@
+# HR360 — Human Resource Management & Analytics System
+
+## PROJECT CHARTER
+
+**Document ID:** HR360-GOV-001
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Document Owner:** Nida Khan
+**Business Analyst:** Nida Khan
+**Developer / Technical Lead:** Nida Khan
+**Project Manager:** Nida Khan
+**Scrum Master:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+**Delivery Methodology:** Agile / Scrum
+
+---
+
+# 1. Project Overview
+
+HR360 is an integrated Human Resource Management and Analytics System designed to centralize employee information and key HR processes within a structured digital platform.
+
+The system will support employee lifecycle management, workforce status monitoring, attendance, leave management, performance management, Performance Improvement Plans (PIPs), employee training, recruitment and management analytics.
+
+The solution is being developed as an end-to-end web application consisting of:
+
+* React/Vite frontend
+* Node.js and Express.js backend
+* PostgreSQL relational database
+* REST APIs
+* Analytics services
+* Management dashboards
+* Planned Microsoft Power BI integration
+* Git/GitHub based version control
+
+The project follows an Agile/Scrum delivery approach, allowing functionality to be developed, tested and reviewed incrementally.
+
+---
+
+# 2. Business Need / Problem Statement
+
+HR activities are often managed through multiple spreadsheets, disconnected records and manually prepared reports. This can create difficulties in maintaining consistent employee information, monitoring workforce activity, tracking employee lifecycle events and producing timely management reports.
+
+The absence of a centralized HR information structure can also result in:
+
+* Duplicate or inconsistent employee information
+* Manual status tracking
+* Limited visibility into workforce availability
+* Difficulty monitoring attendance and leave
+* Limited performance and PIP visibility
+* Fragmented training records
+* Manual recruitment pipeline tracking
+* Time-consuming management reporting
+* Inconsistent KPI definitions
+
+HR360 is intended to address these challenges by establishing a centralized HR data model, standardized business rules, REST APIs and analytics capabilities.
+
+---
+
+# 3. Project Purpose
+
+The purpose of HR360 is to provide a structured HR management platform that enables authorized users to manage core HR processes consistently while providing reliable operational and management information.
+
+The system will establish a common data foundation that can support both transactional HR operations and future Business Intelligence requirements.
+
+---
+
+# 4. Business Objectives
+
+The primary objectives of HR360 are to:
+
+1. Centralize employee and HR operational data in PostgreSQL.
+2. Standardize employee lifecycle and workforce status management.
+3. Implement department-specific employee active-status business rules.
+4. Digitize attendance and leave management.
+5. Support performance reviews and Performance Improvement Plans.
+6. Centralize employee training information.
+7. Digitize recruitment activities from candidate registration through job offers.
+8. Provide REST APIs for controlled access to HR data.
+9. Provide management-level analytics and KPI reporting.
+10. Establish a foundation for Microsoft Power BI integration.
+11. Improve data consistency, traceability and reporting capability.
+12. Demonstrate an end-to-end Agile/Scrum software delivery lifecycle.
+
+---
+
+# 5. Project Scope
+
+## 5.1 In Scope
+
+The HR360 project includes:
+
+### Employee Management
+
+* Employee master data
+* Employee identification
+* Department assignment
+* Job role assignment
+* Employment lifecycle
+* Work status
+* Salary status
+* Department-specific active-status determination
+
+### Workforce Management
+
+* Department management
+* Job role management
+* Work-status management
+* Employee availability monitoring
+
+### Attendance
+
+* Attendance records
+* Attendance status
+* Check-in/check-out information
+* Working hours
+* Attendance reporting
+
+### Leave Management
+
+* Leave types
+* Leave balances
+* Leave requests
+* Leave approval workflow
+* Leave reporting
+
+### Performance Management
+
+* Performance reviews
+* Performance ratings
+* Performance feedback
+* Performance Improvement Plans
+
+### Training Management
+
+* Training programs
+* Employee training enrollment
+* Training attendance
+* Completion tracking
+* Training scores
+* Certification tracking
+
+### Recruitment
+
+* Candidate management
+* Job applications
+* Interview management
+* Interview feedback
+* Job offers
+* Recruitment status tracking
+
+### Analytics
+
+* HR overview KPIs
+* Department analytics
+* Attendance analytics
+* Leave analytics
+* Performance analytics
+* Training analytics
+* Recruitment analytics
+
+### Technical Scope
+
+* PostgreSQL database
+* Node.js/Express backend
+* REST API layer
+* React/Vite frontend
+* Git/GitHub source control
+* Power BI integration planning
+
+---
+
+# 6. Out of Scope
+
+The following items are outside the initial project scope:
+
+* Full payroll processing
+* Statutory payroll calculations
+* Biometric attendance device integration
+* Native Android/iOS applications
+* Advanced AI-based recruitment decisions
+* Automated external job-board integrations
+* Enterprise-wide ERP integration
+* Complex compensation and benefits administration
+* Advanced identity-management integration
+
+These capabilities may be considered in future releases through formal scope change procedures.
+
+---
+
+# 7. Key Business Rules
+
+| Rule ID | Business Rule                                                                                           | Expected Result                     |
+| ------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| BR-001  | HR employees are active when `employment_status = EMPLOYED`.                                            | Active status = ACTIVE              |
+| BR-002  | Operations employees are active when work status is `WORKING` or `ONLINE`.                              | Active status = ACTIVE              |
+| BR-003  | Finance employees are active when `salary_status = PAID`.                                               | Active status = ACTIVE              |
+| BR-004  | Active status is determined using department-specific rules rather than one universal rule.             | Correct departmental classification |
+| BR-005  | Employee lifecycle includes Candidate, Probation, Employed, On Leave, Resigned, Terminated and Retired. | Standardized lifecycle              |
+| BR-006  | Recruitment records use controlled candidate/application statuses.                                      | Traceable recruitment pipeline      |
+| BR-007  | HR360 should derive departmental active status rather than store a single global active flag.           | Reduced status inconsistency        |
+
+---
+
+# 8. Project Team and Roles
+
+| Role                       | Assigned To                            | Responsibility                                                     |
+| -------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
+| Project Manager            | Nida Khan                              | Overall project planning, coordination, risks and delivery         |
+| Business Analyst           | Nida Khan                              | Requirements, business analysis, process mapping and traceability  |
+| Developer / Technical Lead | Nida Khan                              | Architecture, database, backend, APIs and technical implementation |
+| Scrum Master               | Nida Khan                              | Scrum ceremonies, impediments and Agile process                    |
+| Product Owner              | HR Business Stakeholder                | Business priorities, backlog decisions and acceptance              |
+| HR Stakeholder             | HR Manager                             | HR process validation                                              |
+| Operations Stakeholder     | Operations Manager                     | Operations workflow validation                                     |
+| Finance Stakeholder        | Finance Manager                        | Finance-related requirements                                       |
+| Recruitment Stakeholder    | Recruitment / Talent Acquisition Lead  | Recruitment process validation                                     |
+| Management Stakeholder     | Senior Management                      | KPI and management reporting requirements                          |
+| End Users                  | Authorized HR/Operations/Finance Users | Operational usage and UAT                                          |
+
+**Project Team Structure Note:**
+Due to the portfolio/project nature of HR360, several delivery responsibilities are currently consolidated under Nida Khan. Business ownership remains with the designated HR Product Owner/stakeholder.
+
+---
+
+# 9. Stakeholder Governance
+
+The project will use the following governance model:
+
+**Product Owner → Business Requirements → Product Backlog → Sprint Planning → Development → Testing → Sprint Review → Acceptance → Release**
+
+Business stakeholders will participate in requirement clarification, review and acceptance.
+
+Technical implementation decisions will be documented by the Developer/Technical Lead.
+
+Requirements will be maintained by the Business Analyst and linked to functional requirements, user stories, test scenarios and final traceability documentation.
+
+---
+
+# 10. Agile / Scrum Delivery Approach
+
+HR360 will follow an Agile/Scrum methodology.
+
+### Product Backlog
+
+The backlog will contain:
+
+* Epics
+* User stories
+* Acceptance criteria
+* Technical tasks
+* Defects
+* Documentation activities
+
+### Sprint Planning
+
+Selected backlog items will be refined and planned for implementation.
+
+### Development
+
+Development will include:
+
+* Database development
+* Backend development
+* API development
+* Frontend development
+* Integration
+* Testing
+
+### Sprint Review
+
+Completed functionality will be demonstrated to stakeholders.
+
+### Sprint Retrospective
+
+The team will identify:
+
+* What worked
+* What did not work
+* Process improvements
+* Actions for the next sprint
+
+### Definition of Done
+
+A backlog item is considered complete when:
+
+* Requirement is understood
+* Development is completed
+* Business logic is implemented
+* Testing is completed
+* Acceptance criteria are satisfied
+* Documentation is updated where applicable
+* Code is committed to Git
+* Changes are pushed to GitHub
+* No unresolved critical defect remains
+
+---
+
+# 11. Technology Landscape
+
+| Layer           | Technology           | Purpose                                 |
+| --------------- | -------------------- | --------------------------------------- |
+| Frontend        | React + Vite         | HR user interface                       |
+| Backend         | Node.js + Express.js | REST APIs and business logic            |
+| Database        | PostgreSQL 18        | Transactional HR data                   |
+| API             | REST / JSON          | Frontend-backend communication          |
+| Analytics       | HR360 Analytics APIs | KPI and reporting data                  |
+| BI              | Microsoft Power BI   | Management dashboards                   |
+| Version Control | Git / GitHub         | Source control and project traceability |
+
+Python is not part of the application implementation stack.
+
+---
+
+# 12. Major Project Deliverables
+
+The project will produce the following major deliverables:
+
+1. Project Charter
+2. Stakeholder Register
+3. RACI Matrix
+4. Document Control
+5. Business Requirements Document
+6. Business Rules Catalogue
+7. As-Is Process Documentation
+8. To-Be Process Documentation
+9. Process Maps
+10. Functional Requirements Document
+11. User Stories
+12. Acceptance Criteria
+13. Requirements Traceability Matrix
+14. Database Requirements
+15. Entity Relationship Diagram
+16. API Requirements
+17. API Mapping
+18. Backend Process Flows
+19. Frontend UI Requirements
+20. Screen Specifications
+21. Navigation Flow
+22. Dashboard Requirements
+23. KPI Definitions
+24. Analytics Requirements
+25. Power BI Requirements
+26. Agile Product Backlog
+27. Sprint Documentation
+28. Test Scenarios
+29. UAT Documentation
+30. Defect Log
+31. Deployment Documentation
+32. Project Closure Summary
+
+---
+
+# 13. High-Level Delivery Roadmap
+
+| Phase   | Focus                          | Key Outputs                                |
+| ------- | ------------------------------ | ------------------------------------------ |
+| Phase 1 | Governance & Business Analysis | Charter, BRD, stakeholders, business rules |
+| Phase 2 | Database & Backend             | Database, APIs, backend processes          |
+| Phase 3 | Frontend                       | Screens, workflows and API integration     |
+| Phase 4 | Analytics / BI                 | KPIs, analytics and Power BI requirements  |
+| Phase 5 | Testing & UAT                  | Test cases, UAT and defect resolution      |
+| Phase 6 | Release & Closure              | Deployment, final RTM and project summary  |
+
+---
+
+# 14. Assumptions
+
+The project is based on the following assumptions:
+
+1. HR stakeholders will provide timely business clarification.
+2. PostgreSQL will remain the transactional database for the current scope.
+3. Authorized users will access the application through supported web browsers.
+4. Approved business rules will be consistently implemented across backend and frontend layers.
+5. Power BI will consume approved analytics/data outputs.
+6. Git/GitHub will be used for source-code version control.
+7. Business stakeholders will participate in UAT and requirement validation.
+
+---
+
+# 15. Project Constraints
+
+The project is subject to the following constraints:
+
+* Initial implementation is a portfolio/project environment rather than a production enterprise deployment.
+* The application stack does not use Python.
+* Initial scope focuses on core HR operations rather than full payroll/ERP functionality.
+* External integrations may require additional technical and security assessment.
+* Several project delivery roles are consolidated under one project team member.
+
+---
+
+# 16. Key Project Risks
+
+| Risk ID | Risk                                     | Impact                  | Mitigation                                   |
+| ------- | ---------------------------------------- | ----------------------- | -------------------------------------------- |
+| R-001   | Changing business requirements           | Rework                  | Backlog refinement and change control        |
+| R-002   | Inconsistent business rules              | Incorrect results       | Centralized business-rule documentation      |
+| R-003   | Poor data quality                        | Incorrect analytics     | Validation and database constraints          |
+| R-004   | Frontend/API integration issues          | Incomplete workflows    | API mapping and integration testing          |
+| R-005   | KPI definitions not aligned              | Reporting inconsistency | KPI definition and stakeholder review        |
+| R-006   | Insufficient UAT                         | Post-release defects    | Scenario-based UAT                           |
+| R-007   | Documentation falling behind development | Traceability gaps       | Documentation included in Definition of Done |
+
+---
+
+# 17. Success Criteria
+
+The project will be considered successful when:
+
+1. Core HR processes are documented and represented in the solution.
+2. PostgreSQL is successfully integrated with the backend.
+3. REST APIs are available for the approved HR modules.
+4. Department-specific active-status rules produce expected results.
+5. Employee, attendance, leave, performance, training and recruitment data can be managed through the system.
+6. Frontend workflows consume the approved backend APIs.
+7. Management KPIs are traceable to defined data sources and business rules.
+8. Testing and UAT documentation is completed.
+9. Requirements can be traced through the RTM.
+10. Project source code and documentation are maintained through Git/GitHub.
+
+---
+
+# 18. Approval and Sign-Off
+
+Approval of this charter authorizes the project team to proceed with detailed business analysis, functional requirements, solution design and incremental implementation within the approved scope.
+
+| Approval Role              | Name / Representation   | Status         | Date        |
+| -------------------------- | ----------------------- | -------------- | ----------- |
+| Project Manager            | Nida Khan               | Prepared       | 20-Sep-2026 |
+| Business Analyst           | Nida Khan               | Prepared       | 20-Sep-2026 |
+| Developer / Technical Lead | Nida Khan               | Prepared       | 20-Sep-2026 |
+| Product Owner              | HR Business Stakeholder | Pending Review |             |
+
+---
+
+# 19. Document Control
+
+| Version | Date        | Author    | Change Description      | Status           |
+| ------- | ----------- | --------- | ----------------------- | ---------------- |
+| 1.0     | 20-Sep-2026 | Nida Khan | Initial Project Charter | Draft for Review |
+
+---
+
+# 20. Glossary
+
+| Term          | Definition                                                      |
+| ------------- | --------------------------------------------------------------- |
+| HR360         | Human Resource Management & Analytics System                    |
+| BRD           | Business Requirements Document                                  |
+| FRD           | Functional Requirements Document                                |
+| PIP           | Performance Improvement Plan                                    |
+| API           | Application Programming Interface                               |
+| KPI           | Key Performance Indicator                                       |
+| UAT           | User Acceptance Testing                                         |
+| RTM           | Requirements Traceability Matrix                                |
+| BI            | Business Intelligence                                           |
+| Scrum         | Agile framework used for incremental product delivery           |
+| Product Owner | Business role responsible for product priorities and acceptance |
+| Sprint        | Time-boxed Agile delivery cycle                                 |
+
+---
+
+**End of Document**
+
+**Document Owner:** Nida Khan
+**Project:** HR360
+**Document ID:** HR360-GOV-001
+**Version:** 1.0

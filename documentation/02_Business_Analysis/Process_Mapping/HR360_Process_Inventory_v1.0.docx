@@ -1,0 +1,430 @@
+# HR360 — Process Inventory
+
+**Document ID:** HR360-BA-005
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Role:** Business Analyst / Developer / Project Manager / Scrum Master
+**Product Owner:** HR Business Stakeholder
+
+---
+
+## 1. Purpose
+
+This document establishes the controlled inventory of business processes and subprocesses within the HR360 Human Resource Management and Analytics System.
+
+The Process Inventory provides a common Business Analysis reference for:
+
+* Business process analysis
+* Functional requirements
+* User stories
+* Acceptance criteria
+* API and database design
+* Testing and UAT
+* Analytics and reporting
+* Process improvement
+* Requirements traceability
+
+---
+
+## 2. Process Inventory Scope
+
+The inventory covers the major HR360 business capabilities across:
+
+* Employee Management
+* Department and Job Role Management
+* Workforce Status Management
+* Attendance
+* Leave Management
+* Performance Management
+* Performance Improvement Plans
+* Training and Development
+* Recruitment
+* Interviews
+* Job Offers
+* Recruitment-to-Employee transition
+* HR Analytics and Reporting
+* API and Data Services
+
+---
+
+## 3. Process Classification
+
+| Process ID | Business Process                   | Key Subprocesses                                                     | Primary Owner             | HR360 Area              |
+| ---------- | ---------------------------------- | -------------------------------------------------------------------- | ------------------------- | ----------------------- |
+| P-01       | Employee Management                | Create, view, update and manage employee records                     | HR Manager                | Employees               |
+| P-02       | Department & Role Management       | Maintain departments and job roles                                   | HR Manager                | Departments / Job Roles |
+| P-03       | Workforce Status Management        | Maintain work status and determine department-specific active status | HR / Operations / Finance | Work Status             |
+| P-04       | Attendance Management              | Record attendance, check-in/out and working hours                    | Operations Manager        | Attendance              |
+| P-05       | Leave Management                   | Leave types, requests, approvals and tracking                        | HR Manager                | Leave                   |
+| P-06       | Performance Management             | Reviews, ratings and feedback                                        | HR / Managers             | Performance             |
+| P-07       | Performance Improvement Plan       | Create, monitor and close PIPs                                       | HR / Managers             | PIP                     |
+| P-08       | Training Management                | Programs, enrollment, attendance and completion                      | HR / Training Owner       | Training                |
+| P-09       | Candidate Management               | Candidate creation and recruitment pipeline                          | Recruitment Lead          | Candidates              |
+| P-10       | Job Application Management         | Applications, roles and application status                           | Recruitment Lead          | Applications            |
+| P-11       | Interview Management               | Scheduling, evaluation, rating and result                            | Recruiter / Interviewer   | Interviews              |
+| P-12       | Job Offer Management               | Offer creation, sending, acceptance and rejection                    | Recruitment Lead          | Job Offers              |
+| P-13       | Recruitment-to-Employee Transition | Accepted offer, joining and employee creation                        | HR / Recruitment          | Recruitment + Employees |
+| P-14       | HR Analytics & Reporting           | KPI calculation and management reporting                             | HR / Management           | Analytics               |
+| P-15       | API & Data Service Management      | Validation, persistence, retrieval and API responses                 | Application Owner         | REST APIs / PostgreSQL  |
+
+---
+
+## 4. End-to-End Process Hierarchy
+
+### Level 0 — HR360 Business Management
+
+Manage the organization's workforce, employee lifecycle, people operations, talent development and recruitment.
+
+### Level 1 — Core HR
+
+* Employee Management
+* Department Management
+* Job Role Management
+* Employee Lifecycle Management
+
+### Level 1 — Workforce Operations
+
+* Work Status Management
+* Attendance Management
+* Leave Management
+
+### Level 1 — People Development
+
+* Performance Management
+* Performance Improvement Plans
+* Training Management
+
+### Level 1 — Talent Acquisition
+
+* Candidate Management
+* Job Applications
+* Interviews
+* Job Offers
+* Recruitment-to-Employee Transition
+
+### Level 1 — Analytics & Business Intelligence
+
+* Workforce Analytics
+* Department Analytics
+* Attendance Analytics
+* Leave Analytics
+* Performance Analytics
+* Training Analytics
+* Recruitment Analytics
+
+### Level 2 — Supporting Technology Services
+
+* REST APIs
+* PostgreSQL Database
+* Data Validation
+* Business Rule Processing
+* Analytics APIs
+* Power BI Integration
+
+---
+
+## 5. Process Inputs and Outputs
+
+| Process Area        | Key Inputs                                                | Key Outputs                               |
+| ------------------- | --------------------------------------------------------- | ----------------------------------------- |
+| Employee Management | Employee master data, department, role, work status       | Employee record and lifecycle status      |
+| Workforce Status    | Department, employment status, work status, salary status | Derived department-specific active status |
+| Attendance          | Date, attendance status, check-in/out, remarks            | Attendance record and working hours       |
+| Leave               | Employee, leave type, dates and reason                    | Leave request and approval status         |
+| Performance         | Employee, review period, rating and feedback              | Performance review record                 |
+| PIP                 | Employee, dates, objectives and review cadence            | PIP status and progress                   |
+| Training            | Program, employee, enrollment, attendance and score       | Training completion and score             |
+| Recruitment         | Candidate, application, interview and offer data          | Recruitment pipeline status               |
+| Analytics           | Operational HR360 data                                    | KPI and dashboard-ready information       |
+
+---
+
+## 6. Core HR360 Business Processes
+
+### P-01 Employee Management
+
+**Objective:** Maintain accurate employee master data throughout the employee lifecycle.
+
+**Main activities:**
+
+1. Create employee record
+2. Assign employee code
+3. Assign department
+4. Assign job role
+5. Assign work status
+6. Maintain employment status
+7. Maintain salary information
+8. Update employee information
+9. Retrieve employee information
+10. Update lifecycle status
+
+**Primary users:** HR users and authorized administrators.
+
+---
+
+### P-02 Department and Role Management
+
+**Objective:** Maintain organizational structure and job-role information.
+
+**Main activities:**
+
+1. Create department
+2. View department
+3. Update department
+4. Create job role
+5. View job role
+6. Update job role
+7. Associate employees with departments and roles
+
+---
+
+### P-03 Workforce Status Management
+
+**Objective:** Maintain operational work status and derive department-specific active status.
+
+The HR360 active-status logic is department-specific.
+
+| Department        | Active Condition                                     |
+| ----------------- | ---------------------------------------------------- |
+| HR                | `employment_status = EMPLOYED`                       |
+| Operations        | Work status is `WORKING` or `ONLINE`                 |
+| Finance           | `salary_status = PAID`                               |
+| Other Departments | No department-specific active rule currently defined |
+
+The active status is a **derived business result** and should not be treated as a universal manually maintained employee field.
+
+---
+
+### P-04 Attendance Management
+
+**Objective:** Capture employee attendance and working-hour information.
+
+Main activities:
+
+1. Select employee
+2. Select attendance date
+3. Record attendance status
+4. Record check-in time
+5. Record check-out time
+6. Calculate/store working hours
+7. Add remarks where required
+8. Use records for attendance analytics
+
+Supported attendance statuses include:
+
+* PRESENT
+* ABSENT
+* LATE
+* HALF_DAY
+* ON_LEAVE
+* HOLIDAY
+
+---
+
+### P-05 Leave Management
+
+**Objective:** Manage employee leave requests and approvals.
+
+Main activities:
+
+1. Maintain leave types
+2. Submit leave request
+3. Select leave period
+4. Validate request
+5. Review request
+6. Approve or reject request
+7. Track leave status
+8. Support reporting and analytics
+
+---
+
+### P-06 Performance Management
+
+**Objective:** Record and monitor employee performance.
+
+Main activities:
+
+1. Select employee
+2. Define review period
+3. Enter performance rating
+4. Enter manager feedback
+5. Save performance review
+6. Use ratings for performance analysis
+
+---
+
+### P-07 Performance Improvement Plan
+
+**Objective:** Provide structured monitoring for employees requiring performance improvement.
+
+Main activities:
+
+1. Identify performance concern
+2. Create PIP
+3. Define start and end dates
+4. Define review cadence
+5. Conduct periodic reviews
+6. Track progress
+7. Complete, extend or otherwise close the PIP
+
+---
+
+### P-08 Training Management
+
+**Objective:** Manage employee learning and development activities.
+
+Main activities:
+
+1. Create training program
+2. Define training status
+3. Enroll employee
+4. Record attendance
+5. Record completion
+6. Record score
+7. Record certificate status
+8. Capture employee feedback
+
+---
+
+### P-09 Candidate Management
+
+**Objective:** Maintain candidate information throughout recruitment.
+
+Main activities:
+
+1. Create candidate
+2. Store contact information
+3. Store qualification and experience
+4. Record recruitment source
+5. Update candidate status
+6. Track candidate pipeline
+
+---
+
+### P-10 Job Application Management
+
+**Objective:** Manage candidate applications against job roles.
+
+Main activities:
+
+1. Select candidate
+2. Select job role
+3. Create application
+4. Assign recruiter
+5. Record expected salary
+6. Record notice period
+7. Update application status
+8. Add recruiter notes
+
+---
+
+### P-11 Interview Management
+
+**Objective:** Manage candidate interview activities.
+
+Main activities:
+
+1. Schedule interview
+2. Assign interviewer
+3. Define interview round
+4. Define interview type
+5. Record interview date/time
+6. Record rating
+7. Record feedback
+8. Record PASS / FAIL / PENDING result
+
+---
+
+### P-12 Job Offer Management
+
+**Objective:** Manage the candidate offer lifecycle.
+
+Main activities:
+
+1. Create offer
+2. Define offered salary
+3. Define employment type
+4. Define joining date
+5. Send offer
+6. Record candidate decision
+7. Record acceptance/rejection
+8. Track offer status
+
+---
+
+### P-13 Recruitment-to-Employee Transition
+
+**Objective:** Support transition from accepted recruitment offer to employee onboarding.
+
+Target flow:
+
+`Candidate → Application → Interview → Offer → Accepted → Joining → Employee Record`
+
+This process is a target-state business process and will be further detailed during frontend and onboarding design.
+
+---
+
+### P-14 HR Analytics and Reporting
+
+**Objective:** Convert operational HR data into management-ready information.
+
+Analytics areas include:
+
+* Workforce overview
+* Department analytics
+* Attendance analytics
+* Leave analytics
+* Performance analytics
+* Training analytics
+* Recruitment analytics
+
+---
+
+### P-15 API and Data Service Management
+
+**Objective:** Provide controlled application access to HR360 data.
+
+Main activities:
+
+1. Receive API request
+2. Validate input
+3. Execute business/data operation
+4. Read/write PostgreSQL data
+5. Return structured response
+6. Return controlled error response when required
+
+---
+
+## 7. Process Governance
+
+The following governance principles apply:
+
+1. Each process must have a defined business owner.
+2. Business rules must be maintained in the Business Rules Catalogue.
+3. Process changes must be assessed for impact on requirements, APIs, database structures, dashboards and testing.
+4. Approved changes must be version-controlled.
+5. Documentation must not contain passwords, tokens, `.env` values or database secrets.
+6. Process documentation must remain aligned with the implemented HR360 solution.
+
+---
+
+## 8. Process Status Definitions
+
+| Status           | Definition                                                 |
+| ---------------- | ---------------------------------------------------------- |
+| Implemented      | Backend/API/database capability exists and has been tested |
+| Target / Planned | Process is defined but complete implementation is planned  |
+| To Be Validated  | Requires business validation during UAT or process review  |
+
+---
+
+## 9. Document Control
+
+**Document Owner:** Nida Khan
+**Review Authority:** HR Business Stakeholder / Product Owner
+**Version:** 1.0
+**Status:** Draft for Review
+
+This document serves as the master process inventory for HR360 and should be referenced by the FRD, User Stories, Acceptance Criteria, Testing/UAT and Requirements Traceability Matrix.

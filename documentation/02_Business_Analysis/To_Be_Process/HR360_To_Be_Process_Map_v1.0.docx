@@ -1,0 +1,244 @@
+# HR360 — TO-BE PROCESS MAPPING
+
+**Document ID:** HR360-BA-004
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Author:** Nida Khan
+
+# 1. Purpose
+
+This document defines the target-state HR operating model enabled by HR360.
+
+The To-Be model translates approved business requirements and business rules into an integrated HR operating process.
+
+# 2. Target-State Architecture Flow
+
+```text
+                         HR360 Users
+                              ↓
+                    ┌─────────────────┐
+                    │ React Frontend  │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ REST APIs       │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ Business Logic  │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ PostgreSQL      │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ Analytics APIs  │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ Dashboards / BI │
+                    └─────────────────┘
+```
+
+# 3. Employee Management — To-Be
+
+```text
+Employee Created
+       ↓
+Employee Details Captured
+       ↓
+Department Assigned
+       ↓
+Job Role Assigned
+       ↓
+Work Status Assigned
+       ↓
+Employment Status Maintained
+       ↓
+PostgreSQL Record
+       ↓
+API Response
+       ↓
+Frontend / Reporting
+```
+
+# 4. Active Status — To-Be
+
+```text
+Employee
+   ↓
+Identify Department
+   ↓
+┌─────────────┬──────────────┬──────────────┐
+│ HR          │ Operations   │ Finance      │
+│             │              │              │
+│ EMPLOYED    │ WORKING or   │ SALARY PAID  │
+│             │ ONLINE       │              │
+└──────┬──────┴───────┬──────┴──────┬───────┘
+       ↓              ↓              ↓
+            Department Rule
+                   ↓
+          ACTIVE / NOT ACTIVE
+                   ↓
+              Analytics
+```
+
+# 5. Attendance — To-Be
+
+```text
+Employee
+   ↓
+Attendance Transaction
+   ↓
+API Validation
+   ↓
+PostgreSQL
+   ↓
+Attendance Analytics
+   ↓
+Dashboard
+```
+
+# 6. Leave — To-Be
+
+```text
+Employee
+   ↓
+Create Leave Request
+   ↓
+Select Leave Type
+   ↓
+Enter Dates
+   ↓
+Calculate Duration
+   ↓
+Approval Workflow
+   ↓
+Approved / Rejected
+   ↓
+Leave Analytics
+```
+
+# 7. Performance and PIP — To-Be
+
+```text
+Employee
+   ↓
+Performance Review
+   ↓
+Rating / Feedback
+   ↓
+Performance Analysis
+   ↓
+PIP Required?
+   ├── No → Continue Monitoring
+   │
+   └── Yes
+        ↓
+      Create PIP
+        ↓
+      Review Period
+        ↓
+      Progress Monitoring
+```
+
+# 8. Training — To-Be
+
+```text
+Training Program
+       ↓
+Employee Enrollment
+       ↓
+Attendance
+       ↓
+Completion
+       ↓
+Score
+       ↓
+Certificate
+       ↓
+Training Analytics
+```
+
+# 9. Recruitment — To-Be
+
+```text
+Candidate
+    ↓
+Application
+    ↓
+Screening
+    ↓
+Shortlisting
+    ↓
+Interview
+    ↓
+Interview Result
+    ↓
+Offer
+    ↓
+Accepted / Declined
+    ↓
+Hiring
+```
+
+Each stage is represented by structured database records and API operations.
+
+# 10. Analytics — To-Be
+
+```text
+Transactional HR Data
+        ↓
+Analytics APIs
+        ↓
+KPI Calculations
+        ↓
+Department / HR Analysis
+        ↓
+Management Dashboards
+        ↓
+Power BI
+```
+
+# 11. Target-State Benefits
+
+| Area             | Target-State Improvement  |
+| ---------------- | ------------------------- |
+| Employee data    | Centralized record        |
+| Workforce status | Rule-driven calculation   |
+| Attendance       | Centralized transaction   |
+| Leave            | Structured workflow       |
+| Performance      | Centralized history       |
+| PIP              | Controlled monitoring     |
+| Training         | Centralized participation |
+| Recruitment      | End-to-end pipeline       |
+| Analytics        | API-driven KPIs           |
+| Reporting        | Dashboard-ready data      |
+
+# 12. Target-State Governance
+
+The To-Be process shall follow the principle:
+
+```text
+Business Requirement
+       ↓
+Business Rule
+       ↓
+Application Workflow
+       ↓
+Database Transaction
+       ↓
+Analytics
+       ↓
+Management Information
+```
+
+Changes to business rules should be reflected in the relevant requirements, implementation, test scenarios and analytics definitions.
+
+# 13. Process Improvement Objective
+
+The target-state HR360 model is designed to reduce manual consolidation, improve data consistency and establish traceability between HR transactions and management reporting.
+
+**End of Document**

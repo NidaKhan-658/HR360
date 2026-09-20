@@ -1,0 +1,205 @@
+# HR360 — Human Resource Management & Analytics System
+
+## RACI MATRIX
+
+**Document ID:** HR360-GOV-003
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Document Owner:** Nida Khan
+**Project:** HR360
+
+---
+
+# 1. Purpose
+
+The purpose of this RACI Matrix is to establish clear ownership and participation for major HR360 project activities.
+
+The matrix reduces ambiguity by identifying who is:
+
+* **R — Responsible:** Performs the activity.
+* **A — Accountable:** Owns the final outcome or decision.
+* **C — Consulted:** Provides expertise or business input.
+* **I — Informed:** Receives project information or updates.
+
+Each major activity should have a clearly identified Accountable stakeholder.
+
+---
+
+# 2. Project Roles
+
+| Code | Role                                                                      |
+| ---- | ------------------------------------------------------------------------- |
+| NK   | Nida Khan — Business Analyst / Developer / Project Manager / Scrum Master |
+| PO   | HR Business Stakeholder — Product Owner                                   |
+| HRM  | HR Manager                                                                |
+| OPM  | Operations Manager                                                        |
+| FIN  | Finance Manager                                                           |
+| REC  | Recruitment / Talent Acquisition Lead                                     |
+| SM   | Senior Management                                                         |
+| EU   | Business End Users                                                        |
+
+---
+
+# 3. RACI Matrix — Project Governance
+
+| Activity                   | NK | PO | HRM | OPM | FIN | REC | SM | EU |
+| -------------------------- | -- | -- | --- | --- | --- | --- | -- | -- |
+| Project initiation         | R  | A  | C   | C   | C   | C   | I  | I  |
+| Project charter            | R  | A  | C   | C   | C   | C   | I  | I  |
+| Stakeholder identification | R  | A  | C   | C   | C   | C   | I  | I  |
+| Stakeholder management     | R  | A  | C   | C   | C   | C   | I  | I  |
+| RACI definition            | R  | A  | C   | C   | C   | C   | I  | I  |
+| Project governance         | R  | A  | C   | C   | C   | C   | I  | I  |
+| Project status reporting   | R  | A  | I   | I   | I   | I   | I  | I  |
+
+---
+
+# 4. RACI Matrix — Business Analysis
+
+| Activity                      | NK | PO | HRM | OPM | FIN | REC | SM | EU |
+| ----------------------------- | -- | -- | --- | --- | --- | --- | -- | -- |
+| Requirements elicitation      | R  | A  | C   | C   | C   | C   | I  | C  |
+| Business requirement analysis | R  | A  | C   | C   | C   | C   | I  | C  |
+| BRD preparation               | R  | A  | C   | C   | C   | C   | I  | I  |
+| Business rules definition     | R  | A  | C   | C   | C   | C   | I  | C  |
+| As-Is process analysis        | R  | A  | C   | C   | C   | C   | I  | C  |
+| To-Be process design          | R  | A  | C   | C   | C   | C   | I  | C  |
+| Process mapping               | R  | A  | C   | C   | C   | C   | I  | C  |
+| Requirement validation        | R  | A  | C   | C   | C   | C   | I  | C  |
+| Requirement change analysis   | R  | A  | C   | C   | C   | C   | I  | I  |
+| Requirement prioritization    | R  | A  | C   | C   | C   | C   | I  | I  |
+
+---
+
+# 5. RACI Matrix — Functional Requirements
+
+| Activity                      | NK | PO | HRM | OPM | FIN | REC | SM | EU |
+| ----------------------------- | -- | -- | --- | --- | --- | --- | -- | -- |
+| FRD preparation               | R  | A  | C   | C   | C   | C   | I  | I  |
+| User story creation           | R  | A  | C   | C   | C   | C   | C  | C  |
+| Acceptance criteria           | R  | A  | C   | C   | C   | C   | C  | C  |
+| Functional requirement review | R  | A  | C   | C   | C   | C   | I  | C  |
+| RTM preparation               | R  | A  | C   | C   | C   | C   | I  | I  |
+| Requirement sign-off          | R  | A  | C   | C   | C   | C   | I  | I  |
+
+---
+
+# 6. RACI Matrix — Database and Backend
+
+| Activity                     | NK  | PO | HRM | OPM | FIN | REC | SM | EU |
+| ---------------------------- | --- | -- | --- | --- | --- | --- | -- | -- |
+| Database requirements        | R   | A  | C   | C   | C   | C   | I  | I  |
+| Database design              | R/A | C  | C   | C   | C   | C   | I  | I  |
+| ERD preparation              | R/A | C  | C   | C   | C   | C   | I  | I  |
+| Database implementation      | R/A | I  | I   | I   | I   | I   | I  | I  |
+| Master data design           | R   | A  | C   | C   | C   | C   | I  | I  |
+| API requirements             | R   | A  | C   | C   | C   | C   | I  | I  |
+| API design                   | R/A | C  | C   | C   | C   | C   | I  | I  |
+| Backend development          | R/A | I  | I   | I   | I   | I   | I  | I  |
+| Backend testing              | R   | I  | C   | C   | C   | C   | I  | I  |
+| Business-rule implementation | R   | A  | C   | C   | C   | C   | I  | I  |
+
+---
+
+# 7. RACI Matrix — Frontend
+
+| Activity               | NK  | PO | HRM | OPM | FIN | REC | SM | EU |
+| ---------------------- | --- | -- | --- | --- | --- | --- | -- | -- |
+| UI requirements        | R   | A  | C   | C   | C   | C   | I  | C  |
+| Screen specifications  | R   | A  | C   | C   | C   | C   | I  | C  |
+| Navigation flow        | R   | A  | C   | C   | C   | C   | I  | C  |
+| Dashboard requirements | R   | A  | C   | C   | C   | C   | I  | C  |
+| Frontend development   | R/A | I  | I   | I   | I   | I   | I  | C  |
+| API integration        | R/A | I  | I   | I   | I   | I   | I  | C  |
+| Frontend testing       | R   | I  | C   | C   | C   | C   | I  | C  |
+| Usability validation   | R   | A  | C   | C   | C   | C   | I  | C  |
+
+---
+
+# 8. RACI Matrix — Analytics and BI
+
+| Activity                  | NK  | PO | HRM | OPM | FIN | REC | SM | EU |
+| ------------------------- | --- | -- | --- | --- | --- | --- | -- | -- |
+| KPI identification        | R   | A  | C   | C   | C   | C   | I  | I  |
+| KPI definition            | R   | A  | C   | C   | C   | C   | I  | I  |
+| Analytics requirements    | R   | A  | C   | C   | C   | C   | I  | I  |
+| Analytics API development | R/A | I  | C   | C   | C   | C   | I  | I  |
+| Data mapping              | R/A | C  | C   | C   | C   | C   | I  | I  |
+| Power BI requirements     | R   | A  | C   | C   | C   | C   | I  | I  |
+| Dashboard validation      | R   | A  | C   | C   | C   | C   | I  | C  |
+
+---
+
+# 9. RACI Matrix — Testing and UAT
+
+| Activity                  | NK  | PO | HRM | OPM | FIN | REC | SM | EU |
+| ------------------------- | --- | -- | --- | --- | --- | --- | -- | -- |
+| Test scenario preparation | R/A | C  | C   | C   | C   | C   | I  | C  |
+| Functional testing        | R/A | I  | C   | C   | C   | C   | I  | C  |
+| Integration testing       | R/A | I  | C   | C   | C   | C   | I  | I  |
+| Defect logging            | R   | I  | C   | C   | C   | C   | I  | C  |
+| Defect analysis           | R/A | I  | C   | C   | C   | C   | I  | I  |
+| UAT planning              | R   | A  | C   | C   | C   | C   | I  | C  |
+| UAT execution             | R   | A  | R   | R   | R   | R   | I  | R  |
+| UAT sign-off              | R   | A  | C   | C   | C   | C   | I  | C  |
+| Release readiness review  | R   | A  | C   | C   | C   | C   | C  | I  |
+
+---
+
+# 10. RACI Matrix — Agile / Scrum
+
+| Activity                   | NK | PO | HRM | OPM | FIN | REC | SM  | EU |
+| -------------------------- | -- | -- | --- | --- | --- | --- | --- | -- |
+| Product backlog management | R  | A  | C   | C   | C   | C   | C   | I  |
+| Backlog refinement         | R  | A  | C   | C   | C   | C   | C   | C  |
+| Sprint planning            | R  | A  | C   | C   | C   | C   | R   | I  |
+| Daily Scrum                | R  | I  | I   | I   | I   | I   | R   | I  |
+| Sprint execution           | R  | I  | C   | C   | C   | C   | R   | I  |
+| Sprint review              | R  | A  | C   | C   | C   | C   | R   | C  |
+| Sprint retrospective       | R  | I  | I   | I   | I   | I   | A/R | I  |
+| Definition of Done         | R  | A  | C   | C   | C   | C   | C   | I  |
+
+---
+
+# 11. RACI Matrix — Release and Closure
+
+| Activity               | NK  | PO | HRM | OPM | FIN | REC | SM | EU |
+| ---------------------- | --- | -- | --- | --- | --- | --- | -- | -- |
+| Release planning       | R   | A  | C   | C   | C   | C   | C  | I  |
+| Deployment preparation | R/A | I  | I   | I   | I   | I   | C  | I  |
+| Release validation     | R   | A  | C   | C   | C   | C   | I  | C  |
+| Final RTM              | R   | A  | C   | C   | C   | C   | I  | I  |
+| Project closure report | R   | A  | C   | C   | C   | C   | C  | I  |
+| Lessons learned        | R   | A  | C   | C   | C   | C   | C  | C  |
+| Final project handover | R   | A  | C   | C   | C   | C   | I  | C  |
+
+---
+
+# 12. RACI Governance Rules
+
+The following rules apply:
+
+1. Each major activity must have at least one **Accountable** role.
+2. Responsibility may be assigned to multiple participants where execution requires collaboration.
+3. Business-process decisions remain accountable to the appropriate business owner.
+4. Technical implementation is accountable to the Developer / Technical Lead.
+5. Product priorities remain accountable to the Product Owner.
+6. End users are consulted during usability and UAT activities.
+7. RACI assignments should be reviewed when project scope or stakeholder responsibilities change.
+
+---
+
+# 13. Document Control
+
+| Version | Date        | Author    | Change Description  | Status           |
+| ------- | ----------- | --------- | ------------------- | ---------------- |
+| 1.0     | 20-Sep-2026 | Nida Khan | Initial RACI Matrix | Draft for Review |
+
+---
+
+**End of Document**
+
+**Document Owner:** Nida Khan
+**Document ID:** HR360-GOV-003
+**Version:** 1.0
