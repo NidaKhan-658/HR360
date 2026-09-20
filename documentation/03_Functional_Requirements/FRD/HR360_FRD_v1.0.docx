@@ -1,0 +1,1158 @@
+# HR360 — Human Resource Management & Analytics System
+
+## Functional Requirements Document (FRD)
+
+**Document ID:** HR360-FR-001
+**Document Version:** 1.0
+**Document Status:** Draft for Review
+**Document Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Business Analyst:** Nida Khan
+**Developer:** Nida Khan
+**Project Manager:** Nida Khan
+**Scrum Master:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+---
+
+# 1. Document Purpose
+
+This Functional Requirements Document defines the functional behavior, system capabilities, data interactions, validation requirements, and expected outcomes of the HR360 Human Resource Management & Analytics System.
+
+The document translates the business requirements defined in the HR360 Business Requirements Document (BRD) into system-level functional requirements that can be implemented, tested, traced, and accepted.
+
+The FRD serves as a baseline reference for:
+
+* Application development
+* REST API implementation
+* Database integration
+* Frontend development
+* Functional testing
+* User Acceptance Testing (UAT)
+* Requirements traceability
+* Analytics and Power BI integration
+
+---
+
+# 2. Scope
+
+The HR360 system covers the following functional areas:
+
+1. Employee Management
+2. Department Management
+3. Job Role Management
+4. Workforce Status Management
+5. Attendance Management
+6. Leave Management
+7. Performance Management
+8. Performance Improvement Plans
+9. Training Management
+10. Recruitment Management
+11. Candidate Management
+12. Job Application Management
+13. Interview Management
+14. Job Offer Management
+15. HR Analytics and Reporting
+16. REST API and PostgreSQL data services
+
+The frontend application and Power BI dashboards will consume the backend services and analytics data defined within this functional architecture.
+
+---
+
+# 3. System Overview
+
+HR360 is a centralized Human Resource Management and Analytics platform designed to provide structured management of employee information, workforce activities, employee development, recruitment processes, and HR analytics.
+
+The system follows a layered architecture:
+
+**Frontend Layer**
+React + Vite user interface
+
+↓
+
+**Application Layer**
+Node.js + Express.js REST APIs
+
+↓
+
+**Data Layer**
+PostgreSQL database
+
+↓
+
+**Analytics Layer**
+HR360 Analytics APIs + Power BI
+
+The backend provides controlled access to employee and HR data through RESTful APIs.
+
+---
+
+# 4. Functional Architecture
+
+The HR360 functional architecture consists of the following major components.
+
+| Component               | Responsibility                                         |
+| ----------------------- | ------------------------------------------------------ |
+| Employee Management     | Maintain employee master data and lifecycle            |
+| Organization Management | Manage departments and job roles                       |
+| Workforce Management    | Manage work statuses and active-status rules           |
+| Attendance              | Record and retrieve attendance information             |
+| Leave Management        | Manage leave types and employee leave requests         |
+| Performance             | Manage performance reviews and ratings                 |
+| PIP                     | Manage Performance Improvement Plans                   |
+| Training                | Manage training programs and employee participation    |
+| Recruitment             | Manage candidates, applications, interviews and offers |
+| Analytics               | Provide HR KPIs and analytical datasets                |
+| API Layer               | Provide REST-based system integration                  |
+| Database                | Persist transactional HR information                   |
+| BI Layer                | Support management reporting and Power BI              |
+
+---
+
+# 5. User Roles and Actors
+
+## 5.1 HR Business Stakeholder / Product Owner
+
+Responsible for business ownership, requirement validation, prioritization, and acceptance of business functionality.
+
+## 5.2 HR Manager
+
+Uses HR360 for employee management, leave, performance, training, recruitment oversight, and HR reporting.
+
+## 5.3 Operations Manager
+
+Uses workforce, attendance, work-status, and operational analytics functionality.
+
+## 5.4 Finance Manager
+
+Uses employee salary-related information and finance-related workforce status information.
+
+## 5.5 Recruitment / Talent Acquisition Lead
+
+Uses candidate, application, interview, and job-offer functionality.
+
+## 5.6 Business Managers
+
+Use workforce and analytics information for management reporting and decision support.
+
+## 5.7 Business End Users
+
+Use applicable HR360 functionality according to their assigned responsibilities.
+
+## 5.8 Application Owner / Administrator
+
+Responsible for application configuration, API availability, data integrity, and technical maintenance.
+
+---
+
+# 6. Functional Requirement Identification Standard
+
+Each functional requirement will use the following identification structure:
+
+**FR-[MODULE]-[NUMBER]**
+
+Examples:
+
+* FR-EMP-001 — Employee creation
+* FR-DEPT-001 — Department management
+* FR-ATT-001 — Attendance management
+* FR-REC-001 — Candidate management
+* FR-AN-001 — Analytics overview
+
+Each requirement should be traceable to:
+
+**Business Requirement → Functional Requirement → User Story → Acceptance Criteria → API / Database → Test Case**
+
+---
+
+# 7. Module Overview
+
+| Module              | Primary Function                 | API Area                   |
+| ------------------- | -------------------------------- | -------------------------- |
+| Employee Management | Employee master and lifecycle    | `/api/employees`           |
+| Departments         | Department master data           | `/api/departments`         |
+| Job Roles           | Job-role master data             | `/api/job-roles`           |
+| Work Statuses       | Workforce status master          | `/api/work-statuses`       |
+| Attendance          | Employee attendance              | `/api/attendance`          |
+| Leave Types         | Leave configuration              | `/api/leave-types`         |
+| Leave Requests      | Employee leave workflow          | `/api/leave-requests`      |
+| Performance Reviews | Performance evaluation           | `/api/performance-reviews` |
+| PIPs                | Performance improvement plans    | `/api/pips`                |
+| Training Programs   | Training catalogue               | `/api/training-programs`   |
+| Employee Training   | Employee training participation  | `/api/employee-training`   |
+| Candidates          | Recruitment candidate pipeline   | `/api/candidates`          |
+| Job Applications    | Candidate applications           | `/api/job-applications`    |
+| Interviews          | Interview scheduling and results | `/api/interviews`          |
+| Job Offers          | Offer lifecycle                  | `/api/job-offers`          |
+| Analytics           | HR analytics and KPIs            | `/api/analytics`           |
+
+---
+
+# 8. Employee Management Functional Requirements
+
+## FR-EMP-001 — Create Employee
+
+The system shall allow authorized users to create a new employee record.
+
+The employee record shall contain relevant employee master information including:
+
+* Employee code
+* First name
+* Last name
+* Email
+* Phone
+* Department
+* Job role
+* Work status
+* Employment status
+* Joining date
+* Salary information
+* Salary status
+
+The system shall validate mandatory fields before creating the record.
+
+The employee code shall be unique.
+
+---
+
+## FR-EMP-002 — Retrieve Employee Information
+
+The system shall allow authorized users to retrieve employee information.
+
+The employee response shall include relevant organizational and workforce information, including:
+
+* Department
+* Job role
+* Work status
+* Employment status
+* Salary status
+* Department-specific active status
+
+---
+
+## FR-EMP-003 — Update Employee Information
+
+The system shall allow authorized users to update employee information.
+
+The system shall validate updated values before persistence.
+
+Updates shall preserve database integrity and applicable business rules.
+
+---
+
+## FR-EMP-004 — Employee Lifecycle Status
+
+The system shall support employee lifecycle statuses including:
+
+* CANDIDATE
+* PROBATION
+* EMPLOYED
+* ON_LEAVE
+* RESIGNED
+* TERMINATED
+* RETIRED
+
+Authorized users shall be able to update an employee's lifecycle status through the employee status functionality.
+
+---
+
+## FR-EMP-005 — Department-Specific Active Status
+
+The system shall calculate the employee's active status based on department-specific business rules.
+
+### HR
+
+An HR employee shall be considered active when:
+
+`employment_status = EMPLOYED`
+
+### Operations
+
+An Operations employee shall be considered active when:
+
+`work_status = WORKING OR ONLINE`
+
+### Finance
+
+A Finance employee shall be considered active when:
+
+`salary_status = PAID`
+
+Employees that do not satisfy their department-specific rule shall be returned as:
+
+`NOT ACTIVE`
+
+The system shall calculate this value dynamically rather than storing a universal active flag.
+
+---
+
+# 9. Department Management Requirements
+
+## FR-DEPT-001 — Department Management
+
+The system shall allow authorized users to:
+
+* Create departments
+* Retrieve departments
+* Update departments
+* Maintain department information
+
+Department names shall be uniquely identifiable within the organization.
+
+---
+
+# 10. Job Role Management Requirements
+
+## FR-ROLE-001 — Job Role Management
+
+The system shall allow authorized users to:
+
+* Create job roles
+* Retrieve job roles
+* Update job roles
+* Associate job roles with organizational functions
+
+Job roles shall be available for employee and recruitment processes.
+
+---
+
+# 11. Workforce Status Requirements
+
+## FR-WORK-001 — Work Status Management
+
+The system shall maintain approved workforce statuses.
+
+Supported statuses include:
+
+* WORKING
+* ONLINE
+* TRAINING
+* ON_BENCH
+* PIP
+* ON_LEAVE
+* OFFLINE
+* REMOTE
+
+Authorized users shall be able to maintain work-status master data.
+
+---
+
+## FR-WORK-002 — Workforce Status Integration
+
+The system shall use employee work status as an input to applicable workforce business rules.
+
+For Operations employees, WORKING and ONLINE shall contribute to the department-specific active-status calculation.
+
+---
+
+# 12. Attendance Management Requirements
+
+## FR-ATT-001 — Record Attendance
+
+The system shall allow authorized users to record employee attendance.
+
+Attendance information shall include:
+
+* Employee
+* Attendance date
+* Attendance status
+* Check-in time
+* Check-out time
+* Working hours
+* Remarks
+
+Supported attendance statuses include:
+
+* PRESENT
+* ABSENT
+* LATE
+* HALF_DAY
+* ON_LEAVE
+* HOLIDAY
+
+---
+
+## FR-ATT-002 — Retrieve Attendance
+
+The system shall allow authorized users to retrieve attendance records.
+
+Attendance information shall be available for operational reporting and analytics.
+
+---
+
+## FR-ATT-003 — Working Hours
+
+The system shall store working-hours information where applicable.
+
+Working hours shall support attendance analytics and operational reporting.
+
+---
+
+# 13. Leave Management Requirements
+
+## FR-LEAVE-001 — Leave Type Management
+
+The system shall maintain configurable leave types and applicable leave entitlements.
+
+---
+
+## FR-LEAVE-002 — Submit Leave Request
+
+The system shall allow an employee or authorized HR user to submit a leave request.
+
+A leave request shall contain:
+
+* Employee
+* Leave type
+* Start date
+* End date
+* Number of days
+* Reason
+* Request status
+
+---
+
+## FR-LEAVE-003 — Leave Approval
+
+The system shall allow authorized users to approve or reject leave requests.
+
+The system shall maintain the status of each leave request.
+
+---
+
+## FR-LEAVE-004 — Leave Reporting
+
+The system shall provide leave information for HR and management reporting.
+
+---
+
+# 14. Performance Management Requirements
+
+## FR-PERF-001 — Performance Review
+
+The system shall allow authorized users to record employee performance reviews.
+
+A performance review may include:
+
+* Employee
+* Review period
+* Reviewer
+* Performance rating
+* Comments
+* Review status
+
+---
+
+## FR-PERF-002 — Performance History
+
+The system shall retain historical performance review information for employees.
+
+Performance information shall be available for reporting and analytics.
+
+---
+
+# 15. Performance Improvement Plan Requirements
+
+## FR-PIP-001 — Create PIP
+
+The system shall allow authorized users to create a Performance Improvement Plan for an employee.
+
+The PIP shall support:
+
+* Employee
+* Start date
+* End date
+* Performance objectives
+* Review frequency
+* PIP status
+* Review notes
+
+---
+
+## FR-PIP-002 — Track PIP
+
+The system shall allow authorized users to track PIP progress and status.
+
+PIP information shall be available for management and HR review.
+# 16. Training Management Requirements
+
+## FR-TRAIN-001 — Training Program Management
+
+The system shall allow authorized users to create, retrieve, and maintain training programs.
+
+Training programs shall support information including:
+
+* Training name
+* Training description
+* Training status
+* Training dates
+* Training provider
+* Training capacity
+* Applicable training details
+
+Training program statuses shall support the HR360 training lifecycle.
+
+---
+
+## FR-TRAIN-002 — Employee Training Enrollment
+
+The system shall allow authorized users to enroll employees into training programs.
+
+The employee-training record shall maintain:
+
+* Employee
+* Training program
+* Enrollment date
+* Attendance status
+* Completion date
+* Score
+* Certificate status
+* Employee feedback
+
+---
+
+## FR-TRAIN-003 — Training Completion
+
+The system shall allow authorized users to record training completion.
+
+Training participation statuses shall include:
+
+* ENROLLED
+* ATTENDED
+* COMPLETED
+* DID_NOT_ATTEND
+* CANCELLED
+
+Where applicable, the system shall store completion score and certificate information.
+
+---
+
+## FR-TRAIN-004 — Training Analytics
+
+The system shall provide training information for analytics, including:
+
+* Total training programs
+* Employee participation
+* Completed training
+* Enrolled training
+* Training scores
+* Average training score
+
+---
+
+# 17. Recruitment Management Requirements
+
+## FR-REC-001 — Candidate Management
+
+The system shall allow authorized recruitment users to create and maintain candidate records.
+
+Candidate information shall include:
+
+* Candidate code
+* First name
+* Last name
+* Email
+* Phone
+* Resume information
+* Experience
+* Qualification
+* Current company
+* Current designation
+* Candidate source
+* Candidate status
+* Applied date
+
+Candidate codes and email addresses shall be uniquely maintained.
+
+---
+
+## FR-REC-002 — Candidate Status
+
+The system shall support candidate pipeline statuses including:
+
+* NEW
+* SCREENING
+* SHORTLISTED
+* INTERVIEW
+* OFFERED
+* HIRED
+* REJECTED
+* WITHDRAWN
+
+Authorized users shall be able to update candidate status.
+
+---
+
+## FR-REC-003 — Job Application Management
+
+The system shall allow recruitment users to create and manage job applications.
+
+Each application shall associate:
+
+* Candidate
+* Job role
+* Application date
+* Application status
+* Recruiter
+* Expected salary
+* Notice period
+* Recruiter notes
+
+The system shall prevent duplicate applications for the same candidate and job role.
+
+---
+
+## FR-REC-004 — Application Status Management
+
+The system shall support application statuses including:
+
+* APPLIED
+* SCREENING
+* SHORTLISTED
+* INTERVIEW
+* OFFERED
+* HIRED
+* REJECTED
+* WITHDRAWN
+
+The system shall retain the current application status for recruitment tracking.
+
+---
+
+# 18. Interview Management Requirements
+
+## FR-REC-005 — Schedule Interview
+
+The system shall allow authorized recruitment users to schedule interviews against job applications.
+
+Interview information shall include:
+
+* Application
+* Interviewer
+* Interview round
+* Interview type
+* Scheduled date
+* Scheduled time
+* Interview status
+
+---
+
+## FR-REC-006 — Record Interview Outcome
+
+The system shall allow authorized interviewers or recruitment users to record:
+
+* Interview rating
+* Feedback
+* Result
+
+Supported interview statuses shall include:
+
+* SCHEDULED
+* COMPLETED
+* CANCELLED
+* NO_SHOW
+
+Interview results shall support:
+
+* PASS
+* FAIL
+* PENDING
+
+Interview ratings shall be maintained within the defined rating range.
+
+---
+
+# 19. Job Offer Management Requirements
+
+## FR-REC-007 — Create Job Offer
+
+The system shall allow authorized recruitment users to create a job offer against a job application.
+
+An offer shall include:
+
+* Application
+* Offer date
+* Joining date
+* Offered salary
+* Employment type
+* Offer status
+* Accepted date
+* Rejection reason
+
+---
+
+## FR-REC-008 — Offer Status Management
+
+The system shall support offer statuses including:
+
+* DRAFT
+* SENT
+* ACCEPTED
+* DECLINED
+* EXPIRED
+* CANCELLED
+
+The system shall maintain offer status throughout the offer lifecycle.
+
+---
+
+## FR-REC-009 — Offer Validation
+
+The system shall ensure that:
+
+* Offered salary is greater than zero.
+* Joining date cannot be earlier than the offer date.
+* An application cannot have multiple job offers where the data model requires a unique offer relationship.
+* Accepted date shall be recorded when an offer is accepted.
+
+---
+
+# 20. Recruitment-to-Employee Transition
+
+## FR-REC-010 — Accepted Offer Transition
+
+The target HR360 process shall support transition from an accepted job offer to an employee record.
+
+The transition shall ensure that recruitment information and employee information remain traceable.
+
+This capability is classified as **Target / Planned** where the automated transition has not yet been implemented in the current backend.
+
+The future process shall avoid duplicate employee records and maintain the relationship between:
+
+**Candidate → Application → Offer → Employee**
+
+---
+
+# 21. HR Analytics and Reporting Requirements
+
+## FR-AN-001 — HR Overview Analytics
+
+The system shall provide an HR analytics overview containing key workforce indicators.
+
+The overview shall support information such as:
+
+* Total employees
+* Active employees according to applicable business rules
+* Workforce distribution
+* Employee lifecycle information
+* Other configured HR KPIs
+
+---
+
+## FR-AN-002 — Department Analytics
+
+The system shall provide department-level analytics.
+
+The analytics shall support comparison of workforce information across departments, including:
+
+* Employee counts
+* Workforce status
+* Department activity
+* Applicable employee metrics
+
+---
+
+## FR-AN-003 — Attendance Analytics
+
+The system shall provide attendance analytics based on recorded attendance data.
+
+Analytics shall support attendance statuses including:
+
+* PRESENT
+* ABSENT
+* LATE
+* HALF_DAY
+* ON_LEAVE
+* HOLIDAY
+
+---
+
+## FR-AN-004 — Leave Analytics
+
+The system shall provide leave-related analytics, including leave request information and applicable leave statuses.
+
+---
+
+## FR-AN-005 — Performance Analytics
+
+The system shall provide performance-related analytics using employee performance review information.
+
+Performance analytics may include:
+
+* Review counts
+* Performance ratings
+* Average performance rating
+* Employee performance distribution
+
+---
+
+## FR-AN-006 — Training Analytics
+
+The system shall provide training analytics using employee training records.
+
+Training analytics shall support:
+
+* Total training records
+* Completed training
+* Enrolled training
+* Employee participation
+* Average training score
+
+---
+
+## FR-AN-007 — Recruitment Analytics
+
+The system shall provide recruitment analytics using candidate, application, interview, and job-offer information.
+
+Recruitment analytics shall support pipeline visibility across recruitment stages.
+
+---
+
+# 22. API Functional Requirements
+
+## FR-API-001 — REST API Services
+
+The system shall expose REST APIs for supported HR360 modules.
+
+The API layer shall provide appropriate operations for:
+
+* Retrieval
+* Creation
+* Update
+* Status changes
+* Module-specific operations
+
+The primary API areas are:
+
+| Module              | Base Endpoint              |
+| ------------------- | -------------------------- |
+| Employees           | `/api/employees`           |
+| Departments         | `/api/departments`         |
+| Job Roles           | `/api/job-roles`           |
+| Work Statuses       | `/api/work-statuses`       |
+| Attendance          | `/api/attendance`          |
+| Leave Types         | `/api/leave-types`         |
+| Leave Requests      | `/api/leave-requests`      |
+| Performance Reviews | `/api/performance-reviews` |
+| PIPs                | `/api/pips`                |
+| Training Programs   | `/api/training-programs`   |
+| Employee Training   | `/api/employee-training`   |
+| Candidates          | `/api/candidates`          |
+| Job Applications    | `/api/job-applications`    |
+| Interviews          | `/api/interviews`          |
+| Job Offers          | `/api/job-offers`          |
+| Analytics           | `/api/analytics`           |
+
+---
+
+## FR-API-002 — API Validation
+
+The system shall validate incoming API requests before database persistence.
+
+Validation shall include:
+
+* Mandatory fields
+* Valid identifiers
+* Valid status values
+* Valid numeric values
+* Valid dates
+* Foreign-key relationships
+* Business-rule constraints
+
+---
+
+## FR-API-003 — API Error Handling
+
+The API shall return appropriate HTTP status codes and structured error responses.
+
+The system shall not expose database credentials, environment variables, or other sensitive configuration information in API responses.
+
+---
+
+# 23. Database Functional Requirements
+
+## FR-DB-001 — PostgreSQL Persistence
+
+The HR360 backend shall use PostgreSQL as the primary transactional database.
+
+The database shall persist HR360 master, transactional, recruitment, performance, training, and analytics-related information.
+
+---
+
+## FR-DB-002 — Referential Integrity
+
+The system shall maintain relationships between related entities using appropriate database constraints.
+
+Examples include:
+
+* Employee → Department
+* Employee → Job Role
+* Employee → Work Status
+* Attendance → Employee
+* Leave Request → Employee
+* Performance Review → Employee
+* PIP → Employee
+* Employee Training → Employee
+* Employee Training → Training Program
+* Application → Candidate
+* Application → Job Role
+* Interview → Application
+* Job Offer → Application
+
+---
+
+## FR-DB-003 — Data Validation
+
+Database constraints shall be used where appropriate to protect data integrity.
+
+Examples include:
+
+* Unique employee codes
+* Unique candidate codes
+* Unique email addresses where applicable
+* Valid status values
+* Positive salary values
+* Valid ratings
+* Valid date relationships
+
+---
+
+# 24. Validation and Business Rule Integration
+
+The application shall apply the HR360 Business Rules Catalogue during relevant transactions.
+
+The most significant workforce rule is the department-specific active-status calculation.
+
+| Department        | Active Condition                                                              |
+| ----------------- | ----------------------------------------------------------------------------- |
+| HR                | `employment_status = EMPLOYED`                                                |
+| Operations        | `work_status IN (WORKING, ONLINE)`                                            |
+| Finance           | `salary_status = PAID`                                                        |
+| Other Departments | Not automatically classified as active by the three department-specific rules |
+
+The system shall return the derived value:
+
+`ACTIVE`
+
+or
+
+`NOT ACTIVE`
+
+where applicable.
+
+The system shall not introduce a universal stored `active` field that overrides the department-specific business rules.
+
+---
+
+# 25. Security Requirements
+
+## FR-SEC-001 — Credential Protection
+
+Database credentials and environment-specific secrets shall be stored outside source-code files.
+
+The `.env` file shall not be committed to Git.
+
+---
+
+## FR-SEC-002 — Sensitive Data Protection
+
+The system shall not expose:
+
+* Database passwords
+* API secrets
+* Authentication tokens
+* Environment configuration secrets
+
+through application responses or documentation.
+
+---
+
+## FR-SEC-003 — Controlled Access
+
+Future frontend and authentication layers shall restrict sensitive HR operations according to user roles and permissions.
+
+---
+
+# 26. Non-Functional Requirements
+
+## NFR-001 — Performance
+
+The system should provide responsive API operations for normal HR360 transactional workloads.
+
+## NFR-002 — Availability
+
+The backend application and PostgreSQL database should be available during defined business operating periods.
+
+## NFR-003 — Scalability
+
+The architecture should support future expansion of employee volume, HR modules, analytics, and frontend functionality.
+
+## NFR-004 — Maintainability
+
+The application shall use modular backend routes and maintain separation between:
+
+* Server configuration
+* Database connectivity
+* API routes
+* Business logic
+* Analytics services
+
+## NFR-005 — Data Integrity
+
+The system shall preserve referential integrity and validate data before persistence.
+
+## NFR-006 — Usability
+
+The planned frontend shall provide clear navigation, consistent forms, understandable validation messages, and role-appropriate dashboards.
+
+## NFR-007 — Auditability
+
+Important HR transactions should maintain appropriate timestamps and status information to support operational traceability.
+
+---
+
+# 27. Business Rules Integration
+
+The following major business-rule categories shall be integrated with the functional requirements:
+
+| Rule Area                | Functional Impact                                       |
+| ------------------------ | ------------------------------------------------------- |
+| Employee Lifecycle       | Controls employee employment status                     |
+| Department Active Status | Determines department-specific activity                 |
+| Work Status              | Supports workforce operational status                   |
+| Attendance               | Controls attendance classification                      |
+| Leave                    | Controls leave request processing                       |
+| Performance              | Supports review and rating processes                    |
+| PIP                      | Supports performance improvement tracking               |
+| Training                 | Controls training participation lifecycle               |
+| Recruitment              | Controls candidate and application pipeline             |
+| Interviews               | Controls interview status and outcomes                  |
+| Job Offers               | Controls offer lifecycle                                |
+| Analytics                | Converts transactional data into management information |
+
+---
+
+# 28. Requirements Traceability
+
+Functional requirements shall be traceable to the approved business requirements and downstream delivery artifacts.
+
+The traceability chain shall follow:
+
+**BRD Requirement**
+
+↓
+
+**FRD Requirement**
+
+↓
+
+**User Story**
+
+↓
+
+**Acceptance Criteria**
+
+↓
+
+**API / Database Functionality**
+
+↓
+
+**Test Scenario**
+
+↓
+
+**UAT Result**
+
+The Process-to-Requirement Mapping document provides the initial traceability baseline.
+
+The Requirements Traceability Matrix (RTM) will provide detailed requirement-level traceability during the Functional Requirements and Testing phases.
+
+---
+
+# 29. Assumptions
+
+The following assumptions apply to the FRD:
+
+1. PostgreSQL remains the primary HR360 transactional database.
+2. Node.js and Express.js remain the backend technology.
+3. REST APIs remain the primary application integration mechanism.
+4. React + Vite will be used for the frontend implementation.
+5. Power BI will consume approved HR360 analytical data.
+6. Business users will provide appropriate validation and UAT feedback.
+7. Authentication and role-based authorization will be implemented as the application progresses.
+8. Production deployment will use secured environment-specific configuration.
+
+---
+
+# 30. Dependencies
+
+HR360 functionality depends on:
+
+* PostgreSQL database availability
+* Node.js runtime
+* Express.js backend
+* Database schema and relationships
+* REST API availability
+* Frontend integration
+* Business stakeholder validation
+* Power BI integration
+* Git/GitHub source control
+* UAT participation
+
+---
+
+# 31. Acceptance and Sign-Off
+
+The FRD shall be considered ready for baseline approval when:
+
+* Functional requirements have been reviewed.
+* Requirements are traceable to the BRD.
+* Business rules have been incorporated.
+* API and database requirements are aligned.
+* Outstanding gaps are documented.
+* Product Owner/business stakeholders have reviewed the requirements.
+
+### Approval Roles
+
+| Role              | Responsibility                                       |
+| ----------------- | ---------------------------------------------------- |
+| Prepared By       | Nida Khan                                            |
+| Business Analyst  | Nida Khan                                            |
+| Developer         | Nida Khan                                            |
+| Project Manager   | Nida Khan                                            |
+| Scrum Master      | Nida Khan                                            |
+| Product Owner     | HR Business Stakeholder                              |
+| Business Approval | HR Business Stakeholder / Relevant Business Managers |
+
+---
+
+# 32. Document Control
+
+**Document ID:** HR360-FR-001
+**Version:** 1.0
+**Status:** Draft for Review
+**Owner:** Nida Khan
+**Review Authority:** HR Business Stakeholder / Product Owner
+**Repository:** HR360 Documentation Repository
+**Related Documents:**
+
+* HR360 Project Charter
+* HR360 Stakeholder Register
+* HR360 RACI Matrix
+* HR360 Document Control
+* HR360 Business Requirements Document
+* HR360 Business Rules Catalogue
+* HR360 As-Is Process Map
+* HR360 To-Be Process Map
+* HR360 Process Inventory
+* HR360 Process Flow Diagrams
+* HR360 Process-to-Requirement Mapping
+
+---
+
+# 33. Revision History
+
+| Version | Date              | Change Description                       | Author    |
+| ------- | ----------------- | ---------------------------------------- | --------- |
+| 1.0     | 20 September 2026 | Initial Functional Requirements Document | Nida Khan |
