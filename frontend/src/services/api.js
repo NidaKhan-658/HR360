@@ -1,5 +1,7 @@
 const API_BASE_URL = "http://localhost:5000/api";
 
+// Analytics API //
+
 export async function getAnalyticsOverview() {
   const response = await fetch(`${API_BASE_URL}/analytics/overview`);
 
@@ -9,6 +11,8 @@ export async function getAnalyticsOverview() {
 
   return response.json();
 }
+
+// Employee Reference APIs //
 
 export async function getEmployees() {
   const response = await fetch(`${API_BASE_URL}/employees`);
@@ -50,7 +54,7 @@ export async function getWorkStatuses() {
   return response.json();
 }
 
-// Employees Crud //
+// Employees CRUD //
 
 export async function createEmployee(employeeData) {
   const response = await fetch(`${API_BASE_URL}/employees`, {
@@ -87,6 +91,7 @@ export async function updateEmployee(employeeId, employeeData) {
 
   return data;
 }
+
 export async function updateEmployeeEmploymentStatus(
   employeeId,
   employmentStatus
@@ -114,7 +119,6 @@ export async function updateEmployeeEmploymentStatus(
 
   return data;
 }
-
 
 // Attendance API //
 
@@ -190,3 +194,94 @@ export async function updateAttendance(attendanceId, attendanceData) {
 
   return data;
 }
+
+// Leave Types API //
+
+export async function getLeaveTypes() {
+  const response = await fetch(`${API_BASE_URL}/leave-types`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch leave types");
+  }
+
+  return response.json();
+}
+
+// Leave Requests API //
+
+export async function getLeaveRequests() {
+  const response = await fetch(`${API_BASE_URL}/leave-requests`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch leave requests");
+  }
+
+  return response.json();
+}
+
+export async function getLeaveRequestById(leaveRequestId) {
+  const response = await fetch(
+    `${API_BASE_URL}/leave-requests/${leaveRequestId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch leave request");
+  }
+
+  return response.json();
+}
+
+export async function getEmployeeLeaveRequests(employeeId) {
+  const response = await fetch(
+    `${API_BASE_URL}/leave-requests/employee/${employeeId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch employee leave requests");
+  }
+
+  return response.json();
+}
+
+export async function createLeaveRequest(leaveData) {
+  const response = await fetch(`${API_BASE_URL}/leave-requests`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(leaveData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create leave request");
+  }
+
+  return data;
+}
+
+export async function updateLeaveRequest(
+  leaveRequestId,
+  leaveData
+) {
+  const response = await fetch(
+    `${API_BASE_URL}/leave-requests/${leaveRequestId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(leaveData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to update leave request");
+  }
+
+  return data;
+}
+

@@ -3,6 +3,7 @@ import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import { getAnalyticsOverview } from "./services/api";
 import Employees from "./pages/Employees";
 import Attendance from "./pages/Attendance";
+import Leave from "./pages/Leave";
 import "./App.css";
 
 
@@ -133,10 +134,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/employees" element={<Employees />} />
               <Route path="/attendance" element={<Attendance />} />
-              <Route
-                path="/leave"
-                element={<PlaceholderPage title="Leave Management" />}
-              />
+              <Route path="/leave" element={<Leave />} />
               <Route
                 path="/performance"
                 element={<PlaceholderPage title="Performance Management" />}
