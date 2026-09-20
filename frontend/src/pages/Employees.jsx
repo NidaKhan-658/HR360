@@ -33,6 +33,7 @@ function Employees() {
   const [workStatuses, setWorkStatuses] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -69,38 +70,171 @@ function Employees() {
   // LOAD DATA
   // =========================================================
 
-  useEffect(() => {
-    async function loadData() {
-      try {
+  async function loadEmployeeData({ showInitialLoader = false } = {}) {
+    try {
+      if (showInitialLoader) {
         setLoading(true);
-        setError("");
+      } else {
+        setRefreshing(true);
+      }
 
-        const [
-          employeesResponse,
-          departmentsResponse,
-          jobRolesResponse,
-          workStatusesResponse,
-        ] = await Promise.all([
-          getEmployees(),
-          getDepartments(),
-          getJobRoles(),
-          getWorkStatuses(),
-        ]);
+      setError("");
 
-        setEmployees(employeesResponse.data || []);
-        setDepartments(departmentsResponse.data || []);
-        setJobRoles(jobRolesResponse.data || []);
-        setWorkStatuses(workStatusesResponse.data || []);
-      } catch (err) {
-        console.error(err);
-        setError(err.message || "Unable to load employee data.");
-      } finally {
+      const [
+        employeesResponse,
+        departmentsResponse,
+        jobRolesResponse,
+        workStatusesResponse,
+      ] = await Promise.all([
+        getEmployees(),
+        getDepartments(),
+        getJobRoles(),
+        getWorkStatuses(),
+      ]);
+
+      setEmployees(employeesResponse.data || []);
+      setDepartments(departmentsResponse.data || []);
+      setJobRoles(jobRolesResponse.data || []);
+      setWorkStatuses(workStatusesResponse.data || []);
+
+      return employeesResponse.data || [];
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Unable to load employee data.");
+      throw err;
+    } finally {
+      if (showInitialLoader) {
         setLoading(false);
+      } else {
+        setRefreshing(false);
       }
     }
+  }
 
-    loadData();
+  useEffect(() => {
+    loadEmployeeData({ showInitialLoader: true }).catch(() => {});
   }, []);
+
+  // =========================================================
+  // 27J - REFRESH
+  // =========================================================
+
+  async function handleRefresh() {
+    try {
+      setSuccessMessage("");
+
+      await loadEmployeeData();
+
+      setCurrentPage(1);
+      setSuccessMessage("Employee data refreshed successfully.");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // =========================================================
+  // 27I - CSV EXPORT
+  // =========================================================
+
+  function escapeCsvValue(value) {
+    if (value === null || value === undefined) {
+      return "";
+    }
+
+    const stringValue = String(value);
+
+    if (
+      stringValue.includes(",") ||
+      stringValue.includes('"') ||
+      stringValue.includes("\n") ||
+      stringValue.includes("\r")
+    ) {
+      return `"${stringValue.replace(/"/g, '""')}"`;
+    }
+
+    return stringValue;
+  }
+
+  function formatEmployeeDate(dateValue) {
+    if (!dateValue) {
+      return "";
+    }
+
+    return String(dateValue).substring(0, 10);
+  }
+
+  function exportEmployeesToCsv() {
+    if (sortedEmployees.length === 0) {
+      setError("There are no employee records to export.");
+      return;
+    }
+
+    const headers = [
+      "Employee Code",
+      "Employee Name",
+      "Email",
+      "Phone",
+      "Department",
+      "Role",
+      "Work Status",
+      "Employment Status",
+      "Department Active Status",
+      "Joining Date",
+      "Salary Amount",
+      "Salary Status",
+    ];
+
+    const rows = sortedEmployees.map((employee) => [
+      employee.employee_code || "",
+      `${employee.first_name || ""} ${employee.last_name || ""}`.trim(),
+      employee.email || "",
+      employee.phone || "",
+      employee.department_name || "",
+      employee.role_name || "",
+      employee.work_status || "",
+      employee.employment_status || "",
+      employee.department_active_status || "NOT ACTIVE",
+      formatEmployeeDate(employee.joining_date),
+      employee.salary_amount ?? "",
+      employee.salary_status || "",
+    ]);
+
+    const csvContent = [
+      headers,
+      ...rows,
+    ]
+      .map((row) =>
+        row.map((value) => escapeCsvValue(value)).join(",")
+      )
+      .join("\r\n");
+
+    const csvBlob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const downloadUrl = URL.createObjectURL(csvBlob);
+    const downloadLink = document.createElement("a");
+
+    const currentDate = new Date()
+      .toISOString()
+      .substring(0, 10);
+
+    downloadLink.href = downloadUrl;
+    downloadLink.download = `HR360_Employees_${currentDate}.csv`;
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    URL.revokeObjectURL(downloadUrl);
+
+    setError("");
+    setSuccessMessage(
+      `${sortedEmployees.length} employee${
+        sortedEmployees.length === 1 ? "" : "s"
+      } exported successfully.`
+    );
+  }
 
   // =========================================================
   // FORM HANDLING
@@ -203,7 +337,10 @@ function Employees() {
       };
 
       if (editingEmployee) {
-        await updateEmployee(editingEmployee.employee_id, payload);
+        await updateEmployee(
+          editingEmployee.employee_id,
+          payload
+        );
 
         setSuccessMessage(
           "Employee details updated successfully."
@@ -288,7 +425,6 @@ function Employees() {
       setShowDeactivateModal(false);
       setEmployeeToDeactivate(null);
 
-      // Recalculate the page if the last record was removed
       setCurrentPage((previousPage) => {
         const newTotalPages = Math.max(
           1,
@@ -314,7 +450,8 @@ function Employees() {
       total: employees.length,
 
       employed: employees.filter(
-        (employee) => employee.employment_status === "EMPLOYED"
+        (employee) =>
+          employee.employment_status === "EMPLOYED"
       ).length,
 
       onLeave: employees.filter(
@@ -324,15 +461,18 @@ function Employees() {
       ).length,
 
       onBench: employees.filter(
-        (employee) => employee.work_status === "ON_BENCH"
+        (employee) =>
+          employee.work_status === "ON_BENCH"
       ).length,
 
       onPip: employees.filter(
-        (employee) => employee.work_status === "PIP"
+        (employee) =>
+          employee.work_status === "PIP"
       ).length,
 
       inTraining: employees.filter(
-        (employee) => employee.work_status === "TRAINING"
+        (employee) =>
+          employee.work_status === "TRAINING"
       ).length,
 
       active: employees.filter(
@@ -378,12 +518,14 @@ function Employees() {
 
       const matchesDepartment =
         !departmentFilter ||
-        String(employee.department_id) === String(departmentFilter) ||
+        String(employee.department_id) ===
+          String(departmentFilter) ||
         employee.department_name === departmentFilter;
 
       const matchesEmploymentStatus =
         !employmentStatusFilter ||
-        employee.employment_status === employmentStatusFilter;
+        employee.employment_status ===
+          employmentStatusFilter;
 
       const matchesWorkStatus =
         !workStatusFilter ||
@@ -391,7 +533,8 @@ function Employees() {
 
       const matchesActiveStatus =
         !activeStatusFilter ||
-        employee.department_active_status === activeStatusFilter;
+        employee.department_active_status ===
+          activeStatusFilter;
 
       return (
         matchesSearch &&
@@ -455,8 +598,10 @@ function Employees() {
           break;
 
         case "department_active_status":
-          valueA = a.department_active_status || "";
-          valueB = b.department_active_status || "";
+          valueA =
+            a.department_active_status || "";
+          valueB =
+            b.department_active_status || "";
           break;
 
         default:
@@ -464,15 +609,22 @@ function Employees() {
           valueB = "";
       }
 
-      const normalizedA = String(valueA).toLowerCase();
-      const normalizedB = String(valueB).toLowerCase();
+      const normalizedA =
+        String(valueA).toLowerCase();
+
+      const normalizedB =
+        String(valueB).toLowerCase();
 
       if (normalizedA < normalizedB) {
-        return sortConfig.direction === "asc" ? -1 : 1;
+        return sortConfig.direction === "asc"
+          ? -1
+          : 1;
       }
 
       if (normalizedA > normalizedB) {
-        return sortConfig.direction === "asc" ? 1 : -1;
+        return sortConfig.direction === "asc"
+          ? 1
+          : -1;
       }
 
       return 0;
@@ -487,7 +639,9 @@ function Employees() {
         return {
           key,
           direction:
-            previous.direction === "asc" ? "desc" : "asc",
+            previous.direction === "asc"
+              ? "desc"
+              : "asc",
         };
       }
 
@@ -497,7 +651,6 @@ function Employees() {
       };
     });
 
-    // Start from first page after changing sort
     setCurrentPage(1);
   }
 
@@ -512,7 +665,9 @@ function Employees() {
 
     return (
       <span className="sort-indicator">
-        {sortConfig.direction === "asc" ? "↑" : "↓"}
+        {sortConfig.direction === "asc"
+          ? "↑"
+          : "↓"}
       </span>
     );
   }
@@ -526,14 +681,15 @@ function Employees() {
     Math.ceil(sortedEmployees.length / PAGE_SIZE)
   );
 
-  // Make sure the current page is always valid.
   useEffect(() => {
     setCurrentPage((previousPage) =>
-      Math.min(Math.max(previousPage, 1), totalPages)
+      Math.min(
+        Math.max(previousPage, 1),
+        totalPages
+      )
     );
   }, [totalPages]);
 
-  // Reset pagination whenever filtering changes.
   useEffect(() => {
     setCurrentPage(1);
   }, [
@@ -545,10 +701,16 @@ function Employees() {
   ]);
 
   const paginatedEmployees = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
+    const startIndex =
+      (currentPage - 1) * PAGE_SIZE;
 
-    return sortedEmployees.slice(startIndex, endIndex);
+    const endIndex =
+      startIndex + PAGE_SIZE;
+
+    return sortedEmployees.slice(
+      startIndex,
+      endIndex
+    );
   }, [sortedEmployees, currentPage]);
 
   const startRecord =
@@ -578,7 +740,10 @@ function Employees() {
 
   function goToNextPage() {
     setCurrentPage((previousPage) =>
-      Math.min(previousPage + 1, totalPages)
+      Math.min(
+        previousPage + 1,
+        totalPages
+      )
     );
   }
 
@@ -633,19 +798,43 @@ function Employees() {
       <div className="page-header">
         <div>
           <h1>Employees</h1>
+
           <p>
-            Manage employee records, employment status and
-            workforce activity.
+            Manage employee records, employment status
+            and workforce activity.
           </p>
         </div>
 
-        <button
-          type="button"
-          className="primary-action-button"
-          onClick={openAddEmployeeForm}
-        >
-          + Add Employee
-        </button>
+        <div className="employee-header-actions">
+          <button
+            type="button"
+            className="secondary-action-button"
+            onClick={handleRefresh}
+            disabled={refreshing || loading}
+          >
+            {refreshing ? "Refreshing..." : "↻ Refresh"}
+          </button>
+
+          <button
+            type="button"
+            className="secondary-action-button"
+            onClick={exportEmployeesToCsv}
+            disabled={
+              loading ||
+              sortedEmployees.length === 0
+            }
+          >
+            ↓ Export CSV
+          </button>
+
+          <button
+            type="button"
+            className="primary-action-button"
+            onClick={openAddEmployeeForm}
+          >
+            + Add Employee
+          </button>
+        </div>
       </div>
 
       {/* SUCCESS */}
@@ -682,7 +871,9 @@ function Employees() {
         <div className="employee-summary-card">
           <span>Active</span>
           <strong>{employeeSummary.active}</strong>
-          <small>Department-specific active rule</small>
+          <small>
+            Department-specific active rule
+          </small>
         </div>
 
         <div className="employee-summary-card">
@@ -694,7 +885,9 @@ function Employees() {
         <div className="employee-summary-card">
           <span>On Leave</span>
           <strong>{employeeSummary.onLeave}</strong>
-          <small>Employees currently on leave</small>
+          <small>
+            Employees currently on leave
+          </small>
         </div>
 
         <div className="employee-summary-card">
@@ -734,7 +927,9 @@ function Employees() {
             setDepartmentFilter(event.target.value)
           }
         >
-          <option value="">All Departments</option>
+          <option value="">
+            All Departments
+          </option>
 
           {departments.map((department) => (
             <option
@@ -749,25 +944,51 @@ function Employees() {
         <select
           value={employmentStatusFilter}
           onChange={(event) =>
-            setEmploymentStatusFilter(event.target.value)
+            setEmploymentStatusFilter(
+              event.target.value
+            )
           }
         >
-          <option value="">All Employment Status</option>
-          <option value="EMPLOYED">EMPLOYED</option>
-          <option value="PROBATION">PROBATION</option>
-          <option value="ON_LEAVE">ON_LEAVE</option>
-          <option value="RESIGNED">RESIGNED</option>
-          <option value="TERMINATED">TERMINATED</option>
-          <option value="RETIRED">RETIRED</option>
+          <option value="">
+            All Employment Status
+          </option>
+
+          <option value="EMPLOYED">
+            EMPLOYED
+          </option>
+
+          <option value="PROBATION">
+            PROBATION
+          </option>
+
+          <option value="ON_LEAVE">
+            ON_LEAVE
+          </option>
+
+          <option value="RESIGNED">
+            RESIGNED
+          </option>
+
+          <option value="TERMINATED">
+            TERMINATED
+          </option>
+
+          <option value="RETIRED">
+            RETIRED
+          </option>
         </select>
 
         <select
           value={workStatusFilter}
           onChange={(event) =>
-            setWorkStatusFilter(event.target.value)
+            setWorkStatusFilter(
+              event.target.value
+            )
           }
         >
-          <option value="">All Work Status</option>
+          <option value="">
+            All Work Status
+          </option>
 
           {workStatuses.map((status) => (
             <option
@@ -782,12 +1003,22 @@ function Employees() {
         <select
           value={activeStatusFilter}
           onChange={(event) =>
-            setActiveStatusFilter(event.target.value)
+            setActiveStatusFilter(
+              event.target.value
+            )
           }
         >
-          <option value="">All Active Status</option>
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="NOT ACTIVE">NOT ACTIVE</option>
+          <option value="">
+            All Active Status
+          </option>
+
+          <option value="ACTIVE">
+            ACTIVE
+          </option>
+
+          <option value="NOT ACTIVE">
+            NOT ACTIVE
+          </option>
         </select>
 
         <button
@@ -805,7 +1036,9 @@ function Employees() {
       <div className="employee-filter-summary">
         {hasActiveFilters
           ? `Showing ${sortedEmployees.length} matching employee${
-              sortedEmployees.length === 1 ? "" : "s"
+              sortedEmployees.length === 1
+                ? ""
+                : "s"
             }`
           : `Showing all ${sortedEmployees.length} employees`}
       </div>
@@ -825,7 +1058,9 @@ function Employees() {
                   }
                 >
                   Employee Code
-                  {renderSortIndicator("employee_code")}
+                  {renderSortIndicator(
+                    "employee_code"
+                  )}
                 </button>
               </th>
 
@@ -838,7 +1073,9 @@ function Employees() {
                   }
                 >
                   Employee
-                  {renderSortIndicator("employee_name")}
+                  {renderSortIndicator(
+                    "employee_name"
+                  )}
                 </button>
               </th>
 
@@ -851,7 +1088,9 @@ function Employees() {
                   }
                 >
                   Department
-                  {renderSortIndicator("department_name")}
+                  {renderSortIndicator(
+                    "department_name"
+                  )}
                 </button>
               </th>
 
@@ -864,7 +1103,9 @@ function Employees() {
                   }
                 >
                   Role
-                  {renderSortIndicator("role_name")}
+                  {renderSortIndicator(
+                    "role_name"
+                  )}
                 </button>
               </th>
 
@@ -877,7 +1118,9 @@ function Employees() {
                   }
                 >
                   Work Status
-                  {renderSortIndicator("work_status")}
+                  {renderSortIndicator(
+                    "work_status"
+                  )}
                 </button>
               </th>
 
@@ -890,7 +1133,9 @@ function Employees() {
                   }
                 >
                   Employment
-                  {renderSortIndicator("employment_status")}
+                  {renderSortIndicator(
+                    "employment_status"
+                  )}
                 </button>
               </th>
 
@@ -899,7 +1144,9 @@ function Employees() {
                   type="button"
                   className="table-sort-button"
                   onClick={() =>
-                    handleSort("department_active_status")
+                    handleSort(
+                      "department_active_status"
+                    )
                   }
                 >
                   Active Status
@@ -923,8 +1170,8 @@ function Employees() {
             ) : paginatedEmployees.length === 0 ? (
               <tr>
                 <td colSpan="8">
-                  No employees found matching the selected
-                  criteria.
+                  No employees found matching the
+                  selected criteria.
                 </td>
               </tr>
             ) : (
@@ -974,7 +1221,8 @@ function Employees() {
                           : "status-badge inactive-status"
                       }
                     >
-                      {employee.employment_status || "-"}
+                      {employee.employment_status ||
+                        "-"}
                     </span>
                   </td>
 
@@ -995,7 +1243,9 @@ function Employees() {
                         type="button"
                         className="view-employee-button"
                         onClick={() =>
-                          openEmployeeDetails(employee)
+                          openEmployeeDetails(
+                            employee
+                          )
                         }
                       >
                         View
@@ -1005,7 +1255,9 @@ function Employees() {
                         type="button"
                         className="edit-employee-button"
                         onClick={() =>
-                          openEditEmployeeForm(employee)
+                          openEditEmployeeForm(
+                            employee
+                          )
                         }
                       >
                         Edit
@@ -1015,7 +1267,9 @@ function Employees() {
                         type="button"
                         className="deactivate-employee-button"
                         onClick={() =>
-                          openDeactivateModal(employee)
+                          openDeactivateModal(
+                            employee
+                          )
                         }
                         disabled={
                           employee.employment_status !==
@@ -1037,57 +1291,64 @@ function Employees() {
           27H PAGINATION CONTROLS
           ===================================================== */}
 
-      {!loading && sortedEmployees.length > 0 && (
-        <div className="employee-pagination">
-          <div className="pagination-summary">
-            Showing <strong>{startRecord}</strong>–{" "}
-            <strong>{endRecord}</strong> of{" "}
-            <strong>{sortedEmployees.length}</strong> employees
-          </div>
-
-          <div className="pagination-controls">
-            <button
-              type="button"
-              className="pagination-button"
-              onClick={goToPreviousPage}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-
-            <div className="pagination-pages">
-              {Array.from(
-                { length: totalPages },
-                (_, index) => index + 1
-              ).map((pageNumber) => (
-                <button
-                  key={pageNumber}
-                  type="button"
-                  className={
-                    currentPage === pageNumber
-                      ? "pagination-page active"
-                      : "pagination-page"
-                  }
-                  onClick={() =>
-                    goToPage(pageNumber)
-                  }
-                >
-                  {pageNumber}
-                </button>
-              ))}
+      {!loading &&
+        sortedEmployees.length > 0 && (
+          <div className="employee-pagination">
+            <div className="pagination-summary">
+              Showing <strong>{startRecord}</strong>–
+              {" "}
+              <strong>{endRecord}</strong> of{" "}
+              <strong>
+                {sortedEmployees.length}
+              </strong>{" "}
+              employees
             </div>
 
-            <button
-              type="button"
-              className="pagination-button"
-              onClick={goToNextPage}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
+            <div className="pagination-controls">
+              <button
+                type="button"
+                className="pagination-button"
+                onClick={goToPreviousPage}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+
+              <div className="pagination-pages">
+                {Array.from(
+                  { length: totalPages },
+                  (_, index) => index + 1
+                ).map((pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    type="button"
+                    className={
+                      currentPage === pageNumber
+                        ? "pagination-page active"
+                        : "pagination-page"
+                    }
+                    onClick={() =>
+                      goToPage(pageNumber)
+                    }
+                  >
+                    {pageNumber}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                className="pagination-button"
+                onClick={goToNextPage}
+                disabled={
+                  currentPage === totalPages
+                }
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* =====================================================
           ADD / EDIT EMPLOYEE MODAL
@@ -1138,10 +1399,14 @@ function Employees() {
                     id="employee_code"
                     name="employee_code"
                     type="text"
-                    value={formData.employee_code}
+                    value={
+                      formData.employee_code
+                    }
                     onChange={handleFormChange}
                     placeholder="EMP001"
-                    disabled={Boolean(editingEmployee)}
+                    disabled={
+                      Boolean(editingEmployee)
+                    }
                   />
                 </div>
 
@@ -1216,7 +1481,9 @@ function Employees() {
                   <select
                     id="department_id"
                     name="department_id"
-                    value={formData.department_id}
+                    value={
+                      formData.department_id
+                    }
                     onChange={handleFormChange}
                     required
                   >
@@ -1224,14 +1491,22 @@ function Employees() {
                       Select department
                     </option>
 
-                    {departments.map((department) => (
-                      <option
-                        key={department.department_id}
-                        value={department.department_id}
-                      >
-                        {department.department_name}
-                      </option>
-                    ))}
+                    {departments.map(
+                      (department) => (
+                        <option
+                          key={
+                            department.department_id
+                          }
+                          value={
+                            department.department_id
+                          }
+                        >
+                          {
+                            department.department_name
+                          }
+                        </option>
+                      )
+                    )}
                   </select>
                 </div>
 
@@ -1270,7 +1545,9 @@ function Employees() {
                   <select
                     id="work_status_id"
                     name="work_status_id"
-                    value={formData.work_status_id}
+                    value={
+                      formData.work_status_id
+                    }
                     onChange={handleFormChange}
                     required
                   >
@@ -1278,14 +1555,20 @@ function Employees() {
                       Select work status
                     </option>
 
-                    {workStatuses.map((status) => (
-                      <option
-                        key={status.work_status_id}
-                        value={status.work_status_id}
-                      >
-                        {status.status_name}
-                      </option>
-                    ))}
+                    {workStatuses.map(
+                      (status) => (
+                        <option
+                          key={
+                            status.work_status_id
+                          }
+                          value={
+                            status.work_status_id
+                          }
+                        >
+                          {status.status_name}
+                        </option>
+                      )
+                    )}
                   </select>
                 </div>
 
@@ -1297,7 +1580,9 @@ function Employees() {
                   <select
                     id="employment_status"
                     name="employment_status"
-                    value={formData.employment_status}
+                    value={
+                      formData.employment_status
+                    }
                     onChange={handleFormChange}
                   >
                     <option value="EMPLOYED">
@@ -1335,7 +1620,9 @@ function Employees() {
                     id="joining_date"
                     name="joining_date"
                     type="date"
-                    value={formData.joining_date}
+                    value={
+                      formData.joining_date
+                    }
                     onChange={handleFormChange}
                   />
                 </div>
@@ -1351,7 +1638,9 @@ function Employees() {
                     type="number"
                     min="0"
                     step="0.01"
-                    value={formData.salary_amount}
+                    value={
+                      formData.salary_amount
+                    }
                     onChange={handleFormChange}
                     placeholder="Salary amount"
                   />
@@ -1365,7 +1654,9 @@ function Employees() {
                   <select
                     id="salary_status"
                     name="salary_status"
-                    value={formData.salary_status}
+                    value={
+                      formData.salary_status
+                    }
                     onChange={handleFormChange}
                   >
                     <option value="PAID">
@@ -1530,7 +1821,8 @@ function Employees() {
               <div>
                 <span>Salary Status</span>
                 <strong>
-                  {selectedEmployee.salary_status || "-"}
+                  {selectedEmployee.salary_status ||
+                    "-"}
                 </strong>
               </div>
             </div>
@@ -1541,7 +1833,9 @@ function Employees() {
                 className="edit-employee-button"
                 onClick={() => {
                   closeEmployeeDetails();
-                  openEditEmployeeForm(selectedEmployee);
+                  openEditEmployeeForm(
+                    selectedEmployee
+                  );
                 }}
               >
                 Edit Employee
@@ -1560,7 +1854,9 @@ function Employees() {
           <div className="deactivation-overlay">
             <div className="deactivation-modal">
               <div className="deactivation-header">
-                <h2>Deactivate Employee</h2>
+                <h2>
+                  Deactivate Employee
+                </h2>
 
                 <button
                   type="button"
@@ -1575,17 +1871,22 @@ function Employees() {
               <p>
                 Are you sure you want to deactivate{" "}
                 <strong>
-                  {employeeToDeactivate.first_name}{" "}
-                  {employeeToDeactivate.last_name}
+                  {
+                    employeeToDeactivate.first_name
+                  }{" "}
+                  {
+                    employeeToDeactivate.last_name
+                  }
                 </strong>
                 ?
               </p>
 
               <div className="deactivation-warning">
-                This action will change the employee's
-                employment status to <strong>RESIGNED</strong>.
-                The employee record will remain in HR360 for
-                historical and reporting purposes.
+                This action will change the
+                employee's employment status to{" "}
+                <strong>RESIGNED</strong>. The
+                employee record will remain in HR360
+                for historical and reporting purposes.
               </div>
 
               <div className="deactivation-actions">
