@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import { getAnalyticsOverview } from "./services/api";
 import Employees from "./pages/Employees";
+import Attendance from "./pages/Attendance";
 import "./App.css";
 
 
@@ -131,10 +132,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/employees" element={<Employees />} />
-              <Route
-                path="/attendance"
-                element={<PlaceholderPage title="Attendance" />}
-              />
+              <Route path="/attendance" element={<Attendance />} />
               <Route
                 path="/leave"
                 element={<PlaceholderPage title="Leave Management" />}

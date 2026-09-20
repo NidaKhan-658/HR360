@@ -114,3 +114,79 @@ export async function updateEmployeeEmploymentStatus(
 
   return data;
 }
+
+
+// Attendance API //
+
+export async function getAttendance() {
+  const response = await fetch(`${API_BASE_URL}/attendance`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch attendance records");
+  }
+
+  return response.json();
+}
+
+export async function getAttendanceById(attendanceId) {
+  const response = await fetch(
+    `${API_BASE_URL}/attendance/${attendanceId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch attendance record");
+  }
+
+  return response.json();
+}
+
+export async function getEmployeeAttendance(employeeId) {
+  const response = await fetch(
+    `${API_BASE_URL}/attendance/employee/${employeeId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch employee attendance");
+  }
+
+  return response.json();
+}
+
+export async function createAttendance(attendanceData) {
+  const response = await fetch(`${API_BASE_URL}/attendance`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(attendanceData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create attendance record");
+  }
+
+  return data;
+}
+
+export async function updateAttendance(attendanceId, attendanceData) {
+  const response = await fetch(
+    `${API_BASE_URL}/attendance/${attendanceId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(attendanceData),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to update attendance record");
+  }
+
+  return data;
+}
