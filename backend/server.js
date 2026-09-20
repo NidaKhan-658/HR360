@@ -4,6 +4,7 @@ const employeeRoutes = require("./routes/employees");
 const departmentRoutes = require("./routes/departments");
 const jobRoleRoutes = require("./routes/jobRoles");
 const workStatusRoutes = require("./routes/workStatuses");
+const attendanceRoutes = require("./routes/attendance");
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/job-roles", jobRoleRoutes);
 app.use("/api/work-statuses", workStatusRoutes);
+app.use("/api/attendance",attendanceRoutes);
+
 
 // Health check + database test
 app.get("/api/health", async (req, res) => {
