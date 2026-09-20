@@ -8,6 +8,7 @@ const attendanceRoutes = require("./routes/attendance");
 const leaveTypeRoutes = require("./routes/leaveTypes");
 const leaveRequestRoutes = require("./routes/leaveRequests");
 const performanceReviewRoutes = require("./routes/performanceReviews");
+const pipRoutes = require("./routes/performanceImprovementPlans");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api/attendance",attendanceRoutes);
 app.use("/api/leave-types", leaveTypeRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
 app.use("/api/performance-reviews", performanceReviewRoutes);
+app.use("/api/pips", pipRoutes);
 
 
 // Health check + database test
