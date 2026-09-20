@@ -1,0 +1,547 @@
+# HR360 Backend Architecture Document
+
+**Project:** HR360 – Human Resource Management & Analytics System
+**Document ID:** HR360-BE-001
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Role:** Business Analyst / Developer / Project Manager / Scrum Master
+**Product Owner:** HR Business Stakeholder
+
+---
+
+## 1. Document Purpose
+
+This document defines the technical architecture and implementation structure of the HR360 backend application.
+
+The document provides a technical reference for the Node.js and Express.js backend, PostgreSQL database connectivity, REST API architecture, configuration management, routing structure, and backend request flow.
+
+The architecture is designed to support the HR360 functional requirements, business rules, analytics requirements, and future React frontend and Power BI integration.
+
+---
+
+## 2. Backend Objectives
+
+The HR360 backend is designed to:
+
+* Provide REST APIs for HR operations.
+* Connect securely to PostgreSQL.
+* Manage employee and workforce information.
+* Support attendance and leave management.
+* Support performance and PIP processes.
+* Support training and development.
+* Support recruitment activities.
+* Provide analytics APIs.
+* Apply HR360 business rules through backend logic and SQL.
+* Maintain data integrity through PostgreSQL constraints and relationships.
+* Provide a foundation for the React frontend.
+* Support future Power BI integration.
+
+---
+
+## 3. Technology Stack
+
+| Component          | Technology         | Purpose                             |
+| ------------------ | ------------------ | ----------------------------------- |
+| Runtime            | Node.js            | Backend JavaScript runtime          |
+| Framework          | Express.js         | REST API framework                  |
+| Database           | PostgreSQL 18.6    | Relational data storage             |
+| Database Driver    | `pg`               | PostgreSQL connectivity             |
+| Configuration      | `dotenv`           | Environment variable management     |
+| Development Server | Nodemon            | Automatic server restart            |
+| API Style          | REST               | System-to-system communication      |
+| Development Tool   | Visual Studio Code | Development environment             |
+| Version Control    | Git                | Source control                      |
+| Repository         | GitHub             | Remote source-code repository       |
+| Future Frontend    | React + Vite       | User interface                      |
+| Future BI          | Power BI           | Business intelligence and reporting |
+
+---
+
+## 4. Backend Architecture
+
+HR360 follows a modular REST API architecture.
+
+The major backend layers are:
+
+1. Client / Frontend Layer
+2. Express Application Layer
+3. Route / API Layer
+4. Business Logic and SQL Layer
+5. PostgreSQL Database Layer
+
+### Logical Architecture
+
+```text
+React Frontend / API Client
+          |
+          v
+     Express Server
+          |
+          v
+      API Routes
+          |
+          v
+Business Logic + SQL Queries
+          |
+          v
+   PostgreSQL Database
+          |
+          v
+       HR360 Data
+```
+
+The backend is designed so that frontend applications do not directly access the PostgreSQL database.
+
+All database interaction is performed through the backend APIs.
+
+---
+
+## 5. Backend Folder Structure
+
+Current backend structure:
+
+```text
+backend/
+├── .env
+├── db.js
+├── package.json
+├── package-lock.json
+├── server.js
+└── routes/
+    ├── employees.js
+    ├── departments.js
+    ├── jobRoles.js
+    ├── workStatuses.js
+    ├── attendance.js
+    ├── leaveTypes.js
+    ├── leaveRequests.js
+    ├── performanceReviews.js
+    ├── performanceImprovementPlans.js
+    ├── trainingPrograms.js
+    ├── employeeTraining.js
+    ├── interviews.js
+    ├── candidates.js
+    ├── jobApplications.js
+    ├── jobOffers.js
+    └── analytics.js
+```
+
+---
+
+## 6. Main Backend Components
+
+### 6.1 server.js
+
+`server.js` is the main backend entry point.
+
+Responsibilities include:
+
+* Creating the Express application.
+* Loading the PostgreSQL connection.
+* Enabling JSON request parsing.
+* Registering API routes.
+* Providing the health-check endpoint.
+* Starting the backend server.
+
+The backend currently runs on:
+
+```text
+http://localhost:5000
+```
+
+---
+
+## 7. Database Connection
+
+The HR360 backend uses the PostgreSQL `pg` package and a connection pool.
+
+The database connection is configured through environment variables.
+
+Configuration parameters include:
+
+```text
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USER
+DB_PASSWORD
+```
+
+The actual database password is stored in `.env` and must not be committed to GitHub.
+
+---
+
+## 8. Environment Configuration
+
+The backend uses `dotenv` to load environment variables.
+
+Example configuration structure:
+
+```text
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=hr360
+DB_USER=postgres
+DB_PASSWORD=<secured-value>
+```
+
+The actual password must never be included in:
+
+* Source code
+* Documentation
+* Git commits
+* GitHub repositories
+* Screenshots
+* API examples
+
+---
+
+## 9. Express Middleware
+
+The backend currently uses JSON request parsing:
+
+```javascript
+app.use(express.json());
+```
+
+This allows the API to receive JSON request bodies from clients.
+
+Example:
+
+```json
+{
+  "employment_status": "RESIGNED"
+}
+```
+
+---
+
+## 10. API Route Registration
+
+The main server registers the HR360 modules under the `/api` prefix.
+
+Examples:
+
+```text
+/api/employees
+/api/departments
+/api/job-roles
+/api/work-statuses
+/api/attendance
+/api/leave-types
+/api/leave-requests
+/api/performance-reviews
+/api/pips
+/api/training-programs
+/api/employee-training
+/api/interviews
+/api/candidates
+/api/job-applications
+/api/job-offers
+/api/analytics
+```
+
+This modular routing structure separates functional areas and improves maintainability.
+
+---
+
+## 11. Backend Modules
+
+| Module            | Route                      | Purpose                         |
+| ----------------- | -------------------------- | ------------------------------- |
+| Employees         | `/api/employees`           | Employee management             |
+| Departments       | `/api/departments`         | Department management           |
+| Job Roles         | `/api/job-roles`           | Job role management             |
+| Work Statuses     | `/api/work-statuses`       | Workforce status management     |
+| Attendance        | `/api/attendance`          | Attendance records              |
+| Leave Types       | `/api/leave-types`         | Leave configuration             |
+| Leave Requests    | `/api/leave-requests`      | Employee leave management       |
+| Performance       | `/api/performance-reviews` | Performance reviews             |
+| PIP               | `/api/pips`                | Performance improvement plans   |
+| Training Programs | `/api/training-programs`   | Training management             |
+| Employee Training | `/api/employee-training`   | Employee training participation |
+| Interviews        | `/api/interviews`          | Recruitment interviews          |
+| Candidates        | `/api/candidates`          | Candidate management            |
+| Applications      | `/api/job-applications`    | Job applications                |
+| Job Offers        | `/api/job-offers`          | Offer management                |
+| Analytics         | `/api/analytics`           | HR analytics                    |
+
+---
+
+## 12. Health Check
+
+The backend provides:
+
+```text
+GET /api/health
+```
+
+Purpose:
+
+* Verify that the backend is running.
+* Verify PostgreSQL connectivity.
+* Return the current database timestamp.
+
+Successful response structure:
+
+```json
+{
+  "success": true,
+  "message": "HR360 Backend and PostgreSQL are connected",
+  "databaseTime": "timestamp"
+}
+```
+
+---
+
+## 13. Request Processing Flow
+
+A typical HR360 API request follows this flow:
+
+```text
+Client
+  |
+  v
+HTTP Request
+  |
+  v
+Express Server
+  |
+  v
+Module Route
+  |
+  v
+Validation / Business Logic
+  |
+  v
+SQL Query
+  |
+  v
+PostgreSQL
+  |
+  v
+Query Result
+  |
+  v
+JSON Response
+  |
+  v
+Client
+```
+
+---
+
+## 14. Database Integration
+
+The backend communicates with PostgreSQL through the shared database pool.
+
+The database layer is centralized in:
+
+```text
+backend/db.js
+```
+
+This avoids creating separate database connections for every API request and provides a consistent database-access mechanism.
+
+---
+
+## 15. Business Rule Implementation
+
+HR360 implements department-specific active employee logic.
+
+### HR
+
+An employee is considered active when:
+
+```text
+employment_status = EMPLOYED
+```
+
+### Operations
+
+An employee is considered active when:
+
+```text
+work_status = WORKING
+OR
+work_status = ONLINE
+```
+
+### Finance
+
+An employee is considered active when:
+
+```text
+salary_status = PAID
+```
+
+### Other Conditions
+
+If the applicable department rule is not satisfied:
+
+```text
+department_active_status = NOT ACTIVE
+```
+
+The system derives this status rather than maintaining a single manually maintained global active flag.
+
+---
+
+## 16. Data Integrity
+
+PostgreSQL is responsible for maintaining relational data integrity through:
+
+* Primary keys
+* Foreign keys
+* Unique constraints
+* Check constraints
+* Required fields
+* Valid status values
+
+The backend works with these database controls rather than bypassing them.
+
+---
+
+## 17. Error Handling
+
+The backend follows controlled API responses for database and request failures.
+
+The health endpoint, for example, handles database connectivity errors and returns an HTTP 500 response when the database connection fails.
+
+The API design is intended to prevent raw database errors from becoming uncontrolled application failures.
+
+---
+
+## 18. Security Configuration
+
+Security-related configuration includes:
+
+* Environment variables for database credentials.
+* `.env` exclusion from Git.
+* No hard-coded production passwords.
+* Backend-controlled database access.
+* Validation of business status values.
+* PostgreSQL constraints for data integrity.
+
+Future security enhancements may include:
+
+* Authentication
+* Authorization / role-based access control
+* API rate limiting
+* Request logging
+* Security headers
+* Token-based authentication
+
+These are considered future enhancements unless explicitly implemented.
+
+---
+
+## 19. Development and Execution
+
+Development server:
+
+```powershell
+npm run dev
+```
+
+Production-style execution:
+
+```powershell
+npm start
+```
+
+Backend URL:
+
+```text
+http://localhost:5000
+```
+
+Health endpoint:
+
+```text
+http://localhost:5000/api/health
+```
+
+---
+
+## 20. Source Control
+
+The HR360 backend is maintained using Git.
+
+The project uses:
+
+```text
+master
+```
+
+as the current repository branch.
+
+Backend changes are committed and pushed to GitHub as development milestones are completed.
+
+Sensitive configuration files must not be committed.
+
+---
+
+## 21. Future Integration
+
+The backend architecture supports future integration with:
+
+### React Frontend
+
+React will consume the REST APIs through HTTP requests.
+
+### Power BI
+
+Power BI can consume approved analytics endpoints or database views/data sources.
+
+### Jira
+
+Agile user stories can be mapped to backend modules and API implementation.
+
+---
+
+## 22. Architecture Traceability
+
+| Business Area       | Backend Module          | Database Area                                   | API                                                |
+| ------------------- | ----------------------- | ----------------------------------------------- | -------------------------------------------------- |
+| Employee Management | Employees               | Employees                                       | `/api/employees`                                   |
+| Organization        | Departments / Job Roles | Departments / Job Roles                         | `/api/departments`, `/api/job-roles`               |
+| Workforce Status    | Work Statuses           | Work Statuses                                   | `/api/work-statuses`                               |
+| Attendance          | Attendance              | Attendance                                      | `/api/attendance`                                  |
+| Leave               | Leave                   | Leave Types / Requests                          | `/api/leave-types`, `/api/leave-requests`          |
+| Performance         | Performance / PIP       | Reviews / PIPs                                  | `/api/performance-reviews`, `/api/pips`            |
+| Training            | Training                | Training / Employee Training                    | `/api/training-programs`, `/api/employee-training` |
+| Recruitment         | Recruitment             | Candidates / Applications / Interviews / Offers | Recruitment APIs                                   |
+| Analytics           | Analytics               | HR operational data                             | `/api/analytics`                                   |
+
+---
+
+## 23. Non-Functional Considerations
+
+The backend architecture supports:
+
+* Maintainability
+* Modularity
+* Data integrity
+* API consistency
+* Configuration security
+* Scalability
+* Separation of frontend and backend responsibilities
+* Future BI integration
+* Source-code traceability
+
+---
+
+## 24. Document Control
+
+| Field         | Value                      |
+| ------------- | -------------------------- |
+| Document ID   | HR360-BE-001               |
+| Version       | 1.0                        |
+| Status        | Draft for Review           |
+| Owner         | Nida Khan                  |
+| Product Owner | HR Business Stakeholder    |
+| Date          | 20 September 2026          |
+| Review Cycle  | At major technical changes |

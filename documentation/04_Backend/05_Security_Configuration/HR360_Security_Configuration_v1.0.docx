@@ -1,0 +1,190 @@
+# HR360 Security & Configuration
+
+**Project:** HR360 – Human Resource Management & Analytics System
+**Document ID:** HR360-BE-005
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+## 1. Purpose
+
+This document defines the current security and configuration approach for the HR360 backend.
+
+## 2. Configuration Management
+
+Backend configuration is managed through environment variables.
+
+Current configuration includes:
+
+```text
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USER
+DB_PASSWORD
+```
+
+## 3. Environment File
+
+The backend uses:
+
+```text
+backend/.env
+```
+
+The actual `.env` file contains sensitive database credentials.
+
+It must not be included in Git commits.
+
+## 4. Git Protection
+
+The project `.gitignore` must exclude:
+
+```text
+.env
+```
+
+and other sensitive configuration files where applicable.
+
+## 5. Credential Protection
+
+Database passwords must never be:
+
+* Hard-coded into JavaScript
+* Added to documentation
+* Added to screenshots
+* Shared in GitHub
+* Included in API responses
+* Embedded in frontend code
+
+## 6. Database Access
+
+Only the backend should directly communicate with PostgreSQL.
+
+The expected architecture is:
+
+```text
+React
+  |
+  v
+Express API
+  |
+  v
+PostgreSQL
+```
+
+The frontend must not contain PostgreSQL credentials.
+
+## 7. API Security
+
+Current controls include:
+
+* Controlled API routes
+* Input validation
+* Database constraints
+* Controlled status values
+* Environment-based credentials
+* Backend-only database access
+
+## 8. Data Integrity
+
+PostgreSQL constraints provide an additional security and quality layer.
+
+These include:
+
+* Primary keys
+* Foreign keys
+* Unique constraints
+* Check constraints
+* Required fields
+
+## 9. Error Handling
+
+API failures should return controlled responses.
+
+Sensitive implementation information such as:
+
+* Database passwords
+* Connection strings
+* Internal credentials
+
+must not be returned to API consumers.
+
+## 10. Authentication
+
+User authentication is not currently implemented in the backend baseline.
+
+Future authentication may include:
+
+* Login
+* Password hashing
+* JWT/session management
+* Role-based access control
+
+## 11. Authorization
+
+Future authorization should restrict functionality according to HR360 roles such as:
+
+* HR
+* Operations
+* Finance
+* Recruitment
+* Management
+* System Administrator
+
+This is a future enhancement unless implemented separately.
+
+## 12. Future Security Enhancements
+
+Potential production controls include:
+
+* Authentication
+* Authorization
+* HTTPS
+* Security headers
+* Rate limiting
+* Audit logging
+* Centralized logging
+* Secrets management
+* Database encryption
+* Backup security
+* Vulnerability scanning
+
+## 13. Security Responsibilities
+
+| Area                      | Responsibility                       |
+| ------------------------- | ------------------------------------ |
+| Application configuration | Developer                            |
+| Database credentials      | Developer / System Owner             |
+| Business access rules     | HR Business Stakeholder              |
+| Production infrastructure | System/Infrastructure Owner          |
+| Security review           | Project governance / technical owner |
+
+## 14. Security Checklist
+
+| Control                             | Current State        |
+| ----------------------------------- | -------------------- |
+| Environment variables               | Implemented          |
+| `.env` protection                   | Required             |
+| PostgreSQL credentials outside code | Implemented          |
+| Backend-only database access        | Implemented          |
+| Database constraints                | Implemented          |
+| Authentication                      | Planned              |
+| Authorization                       | Planned              |
+| HTTPS                               | Deployment dependent |
+| Rate limiting                       | Planned              |
+| Security headers                    | Planned              |
+| Audit logging                       | Planned              |
+
+## 15. Document Control
+
+| Field         | Value                   |
+| ------------- | ----------------------- |
+| Document ID   | HR360-BE-005            |
+| Version       | 1.0                     |
+| Status        | Draft for Review        |
+| Owner         | Nida Khan               |
+| Product Owner | HR Business Stakeholder |
+| Date          | 20 September 2026       |

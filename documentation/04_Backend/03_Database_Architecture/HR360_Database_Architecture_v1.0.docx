@@ -1,0 +1,460 @@
+# HR360 Database Architecture
+
+**Project:** HR360 – Human Resource Management & Analytics System
+**Document ID:** HR360-BE-003
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+## 1. Purpose
+
+This document defines the PostgreSQL database architecture supporting HR360.
+
+The database provides persistent storage for employee management, workforce operations, attendance, leave, performance, training, recruitment, and analytics.
+
+## 2. Database Technology
+
+| Component        | Value        |
+| ---------------- | ------------ |
+| Database         | PostgreSQL   |
+| Version          | 18.6         |
+| Database Name    | `hr360`      |
+| Host             | localhost    |
+| Port             | 5432         |
+| Access Layer     | Node.js `pg` |
+| Backend          | Express.js   |
+| Development Tool | VS Code      |
+
+## 3. Database Architecture
+
+```text
+HR360 Express Backend
+        |
+        v
+     db.js
+        |
+        v
+ PostgreSQL Connection Pool
+        |
+        v
+      hr360
+        |
+        +---------------- Employee Data
+        +---------------- Workforce Data
+        +---------------- Attendance
+        +---------------- Leave
+        +---------------- Performance
+        +---------------- Training
+        +---------------- Recruitment
+        +---------------- Analytics
+```
+
+## 4. Core Master Tables
+
+The HR360 database contains master/reference information including:
+
+* Departments
+* Job Roles
+* Work Statuses
+* Leave Types
+* Training Programs
+
+These tables provide controlled reference values for transactional records.
+
+## 5. Employee Data Model
+
+The employee model contains information including:
+
+* Employee ID
+* Employee code
+* Personal details
+* Contact information
+* Department
+* Job role
+* Work status
+* Employment status
+* Joining date
+* Salary information
+* Salary status
+
+Employee records form the central workforce entity for HR360.
+
+## 6. Employee Relationships
+
+Conceptually:
+
+```text
+Departments
+     |
+     +----< Employees >---- Job Roles
+                 |
+                 +---- Work Status
+                 |
+                 +---- Attendance
+                 |
+                 +---- Leave Requests
+                 |
+                 +---- Performance Reviews
+                 |
+                 +---- PIP
+                 |
+                 +---- Employee Training
+```
+
+## 7. Attendance Data
+
+Attendance records contain:
+
+* Attendance ID
+* Employee ID
+* Attendance date
+* Attendance status
+* Check-in time
+* Check-out time
+* Working hours
+* Remarks
+* Created/updated timestamps
+
+Attendance status values include:
+
+```text
+PRESENT
+ABSENT
+LATE
+HALF_DAY
+ON_LEAVE
+HOLIDAY
+```
+
+## 8. Leave Data
+
+Leave management uses:
+
+### Leave Types
+
+Defines available leave categories and entitlement information.
+
+### Leave Requests
+
+Stores:
+
+* Employee
+* Leave type
+* Start date
+* End date
+* Number of days
+* Request status
+* Approval information
+* Timestamps
+
+## 9. Performance Data
+
+Performance records maintain:
+
+* Employee
+* Review period
+* Performance rating
+* Review information
+* Reviewer
+* Feedback
+
+The database supports historical performance information for analytics.
+
+## 10. PIP Data
+
+Performance Improvement Plan records maintain:
+
+* Employee
+* PIP start date
+* PIP end date
+* Status
+* Review frequency
+* Review information
+
+## 11. Training Data
+
+Training is represented through:
+
+### Training Programs
+
+Stores organizational training offerings.
+
+### Employee Training
+
+Associates employees with training programs.
+
+Employee training records support:
+
+* Enrollment date
+* Attendance status
+* Completion date
+* Score
+* Certificate issued
+* Employee feedback
+
+## 12. Recruitment Data Model
+
+Recruitment is divided into:
+
+```text
+Candidates
+    |
+    v
+Job Applications
+    |
+    v
+Interviews
+    |
+    v
+Job Offers
+```
+
+This creates traceability throughout the recruitment lifecycle.
+
+## 13. Candidate Data
+
+Candidate records contain:
+
+* Candidate code
+* Name
+* Contact details
+* Resume information
+* Experience
+* Qualification
+* Current organization
+* Current designation
+* Candidate status
+* Source
+* Applied date
+
+## 14. Job Application Data
+
+Applications connect candidates with job roles.
+
+Important fields include:
+
+* Candidate
+* Job role
+* Application date
+* Application status
+* Recruiter
+* Expected salary
+* Notice period
+* Recruiter notes
+
+A unique candidate/job-role combination prevents duplicate applications.
+
+## 15. Interview Data
+
+Interview records are associated with job applications.
+
+Information includes:
+
+* Interviewer
+* Round
+* Interview type
+* Scheduled date/time
+* Status
+* Rating
+* Feedback
+* Result
+
+## 16. Job Offer Data
+
+Offer records are associated with applications.
+
+Information includes:
+
+* Offer date
+* Joining date
+* Offered salary
+* Employment type
+* Offer status
+* Accepted date
+* Rejection reason
+
+## 17. Key Database Relationships
+
+```text
+Department 1 ---- N Employee
+Job Role   1 ---- N Employee
+Employee   1 ---- N Attendance
+Employee   1 ---- N Leave Request
+Employee   1 ---- N Performance Review
+Employee   1 ---- N PIP
+Employee   1 ---- N Employee Training
+Training   1 ---- N Employee Training
+
+Candidate 1 ---- N Job Application
+Job Role  1 ---- N Job Application
+Application 1 --- N Interview
+Application 1 --- 1 Job Offer
+```
+
+## 18. Primary Keys
+
+Each major entity uses a unique identifier.
+
+Examples include:
+
+```text
+employee_id
+department_id
+candidate_id
+application_id
+interview_id
+offer_id
+training_id
+attendance_id
+```
+
+Primary keys ensure each record can be uniquely identified.
+
+## 19. Foreign Keys
+
+Foreign keys establish relationships between business entities.
+
+Examples include:
+
+```text
+employees.department_id
+employees.role_id
+attendance.employee_id
+leave_requests.employee_id
+job_applications.candidate_id
+job_applications.job_role_id
+interviews.application_id
+job_offers.application_id
+```
+
+## 20. Data Integrity
+
+The database uses:
+
+* Primary keys
+* Foreign keys
+* Unique constraints
+* Check constraints
+* NOT NULL constraints
+* Controlled status values
+
+These controls prevent invalid or inconsistent records.
+
+## 21. Status Integrity
+
+Controlled status values are used for major HR processes.
+
+Examples:
+
+```text
+Employment:
+CANDIDATE
+PROBATION
+EMPLOYED
+ON_LEAVE
+RESIGNED
+TERMINATED
+RETIRED
+
+Work:
+WORKING
+ONLINE
+TRAINING
+ON_BENCH
+PIP
+ON_LEAVE
+OFFLINE
+REMOTE
+```
+
+## 22. Department-Specific Active Status
+
+The database query layer derives the employee's active status.
+
+### HR
+
+```text
+EMPLOYED → ACTIVE
+```
+
+### Operations
+
+```text
+WORKING or ONLINE → ACTIVE
+```
+
+### Finance
+
+```text
+salary_status = PAID → ACTIVE
+```
+
+Otherwise:
+
+```text
+NOT ACTIVE
+```
+
+## 23. Audit Timestamps
+
+Transactional tables use creation and update timestamps where implemented.
+
+Typical fields:
+
+```text
+created_at
+updated_at
+```
+
+These support operational traceability.
+
+## 24. Analytics Data Layer
+
+Analytics APIs derive information from operational HR data.
+
+```text
+Operational Tables
+       |
+       v
+SQL Aggregations
+       |
+       v
+Analytics API
+       |
+       +---- React Dashboard
+       |
+       +---- Power BI
+```
+
+## 25. Data Security
+
+Database credentials are not stored in source code.
+
+Connection details are supplied through environment variables.
+
+The `.env` file must remain outside source-control commits.
+
+## 26. Backup and Recovery Considerations
+
+For a production deployment, the database should implement:
+
+* Scheduled backups
+* Recovery testing
+* Access controls
+* Monitoring
+* Retention policies
+
+These are deployment-level considerations and are not assumed to be implemented in the current local development environment.
+
+## 27. Document Control
+
+| Field         | Value                   |
+| ------------- | ----------------------- |
+| Document ID   | HR360-BE-003            |
+| Version       | 1.0                     |
+| Status        | Draft for Review        |
+| Owner         | Nida Khan               |
+| Product Owner | HR Business Stakeholder |
+| Date          | 20 September 2026       |

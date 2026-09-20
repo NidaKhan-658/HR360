@@ -1,0 +1,155 @@
+# HR360 Backend Traceability
+
+**Project:** HR360 – Human Resource Management & Analytics System
+**Document ID:** HR360-BE-006
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+## 1. Purpose
+
+This document provides traceability between HR360 business requirements, functional requirements, user stories, APIs, database areas, and backend implementation.
+
+## 2. Traceability Model
+
+```text
+BRD
+ |
+ v
+FRD
+ |
+ v
+User Story
+ |
+ v
+Acceptance Criteria
+ |
+ v
+API
+ |
+ v
+Database
+ |
+ v
+Test / UAT
+```
+
+## 3. Backend Traceability Matrix
+
+| BRD    | FRD          | User Story   | API / Module                 | Database Area           | Status      |
+| ------ | ------------ | ------------ | ---------------------------- | ----------------------- | ----------- |
+| BR-001 | FR-EMP-001   | US-EMP-001   | `/api/employees`             | Employees               | Implemented |
+| BR-001 | FR-EMP-002   | US-EMP-002   | `/api/employees`             | Employees               | Implemented |
+| BR-001 | FR-EMP-003   | US-EMP-003   | `/api/employees`             | Employees               | Implemented |
+| BR-003 | FR-EMP-004   | US-EMP-004   | Employee status API          | Employees               | Implemented |
+| BR-004 | FR-EMP-005   | US-EMP-005   | Employee active logic        | Employees / Work Status | Implemented |
+| BR-002 | FR-DEPT-001  | US-DEPT-001  | `/api/departments`           | Departments             | Implemented |
+| BR-002 | FR-ROLE-001  | US-ROLE-001  | `/api/job-roles`             | Job Roles               | Implemented |
+| BR-005 | FR-WORK-001  | US-WORK-001  | `/api/work-statuses`         | Work Statuses           | Implemented |
+| BR-006 | FR-ATT-001   | US-ATT-001   | `/api/attendance`            | Attendance              | Implemented |
+| BR-006 | FR-ATT-002   | US-ATT-002   | `/api/attendance`            | Attendance              | Implemented |
+| BR-007 | FR-LEAVE-001 | US-LEAVE-001 | `/api/leave-requests`        | Leave Requests          | Implemented |
+| BR-007 | FR-LEAVE-002 | US-LEAVE-002 | `/api/leave-requests`        | Leave Requests          | Implemented |
+| BR-007 | FR-LEAVE-003 | US-LEAVE-003 | `/api/leave-types`           | Leave Types             | Implemented |
+| BR-008 | FR-PERF-001  | US-PERF-001  | `/api/performance-reviews`   | Performance             | Implemented |
+| BR-008 | FR-PERF-002  | US-PERF-002  | `/api/performance-reviews`   | Performance             | Implemented |
+| BR-009 | FR-PIP-001   | US-PIP-001   | `/api/pips`                  | PIPs                    | Implemented |
+| BR-009 | FR-PIP-002   | US-PIP-002   | `/api/pips`                  | PIPs                    | Implemented |
+| BR-010 | FR-TRAIN-001 | US-TRAIN-001 | `/api/training-programs`     | Training Programs       | Implemented |
+| BR-010 | FR-TRAIN-002 | US-TRAIN-002 | `/api/employee-training`     | Employee Training       | Implemented |
+| BR-010 | FR-TRAIN-003 | US-TRAIN-003 | `/api/employee-training`     | Employee Training       | Implemented |
+| BR-010 | FR-TRAIN-004 | US-TRAIN-004 | `/api/analytics/training`    | Training                | Implemented |
+| BR-011 | FR-REC-001   | US-REC-001   | `/api/candidates`            | Candidates              | Implemented |
+| BR-011 | FR-REC-002   | US-REC-002   | `/api/candidates`            | Candidates              | Implemented |
+| BR-012 | FR-REC-003   | US-REC-003   | `/api/job-applications`      | Applications            | Implemented |
+| BR-012 | FR-REC-004   | US-REC-004   | `/api/job-applications`      | Applications            | Implemented |
+| BR-013 | FR-REC-005   | US-REC-005   | `/api/interviews`            | Interviews              | Implemented |
+| BR-013 | FR-REC-006   | US-REC-006   | `/api/interviews`            | Interviews              | Implemented |
+| BR-014 | FR-REC-007   | US-REC-007   | `/api/job-offers`            | Job Offers              | Implemented |
+| BR-014 | FR-REC-008   | US-REC-008   | `/api/job-offers`            | Job Offers              | Implemented |
+| BR-015 | FR-REC-010   | US-REC-009   | Recruitment → Employee       | Candidates / Employees  | Planned     |
+| BR-016 | FR-AN-001    | US-AN-001    | `/api/analytics/overview`    | HR Data                 | Implemented |
+| BR-016 | FR-AN-002    | US-AN-002    | `/api/analytics/departments` | HR Data                 | Implemented |
+| BR-017 | FR-AN-003    | US-AN-003    | `/api/analytics/attendance`  | Attendance              | Implemented |
+| BR-017 | FR-AN-004    | US-AN-004    | `/api/analytics/leave`       | Leave                   | Implemented |
+| BR-018 | FR-AN-005    | US-AN-005    | `/api/analytics/performance` | Performance             | Implemented |
+| BR-018 | FR-AN-006    | US-AN-006    | `/api/analytics/training`    | Training                | Implemented |
+| BR-018 | FR-AN-007    | US-AN-007    | `/api/analytics/recruitment` | Recruitment             | Implemented |
+| BR-019 | FR-API-001   | US-API-001   | REST API layer               | All modules             | Implemented |
+| BR-020 | FR-API-002   | US-API-002   | Error handling               | All modules             | Implemented |
+| BR-019 | FR-DB-001    | US-API-003   | PostgreSQL                   | All core tables         | Implemented |
+| BR-020 | FR-SEC-001   | US-API-004   | `.env` configuration         | Backend config          | Implemented |
+
+## 4. API Coverage
+
+Current backend modules:
+
+```text
+Employees
+Departments
+Job Roles
+Work Statuses
+Attendance
+Leave Types
+Leave Requests
+Performance Reviews
+PIP
+Training Programs
+Employee Training
+Candidates
+Job Applications
+Interviews
+Job Offers
+Analytics
+```
+
+## 5. Requirement Coverage
+
+The backend currently provides implementation coverage for the major HR360 functional areas.
+
+The only explicitly planned functional item in the current baseline is automated recruitment-to-employee transition.
+
+## 6. Planned Backend Capability
+
+```text
+Accepted Job Offer
+        |
+        v
+Automated Employee Creation
+```
+
+This remains planned and should not be represented as implemented until the functionality is developed and tested.
+
+## 7. Traceability Governance
+
+When backend functionality changes, the following artifacts should be reviewed:
+
+1. BRD
+2. Business Rules Catalogue
+3. FRD
+4. Product Backlog
+5. Acceptance Criteria
+6. API Documentation
+7. Database Architecture
+8. Test Cases
+9. UAT
+10. Traceability Matrix
+
+## 8. Version Control
+
+Backend documentation and implementation should be committed together at meaningful milestones.
+
+Git history provides technical change traceability.
+
+## 9. Document Control
+
+| Field         | Value                   |
+| ------------- | ----------------------- |
+| Document ID   | HR360-BE-006            |
+| Version       | 1.0                     |
+| Status        | Draft for Review        |
+| Owner         | Nida Khan               |
+| Product Owner | HR Business Stakeholder |
+| Date          | 20 September 2026       |

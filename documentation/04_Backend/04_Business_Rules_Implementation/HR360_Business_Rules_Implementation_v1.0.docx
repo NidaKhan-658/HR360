@@ -1,0 +1,397 @@
+# HR360 Business Rules Implementation
+
+**Project:** HR360 – Human Resource Management & Analytics System
+**Document ID:** HR360-BE-004
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+## 1. Purpose
+
+This document describes how HR360 business rules are implemented across the backend and database.
+
+## 2. Business Rule Categories
+
+HR360 business rules cover:
+
+* Employee lifecycle
+* Department-specific active status
+* Workforce status
+* Attendance
+* Leave
+* Performance
+* PIP
+* Training
+* Recruitment
+* Job offers
+* Analytics
+
+## 3. Employee Lifecycle
+
+Supported employment statuses:
+
+```text
+CANDIDATE
+PROBATION
+EMPLOYED
+ON_LEAVE
+RESIGNED
+TERMINATED
+RETIRED
+```
+
+The employee lifecycle API allows controlled status changes.
+
+Endpoint:
+
+```text
+PATCH /api/employees/:id/status
+```
+
+## 4. Department-Specific Active Rule
+
+HR360 does not use one universal active-status rule.
+
+The active status is derived based on the employee's department.
+
+## 5. HR Active Rule
+
+For HR employees:
+
+```text
+employment_status = EMPLOYED
+```
+
+Result:
+
+```text
+ACTIVE
+```
+
+Otherwise:
+
+```text
+NOT ACTIVE
+```
+
+## 6. Operations Active Rule
+
+For Operations employees:
+
+```text
+work_status = WORKING
+OR
+work_status = ONLINE
+```
+
+Result:
+
+```text
+ACTIVE
+```
+
+Otherwise:
+
+```text
+NOT ACTIVE
+```
+
+## 7. Finance Active Rule
+
+For Finance employees:
+
+```text
+salary_status = PAID
+```
+
+Result:
+
+```text
+ACTIVE
+```
+
+Otherwise:
+
+```text
+NOT ACTIVE
+```
+
+## 8. Active Status Implementation
+
+The department-specific active status is calculated through SQL/business logic.
+
+Conceptual implementation:
+
+```text
+IF Department = HR
+   AND employment_status = EMPLOYED
+THEN ACTIVE
+
+ELSE IF Department = Operations
+   AND work_status IN (WORKING, ONLINE)
+THEN ACTIVE
+
+ELSE IF Department = Finance
+   AND salary_status = PAID
+THEN ACTIVE
+
+ELSE NOT ACTIVE
+```
+
+## 9. Work Status Rules
+
+Supported work statuses include:
+
+```text
+WORKING
+ONLINE
+TRAINING
+ON_BENCH
+PIP
+ON_LEAVE
+OFFLINE
+REMOTE
+```
+
+These values provide operational workforce classification.
+
+## 10. Attendance Rules
+
+Attendance uses controlled statuses:
+
+```text
+PRESENT
+ABSENT
+LATE
+HALF_DAY
+ON_LEAVE
+HOLIDAY
+```
+
+Attendance records are associated with employees and dates.
+
+Working hours may be stored using check-in and check-out information.
+
+## 11. Leave Rules
+
+Leave requests must reference:
+
+* A valid employee
+* A valid leave type
+* A valid date range
+* A valid request status
+
+Leave types include:
+
+```text
+Annual Leave
+Sick Leave
+Casual Leave
+Emergency Leave
+```
+
+## 12. Performance Rules
+
+Performance reviews are associated with employees.
+
+Ratings are stored for analysis and historical tracking.
+
+Performance information supports:
+
+* Individual performance history
+* Performance analytics
+* Identification of employees requiring improvement plans
+
+## 13. PIP Rules
+
+A Performance Improvement Plan is associated with an employee.
+
+PIP records contain:
+
+* Start date
+* End date
+* Status
+* Review frequency
+
+Example:
+
+```text
+ACTIVE
+```
+
+PIP data can be used to monitor employee improvement activities.
+
+## 14. Training Rules
+
+Employee training records must reference valid:
+
+* Employees
+* Training programs
+
+Training participation statuses include:
+
+```text
+ENROLLED
+ATTENDED
+COMPLETED
+DID_NOT_ATTEND
+CANCELLED
+```
+
+Training scores and completion information support analytics.
+
+## 15. Candidate Rules
+
+Candidate status values are controlled:
+
+```text
+NEW
+SCREENING
+SHORTLISTED
+INTERVIEW
+OFFERED
+HIRED
+REJECTED
+WITHDRAWN
+```
+
+## 16. Application Rules
+
+A candidate can apply to a job role.
+
+The database prevents duplicate applications for the same candidate and job role combination.
+
+## 17. Interview Rules
+
+Interviews are associated with job applications.
+
+Interview information includes:
+
+* Round
+* Type
+* Schedule
+* Rating
+* Feedback
+* Result
+
+## 18. Job Offer Rules
+
+Job offers are associated with applications.
+
+Offer statuses include:
+
+```text
+DRAFT
+SENT
+ACCEPTED
+DECLINED
+EXPIRED
+CANCELLED
+```
+
+Accepted offers retain their relationship to the originating application.
+
+## 19. Recruitment-to-Employee Rule
+
+The target business process is:
+
+```text
+Accepted Job Offer
+        |
+        v
+Employee Creation
+```
+
+Automated implementation of this transition is currently:
+
+```text
+PLANNED
+```
+
+It is represented by:
+
+```text
+FR-REC-010
+US-REC-009
+AC-REC-011
+```
+
+## 20. Data Validation Rules
+
+The backend/database combination validates:
+
+* Required fields
+* Unique employee codes
+* Unique candidate emails
+* Valid statuses
+* Valid numeric values
+* Valid relationships
+* Duplicate applications
+* Referential integrity
+
+## 21. Analytics Rules
+
+Analytics APIs derive metrics from operational records.
+
+Available areas include:
+
+* Workforce overview
+* Department analytics
+* Attendance
+* Leave
+* Performance
+* Training
+* Recruitment
+
+## 22. Rule Traceability
+
+| Business Area    | Rule                        | Implementation      |
+| ---------------- | --------------------------- | ------------------- |
+| Employee         | Lifecycle status            | Employee API        |
+| HR               | EMPLOYED → ACTIVE           | Employee SQL logic  |
+| Operations       | WORKING/ONLINE → ACTIVE     | Employee SQL logic  |
+| Finance          | PAID → ACTIVE               | Employee SQL logic  |
+| Attendance       | Controlled status           | Attendance API + DB |
+| Leave            | Valid employee/type/request | Leave APIs + DB     |
+| Performance      | Rating/history              | Performance API     |
+| PIP              | Active PIP tracking         | PIP API             |
+| Training         | Enrollment/completion       | Training APIs       |
+| Recruitment      | Candidate lifecycle         | Candidate API       |
+| Applications     | Duplicate prevention        | Database constraint |
+| Offers           | Controlled offer status     | Offer API + DB      |
+| Offer transition | Accepted → Employee         | Planned             |
+| Analytics        | Aggregated HR metrics       | Analytics API       |
+
+## 23. Business Rule Ownership
+
+Business rules originate from the HR360 Business Requirements and Functional Requirements.
+
+Business ownership remains with the HR Business Stakeholder/Product Owner.
+
+Technical implementation is maintained by the development role.
+
+## 24. Change Control
+
+Changes to business rules must be reflected in:
+
+1. BRD / Business Rules Catalogue
+2. FRD
+3. User Stories
+4. Acceptance Criteria
+5. Backend implementation
+6. Database logic where applicable
+7. Testing/UAT
+8. Traceability records
+
+## 25. Document Control
+
+| Field         | Value                   |
+| ------------- | ----------------------- |
+| Document ID   | HR360-BE-004            |
+| Version       | 1.0                     |
+| Status        | Draft for Review        |
+| Owner         | Nida Khan               |
+| Product Owner | HR Business Stakeholder |
+| Date          | 20 September 2026       |

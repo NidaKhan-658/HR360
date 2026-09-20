@@ -1,0 +1,787 @@
+# HR360 API Documentation
+
+**Project:** HR360 – Human Resource Management & Analytics System
+**Document ID:** HR360-BE-002
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Role:** Business Analyst / Developer / Project Manager / Scrum Master
+**Product Owner:** HR Business Stakeholder
+
+---
+
+## 1. Document Purpose
+
+This document defines the REST API interface implemented by the HR360 backend.
+
+It provides a consolidated reference for API modules, endpoint patterns, HTTP methods, business purpose, and implementation status.
+
+---
+
+## 2. API Base URL
+
+Local development base URL:
+
+```text
+http://localhost:5000
+```
+
+All functional APIs use the following structure:
+
+```text
+http://localhost:5000/api/<module>
+```
+
+---
+
+## 3. API Design Principles
+
+HR360 APIs follow these principles:
+
+* REST-based architecture
+* JSON request and response format
+* Modular route organization
+* PostgreSQL-backed persistence
+* HTTP method semantics
+* Controlled error responses
+* Business-rule validation
+* Database integrity enforcement
+
+---
+
+# 4. Employee APIs
+
+## 4.1 Employee Management
+
+Base endpoint:
+
+```text
+/api/employees
+```
+
+### Retrieve Employees
+
+```text
+GET /api/employees
+```
+
+Purpose:
+
+Retrieve employee records together with relevant organizational and workforce information.
+
+The response includes information such as:
+
+* Employee ID
+* Employee code
+* First name
+* Last name
+* Email
+* Phone
+* Department
+* Job role
+* Work status
+* Employment status
+* Joining date
+* Salary amount
+* Salary status
+* Department-specific active status
+
+---
+
+### Retrieve Employee by ID
+
+```text
+GET /api/employees/:id
+```
+
+Purpose:
+
+Retrieve a specific employee record.
+
+Example:
+
+```text
+GET /api/employees/1
+```
+
+---
+
+### Create Employee
+
+```text
+POST /api/employees
+```
+
+Purpose:
+
+Create a new employee record.
+
+Typical information includes:
+
+```json
+{
+  "employee_code": "EMP010",
+  "first_name": "Example",
+  "last_name": "Employee",
+  "email": "example@company.com"
+}
+```
+
+The actual request body must follow the fields supported by the implemented route and database schema.
+
+---
+
+### Update Employee
+
+```text
+PUT /api/employees/:id
+```
+
+Purpose:
+
+Update employee information.
+
+---
+
+### Update Employee Lifecycle Status
+
+```text
+PATCH /api/employees/:id/status
+```
+
+Purpose:
+
+Update an employee's lifecycle status.
+
+Supported lifecycle values include:
+
+```text
+CANDIDATE
+PROBATION
+EMPLOYED
+ON_LEAVE
+RESIGNED
+TERMINATED
+RETIRED
+```
+
+Example request:
+
+```json
+{
+  "employment_status": "RESIGNED"
+}
+```
+
+---
+
+### Department-Specific Active Status
+
+The employee API derives:
+
+```text
+department_active_status
+```
+
+based on the employee's department and applicable HR360 business rule.
+
+---
+
+# 5. Department API
+
+Base endpoint:
+
+```text
+/api/departments
+```
+
+Purpose:
+
+Maintain organizational departments.
+
+The API supports department retrieval and management according to the implemented route.
+
+Example:
+
+```text
+GET /api/departments
+```
+
+---
+
+# 6. Job Role API
+
+Base endpoint:
+
+```text
+/api/job-roles
+```
+
+Purpose:
+
+Maintain job roles linked to organizational departments.
+
+Example:
+
+```text
+GET /api/job-roles
+```
+
+---
+
+# 7. Work Status API
+
+Base endpoint:
+
+```text
+/api/work-statuses
+```
+
+Purpose:
+
+Maintain workforce activity statuses.
+
+HR360 work statuses include:
+
+```text
+WORKING
+ONLINE
+TRAINING
+ON_BENCH
+PIP
+ON_LEAVE
+OFFLINE
+REMOTE
+```
+
+Example:
+
+```text
+GET /api/work-statuses
+```
+
+---
+
+# 8. Attendance API
+
+Base endpoint:
+
+```text
+/api/attendance
+```
+
+Purpose:
+
+Manage employee attendance records.
+
+Attendance statuses include:
+
+```text
+PRESENT
+ABSENT
+LATE
+HALF_DAY
+ON_LEAVE
+HOLIDAY
+```
+
+The attendance module supports:
+
+* Recording attendance
+* Retrieving attendance records
+* Working-hours information
+
+---
+
+# 9. Leave Type API
+
+Base endpoint:
+
+```text
+/api/leave-types
+```
+
+Purpose:
+
+Maintain leave categories and leave policies.
+
+Current leave types include:
+
+```text
+Annual Leave
+Sick Leave
+Casual Leave
+Emergency Leave
+```
+
+---
+
+# 10. Leave Request API
+
+Base endpoint:
+
+```text
+/api/leave-requests
+```
+
+Purpose:
+
+Manage employee leave requests.
+
+Typical lifecycle:
+
+```text
+Submitted
+    |
+    v
+Pending
+    |
+    +----> Approved
+    |
+    +----> Rejected
+```
+
+The API supports leave request submission and approval/rejection processing.
+
+---
+
+# 11. Performance Review API
+
+Base endpoint:
+
+```text
+/api/performance-reviews
+```
+
+Purpose:
+
+Manage employee performance reviews.
+
+The module supports:
+
+* Creating performance reviews
+* Recording ratings
+* Retrieving performance history
+
+The current sample performance scale uses ratings such as:
+
+```text
+1.00 – 5.00
+```
+
+---
+
+# 12. Performance Improvement Plan API
+
+Base endpoint:
+
+```text
+/api/pips
+```
+
+Purpose:
+
+Manage employee Performance Improvement Plans.
+
+PIP information includes:
+
+* Employee
+* Start date
+* End date
+* Status
+* Review frequency
+* Objectives / review information
+
+Example PIP status:
+
+```text
+ACTIVE
+```
+
+---
+
+# 13. Training Program API
+
+Base endpoint:
+
+```text
+/api/training-programs
+```
+
+Purpose:
+
+Manage organizational training programs.
+
+Current sample programs include:
+
+* Leadership Development
+* Advanced Excel for Business
+* Workplace Communication
+* Project Management Fundamentals
+* Cybersecurity Awareness
+
+---
+
+# 14. Employee Training API
+
+Base endpoint:
+
+```text
+/api/employee-training
+```
+
+Purpose:
+
+Manage employee participation in training programs.
+
+Training participation statuses include:
+
+```text
+ENROLLED
+ATTENDED
+COMPLETED
+DID_NOT_ATTEND
+CANCELLED
+```
+
+The module supports tracking:
+
+* Enrollment
+* Attendance
+* Completion
+* Scores
+* Certificate issuance
+* Employee feedback
+
+---
+
+# 15. Candidate API
+
+Base endpoint:
+
+```text
+/api/candidates
+```
+
+Purpose:
+
+Manage recruitment candidates.
+
+Candidate lifecycle includes:
+
+```text
+NEW
+SCREENING
+SHORTLISTED
+INTERVIEW
+OFFERED
+HIRED
+REJECTED
+WITHDRAWN
+```
+
+Candidate information includes:
+
+* Candidate code
+* Name
+* Email
+* Phone
+* Resume
+* Experience
+* Qualification
+* Current company
+* Current designation
+* Source
+* Status
+* Application date
+
+---
+
+# 16. Job Application API
+
+Base endpoint:
+
+```text
+/api/job-applications
+```
+
+Purpose:
+
+Manage candidate applications for job roles.
+
+Application information includes:
+
+* Candidate
+* Job role
+* Application date
+* Application status
+* Recruiter
+* Expected salary
+* Notice period
+* Recruiter notes
+
+The database prevents duplicate applications for the same candidate and job role combination.
+
+---
+
+# 17. Interview API
+
+Base endpoint:
+
+```text
+/api/interviews
+```
+
+Purpose:
+
+Manage recruitment interviews.
+
+Interview information includes:
+
+* Application
+* Interviewer
+* Interview round
+* Interview type
+* Scheduled date/time
+* Interview status
+* Rating
+* Feedback
+* Result
+
+---
+
+# 18. Job Offer API
+
+Base endpoint:
+
+```text
+/api/job-offers
+```
+
+Purpose:
+
+Manage candidate job offers.
+
+Offer information includes:
+
+* Application
+* Offer date
+* Joining date
+* Offered salary
+* Employment type
+* Offer status
+* Accepted date
+* Rejection reason
+
+Offer statuses include:
+
+```text
+DRAFT
+SENT
+ACCEPTED
+DECLINED
+EXPIRED
+CANCELLED
+```
+
+---
+
+# 19. Recruitment-to-Employee Transition
+
+The functional requirement for automated transition from an accepted job offer to an employee record is currently:
+
+```text
+PLANNED
+```
+
+The target process is:
+
+```text
+Candidate
+    |
+    v
+Application
+    |
+    v
+Interview
+    |
+    v
+Job Offer
+    |
+    v
+Accepted Offer
+    |
+    v
+Employee Record
+```
+
+The automated final transition is not currently implemented.
+
+---
+
+# 20. Analytics APIs
+
+Base endpoint:
+
+```text
+/api/analytics
+```
+
+The analytics module provides:
+
+| Endpoint                     | Purpose               |
+| ---------------------------- | --------------------- |
+| `/api/analytics/overview`    | Overall HR metrics    |
+| `/api/analytics/departments` | Department analytics  |
+| `/api/analytics/attendance`  | Attendance analytics  |
+| `/api/analytics/leave`       | Leave analytics       |
+| `/api/analytics/performance` | Performance analytics |
+| `/api/analytics/training`    | Training analytics    |
+| `/api/analytics/recruitment` | Recruitment analytics |
+
+These endpoints provide the backend data layer for future dashboards and Power BI integration.
+
+---
+
+# 21. Health Check API
+
+Endpoint:
+
+```text
+GET /api/health
+```
+
+Purpose:
+
+Verify backend availability and PostgreSQL connectivity.
+
+Successful response:
+
+```json
+{
+  "success": true,
+  "message": "HR360 Backend and PostgreSQL are connected",
+  "databaseTime": "timestamp"
+}
+```
+
+---
+
+# 22. API Module Inventory
+
+|  # | Module                             | Base Endpoint              | Status      |
+| -: | ---------------------------------- | -------------------------- | ----------- |
+|  1 | Employees                          | `/api/employees`           | Implemented |
+|  2 | Departments                        | `/api/departments`         | Implemented |
+|  3 | Job Roles                          | `/api/job-roles`           | Implemented |
+|  4 | Work Statuses                      | `/api/work-statuses`       | Implemented |
+|  5 | Attendance                         | `/api/attendance`          | Implemented |
+|  6 | Leave Types                        | `/api/leave-types`         | Implemented |
+|  7 | Leave Requests                     | `/api/leave-requests`      | Implemented |
+|  8 | Performance Reviews                | `/api/performance-reviews` | Implemented |
+|  9 | PIP                                | `/api/pips`                | Implemented |
+| 10 | Training Programs                  | `/api/training-programs`   | Implemented |
+| 11 | Employee Training                  | `/api/employee-training`   | Implemented |
+| 12 | Interviews                         | `/api/interviews`          | Implemented |
+| 13 | Candidates                         | `/api/candidates`          | Implemented |
+| 14 | Job Applications                   | `/api/job-applications`    | Implemented |
+| 15 | Job Offers                         | `/api/job-offers`          | Implemented |
+| 16 | Analytics                          | `/api/analytics`           | Implemented |
+| 17 | Recruitment-to-Employee Automation | Future integration         | Planned     |
+
+---
+
+# 23. API-to-FRD Traceability
+
+| API Area               | Related FRD                  |
+| ---------------------- | ---------------------------- |
+| Employees              | FR-EMP-001 to FR-EMP-005     |
+| Departments            | FR-DEPT-001                  |
+| Job Roles              | FR-ROLE-001                  |
+| Work Status            | FR-WORK-001 to FR-WORK-002   |
+| Attendance             | FR-ATT-001 to FR-ATT-003     |
+| Leave                  | FR-LEAVE-001 to FR-LEAVE-004 |
+| Performance            | FR-PERF-001 to FR-PERF-002   |
+| PIP                    | FR-PIP-001 to FR-PIP-002     |
+| Training               | FR-TRAIN-001 to FR-TRAIN-004 |
+| Recruitment            | FR-REC-001 to FR-REC-009     |
+| Recruitment Transition | FR-REC-010                   |
+| Analytics              | FR-AN-001 to FR-AN-007       |
+| API Platform           | FR-API-001 to FR-API-003     |
+
+---
+
+# 24. API Testing Approach
+
+API testing should validate:
+
+* Successful requests
+* Invalid requests
+* Missing required fields
+* Invalid status values
+* Duplicate records
+* Invalid IDs
+* Database constraint violations
+* Business-rule outcomes
+* HTTP status codes
+* JSON response structure
+
+Testing tools may include:
+
+```text
+PowerShell Invoke-RestMethod
+Postman
+Browser GET requests
+VS Code terminal
+```
+
+---
+
+# 25. API Security Considerations
+
+API consumers must not receive database credentials.
+
+Sensitive configuration remains in:
+
+```text
+backend/.env
+```
+
+The `.env` file must remain excluded from Git.
+
+API requests should use validated input and controlled error handling.
+
+Authentication and authorization are planned future enhancements unless separately implemented.
+
+---
+
+# 26. API Status Convention
+
+The current HR360 backlog uses only:
+
+```text
+Implemented
+Planned
+```
+
+Current API implementation status:
+
+```text
+Implemented = Operational backend API
+Planned = Requirement identified but not yet implemented
+```
+
+---
+
+# 27. API Documentation Control
+
+| Field          | Value                   |
+| -------------- | ----------------------- |
+| Document ID    | HR360-BE-002            |
+| Version        | 1.0                     |
+| Status         | Draft for Review        |
+| Owner          | Nida Khan               |
+| Product Owner  | HR Business Stakeholder |
+| Date           | 20 September 2026       |
+| Review Trigger | API/module changes      |
