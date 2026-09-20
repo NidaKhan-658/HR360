@@ -14,6 +14,7 @@ const employeeTrainingRoutes = require("./routes/employeeTraining");
 const interviewRoutes = require("./routes/interviews");
 const candidateRoutes = require("./routes/candidates");
 const jobApplicationRoutes = require("./routes/jobApplications");
+const jobOfferRoutes = require("./routes/jobOffers");
 
 const app = express();
 
@@ -37,6 +38,8 @@ app.use("/api/employee-training", employeeTrainingRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/candidates", candidateRoutes);    
 app.use("/api/job-applications", jobApplicationRoutes);
+app.use("/api/job-offers", jobOfferRoutes);
+
 
 
 // Health check + database test
