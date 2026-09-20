@@ -1,0 +1,196 @@
+# HR360 — Frontend API Integration Document
+
+**Document ID:** HR360-FE-004
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+
+## 1. Purpose
+
+This document defines how the React frontend will communicate with the existing HR360 Node.js/Express REST APIs.
+
+## 2. Integration Architecture
+
+```text
+React Component
+      |
+      v
+Frontend Service
+      |
+      v
+API Client
+      |
+      v
+HTTP Request
+      |
+      v
+Express REST API
+      |
+      v
+PostgreSQL
+```
+
+## 3. API Base URL
+
+Development:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+The API URL shall be configurable through the frontend environment.
+
+## 4. API Service Structure
+
+```text
+services/
+├── api.js
+├── employeeService.js
+├── departmentService.js
+├── attendanceService.js
+├── leaveService.js
+├── performanceService.js
+├── trainingService.js
+├── recruitmentService.js
+└── analyticsService.js
+```
+
+## 5. API Modules
+
+| Module            | Endpoint                   |
+| ----------------- | -------------------------- |
+| Employees         | `/api/employees`           |
+| Departments       | `/api/departments`         |
+| Job Roles         | `/api/job-roles`           |
+| Work Statuses     | `/api/work-statuses`       |
+| Attendance        | `/api/attendance`          |
+| Leave Types       | `/api/leave-types`         |
+| Leave Requests    | `/api/leave-requests`      |
+| Performance       | `/api/performance-reviews` |
+| PIP               | `/api/pips`                |
+| Training Programs | `/api/training-programs`   |
+| Employee Training | `/api/employee-training`   |
+| Candidates        | `/api/candidates`          |
+| Applications      | `/api/job-applications`    |
+| Interviews        | `/api/interviews`          |
+| Job Offers        | `/api/job-offers`          |
+| Analytics         | `/api/analytics`           |
+
+## 6. Request Flow
+
+```text
+User Action
+   ↓
+React Component
+   ↓
+Service Function
+   ↓
+API Request
+   ↓
+Backend
+   ↓
+Database
+   ↓
+JSON Response
+   ↓
+React State
+   ↓
+UI Refresh
+```
+
+## 7. HTTP Methods
+
+The frontend shall use standard REST methods:
+
+```text
+GET     Retrieve
+POST    Create
+PUT/PATCH Update
+DELETE  Delete where supported
+```
+
+## 8. Response Handling
+
+Successful responses shall update the appropriate React state.
+
+Failed responses shall:
+
+* Display a user-friendly message
+* Preserve the current UI where possible
+* Allow retry
+* Avoid exposing technical details
+
+## 9. Loading State
+
+Each API-driven page shall provide a loading state while waiting for a response.
+
+## 10. Validation
+
+Frontend validation shall improve user experience.
+
+Backend validation remains authoritative.
+
+## 11. Employee Active Status
+
+The employee service shall retrieve the backend-calculated:
+
+```text
+department_active_status
+```
+
+The frontend shall display the value without recreating the department-specific business logic.
+
+## 12. Analytics Integration
+
+Analytics services shall consume:
+
+```text
+/api/analytics/overview
+/api/analytics/departments
+/api/analytics/attendance
+/api/analytics/leave
+/api/analytics/performance
+/api/analytics/training
+/api/analytics/recruitment
+```
+
+## 13. Security
+
+The frontend shall never contain:
+
+* PostgreSQL credentials
+* Backend database passwords
+* Private API secrets
+
+Only frontend-safe environment variables may be exposed through Vite.
+
+## 14. Planned Integration
+
+The following remains planned:
+
+```text
+Accepted Job Offer
+        ↓
+Employee Creation
+```
+
+The frontend shall not represent this as implemented until the backend capability exists.
+
+## 15. Testing
+
+API integration shall be tested for:
+
+* Successful GET
+* Successful POST
+* Successful UPDATE
+* Validation errors
+* Invalid IDs
+* Server errors
+* Empty responses
+* Database-related failures
+
+## 16. Document Control
+
+**Owner:** Nida Khan
+**Related:** API Documentation, Backend Architecture, FRD, Agile Backlog

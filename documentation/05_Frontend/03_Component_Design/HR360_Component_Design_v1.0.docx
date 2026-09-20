@@ -1,0 +1,240 @@
+# HR360 — Frontend Component Design
+
+**Document ID:** HR360-FE-003
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+
+## 1. Purpose
+
+This document defines the reusable React component architecture for HR360.
+
+## 2. Component Architecture
+
+```text
+App
+ |
+ +-- Layout
+ |    +-- Navbar
+ |    +-- Sidebar
+ |    +-- PageContainer
+ |
+ +-- Common Components
+ |    +-- Button
+ |    +-- Modal
+ |    +-- DataTable
+ |    +-- StatusBadge
+ |    +-- SearchBar
+ |    +-- FilterPanel
+ |    +-- LoadingSpinner
+ |    +-- ErrorMessage
+ |
+ +-- Module Components
+      +-- Employees
+      +-- Attendance
+      +-- Leave
+      +-- Performance
+      +-- Training
+      +-- Recruitment
+      +-- Analytics
+```
+
+## 3. Common Components
+
+### Navbar
+
+Responsible for:
+
+* Application identity
+* User information
+* Future authentication controls
+
+### Sidebar
+
+Responsible for:
+
+* Main navigation
+* Module navigation
+* Active page indication
+
+### DashboardCard
+
+Displays:
+
+* KPI title
+* KPI value
+* Optional trend/context
+
+### DataTable
+
+Reusable table for:
+
+* Employees
+* Attendance
+* Leave
+* Performance
+* Training
+* Candidates
+* Applications
+* Interviews
+* Offers
+
+### StatusBadge
+
+Displays business status consistently.
+
+### SearchBar
+
+Provides reusable search functionality.
+
+### FilterPanel
+
+Provides module-specific filtering.
+
+### Modal
+
+Used for:
+
+* Create forms
+* Edit forms
+* Confirmation dialogs
+* Detail views
+
+### LoadingSpinner
+
+Displays API loading state.
+
+### ErrorMessage
+
+Displays user-friendly API or validation errors.
+
+### EmptyState
+
+Displays meaningful information when no records exist.
+
+## 4. Employee Components
+
+```text
+EmployeeList
+EmployeeTable
+EmployeeForm
+EmployeeDetails
+EmployeeStatusBadge
+EmployeeFilters
+```
+
+## 5. Attendance Components
+
+```text
+AttendanceList
+AttendanceTable
+AttendanceForm
+AttendanceFilters
+AttendanceSummary
+```
+
+## 6. Leave Components
+
+```text
+LeaveRequestList
+LeaveRequestForm
+LeaveApproval
+LeaveTypeList
+LeaveStatusBadge
+```
+
+## 7. Performance Components
+
+```text
+PerformanceList
+PerformanceForm
+PerformanceHistory
+PerformanceScore
+PIPList
+PIPForm
+PIPStatus
+```
+
+## 8. Training Components
+
+```text
+TrainingProgramList
+TrainingProgramForm
+EnrollmentList
+TrainingCompletion
+TrainingScore
+TrainingAnalytics
+```
+
+## 9. Recruitment Components
+
+```text
+CandidateList
+CandidateForm
+ApplicationList
+ApplicationForm
+InterviewList
+InterviewForm
+OfferList
+OfferForm
+RecruitmentStatusBadge
+```
+
+## 10. Analytics Components
+
+```text
+KpiCard
+DepartmentChart
+AttendanceChart
+LeaveChart
+PerformanceChart
+TrainingChart
+RecruitmentChart
+AnalyticsFilters
+```
+
+## 11. Component Rules
+
+Components should:
+
+* Have a single clear responsibility
+* Be reusable where practical
+* Avoid direct database access
+* Avoid embedding business rules unnecessarily
+* Receive data through props or controlled state
+* Use service functions for API communication
+
+## 12. Business Rule Ownership
+
+The backend remains authoritative for business rules.
+
+For example, the frontend shall display:
+
+```text
+department_active_status
+```
+
+rather than independently calculating the employee's active status.
+
+## 13. Component Naming
+
+React components shall use PascalCase.
+
+Examples:
+
+```text
+EmployeeList.jsx
+EmployeeForm.jsx
+StatusBadge.jsx
+DashboardCard.jsx
+```
+
+## 14. Maintainability
+
+Components shall be grouped by functional area to make future development and testing easier.
+
+## 15. Document Control
+
+**Owner:** Nida Khan
+**Related:** Frontend Architecture, UI/UX Requirements, FRD, Agile Backlog

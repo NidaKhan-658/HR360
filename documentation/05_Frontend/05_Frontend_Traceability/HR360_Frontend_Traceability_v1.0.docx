@@ -1,0 +1,122 @@
+# HR360 — Frontend Traceability Document
+
+**Document ID:** HR360-FE-005
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+
+## 1. Purpose
+
+This document establishes traceability between business requirements and the HR360 frontend implementation.
+
+## 2. Traceability Chain
+
+```text
+BRD
+ ↓
+Business Rule
+ ↓
+FRD
+ ↓
+User Story
+ ↓
+Acceptance Criteria
+ ↓
+API
+ ↓
+Frontend Page
+ ↓
+React Component
+ ↓
+Frontend Test
+```
+
+## 3. Employee Traceability
+
+| Requirement | User Story | API                         | Frontend       |
+| ----------- | ---------- | --------------------------- | -------------- |
+| FR-EMP-001  | US-EMP-001 | `/api/employees`            | EmployeeForm   |
+| FR-EMP-002  | US-EMP-002 | `/api/employees`            | EmployeeList   |
+| FR-EMP-003  | US-EMP-003 | `/api/employees`            | EmployeeForm   |
+| FR-EMP-004  | US-EMP-004 | `/api/employees/:id/status` | EmployeeStatus |
+| FR-EMP-005  | US-EMP-005 | `/api/employees`            | StatusBadge    |
+
+## 4. Operations Traceability
+
+| Requirement  | User Story   | API                   | Frontend          |
+| ------------ | ------------ | --------------------- | ----------------- |
+| FR-ATT-001   | US-ATT-001   | `/api/attendance`     | AttendanceForm    |
+| FR-ATT-002   | US-ATT-002   | `/api/attendance`     | AttendanceList    |
+| FR-ATT-003   | US-ATT-003   | `/api/attendance`     | AttendanceSummary |
+| FR-LEAVE-001 | US-LEAVE-001 | `/api/leave-requests` | LeaveRequestForm  |
+| FR-LEAVE-002 | US-LEAVE-002 | `/api/leave-requests` | LeaveApproval     |
+| FR-LEAVE-003 | US-LEAVE-003 | `/api/leave-types`    | LeaveTypeList     |
+
+## 5. Performance Traceability
+
+| Requirement | User Story  | API                        | Frontend           |
+| ----------- | ----------- | -------------------------- | ------------------ |
+| FR-PERF-001 | US-PERF-001 | `/api/performance-reviews` | PerformanceForm    |
+| FR-PERF-002 | US-PERF-002 | `/api/performance-reviews` | PerformanceHistory |
+| FR-PIP-001  | US-PIP-001  | `/api/pips`                | PIPForm            |
+| FR-PIP-002  | US-PIP-002  | `/api/pips`                | PIPList            |
+
+## 6. Training Traceability
+
+| Requirement  | User Story   | API                      | Frontend            |
+| ------------ | ------------ | ------------------------ | ------------------- |
+| FR-TRAIN-001 | US-TRAIN-001 | `/api/training-programs` | TrainingProgramList |
+| FR-TRAIN-002 | US-TRAIN-002 | `/api/employee-training` | EnrollmentList      |
+| FR-TRAIN-003 | US-TRAIN-003 | `/api/employee-training` | TrainingCompletion  |
+| FR-TRAIN-004 | US-TRAIN-004 | `/api/employee-training` | TrainingAnalytics   |
+
+## 7. Recruitment Traceability
+
+| Requirement | User Story | API                     | Frontend        |
+| ----------- | ---------- | ----------------------- | --------------- |
+| FR-REC-001  | US-REC-001 | `/api/candidates`       | CandidateList   |
+| FR-REC-002  | US-REC-002 | `/api/candidates`       | CandidateStatus |
+| FR-REC-003  | US-REC-003 | `/api/job-applications` | ApplicationList |
+| FR-REC-005  | US-REC-005 | `/api/interviews`       | InterviewList   |
+| FR-REC-007  | US-REC-007 | `/api/job-offers`       | OfferList       |
+| FR-REC-010  | US-REC-009 | Planned                 | Planned         |
+
+## 8. Analytics Traceability
+
+| Requirement | User Story | API                          | Frontend         |
+| ----------- | ---------- | ---------------------------- | ---------------- |
+| FR-AN-001   | US-AN-001  | `/api/analytics/overview`    | Dashboard        |
+| FR-AN-002   | US-AN-002  | `/api/analytics/departments` | DepartmentChart  |
+| FR-AN-003   | US-AN-003  | `/api/analytics/attendance`  | AttendanceChart  |
+| FR-AN-004   | US-AN-004  | `/api/analytics/leave`       | LeaveChart       |
+| FR-AN-005   | US-AN-005  | `/api/analytics/performance` | PerformanceChart |
+| FR-AN-006   | US-AN-006  | `/api/analytics/training`    | TrainingChart    |
+| FR-AN-007   | US-AN-007  | `/api/analytics/recruitment` | RecruitmentChart |
+
+## 9. Planned Functionality
+
+The following remains planned:
+
+**FR-REC-010 / US-REC-009**
+
+Accepted job offer → employee record creation.
+
+## 10. Traceability Governance
+
+Any new frontend functionality shall be linked to:
+
+* Business requirement
+* Functional requirement
+* User story
+* Acceptance criteria
+* API or system area
+* Frontend component
+* Test case
+
+This prevents undocumented functionality from being added to the application.
+
+## 11. Document Control
+
+**Owner:** Nida Khan
+**Related:** BRD, FRD, Agile Backlog, Backend Traceability, Frontend Architecture

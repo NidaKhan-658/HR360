@@ -1,0 +1,949 @@
+# HR360 — Frontend Architecture Document
+
+**Document ID:** HR360-FE-001
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Project:** HR360 — Human Resource Management & Analytics System
+**Prepared By:** Nida Khan
+**Business Analyst / Developer / Project Manager / Scrum Master:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+---
+
+## 1. Document Purpose
+
+This document defines the frontend architecture for the HR360 Human Resource Management & Analytics System.
+
+The purpose is to establish a structured, scalable, maintainable and user-friendly React frontend that integrates with the existing Node.js/Express backend APIs and PostgreSQL database layer.
+
+The frontend will provide HR, Operations, Finance, Recruitment and management users with access to employee management, workforce operations, attendance, leave, performance, training, recruitment and analytics functionality.
+
+---
+
+## 2. Frontend Objectives
+
+The HR360 frontend shall:
+
+1. Provide a professional HR management interface.
+2. Consume backend REST APIs through controlled API services.
+3. Provide role-oriented navigation and functionality.
+4. Display employee and workforce information clearly.
+5. Support CRUD operations where backend APIs are available.
+6. Display department-specific employee active status.
+7. Provide dashboards and analytical visualizations.
+8. Provide consistent validation and error handling.
+9. Support responsive desktop and tablet layouts.
+10. Maintain clear separation between UI, business interaction logic and API communication.
+11. Support future authentication and authorization.
+12. Support future Power BI integration.
+
+---
+
+## 3. Technology Stack
+
+| Layer              | Technology                               |
+| ------------------ | ---------------------------------------- |
+| Frontend Framework | React                                    |
+| Build Tool         | Vite                                     |
+| Language           | JavaScript                               |
+| Styling            | CSS / responsive CSS                     |
+| API Communication  | Fetch API or Axios                       |
+| Routing            | React Router                             |
+| Charts             | Chart library / visualization components |
+| Backend            | Node.js + Express.js                     |
+| Database           | PostgreSQL 18                            |
+| API Style          | REST                                     |
+| Version Control    | Git / GitHub                             |
+| BI Integration     | Power BI                                 |
+| Development IDE    | Visual Studio Code                       |
+
+Python is not required for the frontend implementation.
+
+---
+
+## 4. Frontend Logical Architecture
+
+The frontend follows a layered component architecture:
+
+```text
+User
+  |
+  v
+React Application
+  |
+  +----------------------+
+  | Presentation Layer   |
+  | Pages / Components   |
+  +----------------------+
+             |
+             v
+  +----------------------+
+  | Application Layer    |
+  | State / UI Logic     |
+  +----------------------+
+             |
+             v
+  +----------------------+
+  | API Service Layer    |
+  | REST API Calls       |
+  +----------------------+
+             |
+             v
+  +----------------------+
+  | HR360 Backend        |
+  | Node.js / Express    |
+  +----------------------+
+             |
+             v
+  +----------------------+
+  | PostgreSQL Database  |
+  +----------------------+
+```
+
+---
+
+## 5. Proposed React Project Structure
+
+The frontend application shall be created separately from the backend.
+
+Recommended structure:
+
+```text
+HR360/
+├── backend/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   ├── dashboard/
+│   │   │   ├── employees/
+│   │   │   ├── attendance/
+│   │   │   ├── leave/
+│   │   │   ├── performance/
+│   │   │   ├── training/
+│   │   │   ├── recruitment/
+│   │   │   └── analytics/
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Dashboard/
+│   │   │   ├── Employees/
+│   │   │   ├── Departments/
+│   │   │   ├── Attendance/
+│   │   │   ├── Leave/
+│   │   │   ├── Performance/
+│   │   │   ├── Training/
+│   │   │   ├── Recruitment/
+│   │   │   └── Analytics/
+│   │   │
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   ├── employeeService.js
+│   │   │   ├── departmentService.js
+│   │   │   ├── attendanceService.js
+│   │   │   ├── leaveService.js
+│   │   │   ├── performanceService.js
+│   │   │   ├── trainingService.js
+│   │   │   ├── recruitmentService.js
+│   │   │   └── analyticsService.js
+│   │   │
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   ├── routes/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   ├── public/
+│   ├── .env
+│   ├── package.json
+│   └── vite.config.js
+```
+
+---
+
+## 6. Page Architecture
+
+The main application shall contain the following functional areas.
+
+### 6.1 Dashboard
+
+The dashboard will provide:
+
+* Total employees
+* Active employees
+* Employees on leave
+* Employees on bench
+* Employees under training
+* Employees on PIP
+* Attendance summary
+* Leave summary
+* Performance summary
+* Training summary
+* Recruitment summary
+* Department-level workforce information
+
+---
+
+### 6.2 Employee Management
+
+Employee pages shall support:
+
+* Employee list
+* Employee search
+* Employee filtering
+* Employee details
+* Create employee
+* Edit employee
+* Lifecycle status
+* Department
+* Role
+* Work status
+* Salary information
+* Department-specific active status
+
+Backend integration:
+
+```text
+/api/employees
+```
+
+---
+
+### 6.3 Department Management
+
+The frontend shall provide department information and management functionality.
+
+Backend:
+
+```text
+/api/departments
+```
+
+---
+
+### 6.4 Job Role Management
+
+The frontend shall provide job-role information.
+
+Backend:
+
+```text
+/api/job-roles
+```
+
+---
+
+### 6.5 Workforce Status
+
+The frontend shall display work statuses such as:
+
+```text
+WORKING
+ONLINE
+TRAINING
+ON_BENCH
+PIP
+ON_LEAVE
+OFFLINE
+REMOTE
+```
+
+Backend:
+
+```text
+/api/work-statuses
+```
+
+---
+
+## 7. Attendance Module
+
+The attendance interface shall support:
+
+* Attendance records
+* Employee filtering
+* Date filtering
+* Attendance status
+* Check-in time
+* Check-out time
+* Working hours
+* Attendance summary
+
+Supported statuses:
+
+```text
+PRESENT
+ABSENT
+LATE
+HALF_DAY
+ON_LEAVE
+HOLIDAY
+```
+
+Backend:
+
+```text
+/api/attendance
+```
+
+---
+
+## 8. Leave Management
+
+The leave module shall support:
+
+* Leave request list
+* Leave request creation
+* Leave approval
+* Leave rejection
+* Leave types
+* Leave dates
+* Number of days
+* Approval information
+* Leave status
+
+Backend:
+
+```text
+/api/leave-types
+/api/leave-requests
+```
+
+---
+
+## 9. Performance & PIP
+
+The frontend shall provide:
+
+### Performance
+
+* Performance review list
+* Employee performance history
+* Review scores
+* Reviewer information
+* Review comments
+
+Backend:
+
+```text
+/api/performance-reviews
+```
+
+### Performance Improvement Plans
+
+* PIP list
+* PIP details
+* Start date
+* End date
+* PIP status
+* Review frequency
+* Improvement objectives
+
+Backend:
+
+```text
+/api/pips
+```
+
+---
+
+## 10. Training Module
+
+The training interface shall support:
+
+* Training program list
+* Training program details
+* Employee enrollment
+* Training attendance
+* Completion status
+* Training score
+* Certificate status
+* Employee feedback
+* Training analytics
+
+Backend:
+
+```text
+/api/training-programs
+/api/employee-training
+```
+
+---
+
+## 11. Recruitment Module
+
+The recruitment interface shall contain:
+
+### Candidates
+
+```text
+/api/candidates
+```
+
+### Job Applications
+
+```text
+/api/job-applications
+```
+
+### Interviews
+
+```text
+/api/interviews
+```
+
+### Job Offers
+
+```text
+/api/job-offers
+```
+
+Recruitment status information shall be presented visually using consistent status indicators.
+
+The automated accepted-offer-to-employee transition is currently **Planned** and shall not be presented as an implemented frontend capability until the backend functionality is developed.
+
+---
+
+## 12. Analytics Dashboard
+
+The frontend shall consume the HR360 analytics APIs.
+
+Available analytics endpoints:
+
+```text
+/api/analytics/overview
+/api/analytics/departments
+/api/analytics/attendance
+/api/analytics/leave
+/api/analytics/performance
+/api/analytics/training
+/api/analytics/recruitment
+```
+
+The analytics interface shall support:
+
+* KPI cards
+* Department charts
+* Attendance charts
+* Leave charts
+* Performance charts
+* Training charts
+* Recruitment charts
+* Summary tables
+* Filters
+
+---
+
+## 13. Department-Specific Active Status
+
+The frontend shall display the backend-calculated `department_active_status`.
+
+The frontend shall not independently redefine the business rule.
+
+### HR
+
+```text
+employment_status = EMPLOYED
+        ↓
+ACTIVE
+```
+
+### Operations
+
+```text
+work_status = WORKING or ONLINE
+        ↓
+ACTIVE
+```
+
+### Finance
+
+```text
+salary_status = PAID
+        ↓
+ACTIVE
+```
+
+Otherwise:
+
+```text
+NOT ACTIVE
+```
+
+The backend remains the authoritative source for this calculated business status.
+
+---
+
+## 14. Navigation Architecture
+
+The proposed application navigation is:
+
+```text
+Dashboard
+
+Workforce
+├── Employees
+├── Departments
+├── Job Roles
+└── Work Status
+
+Operations
+├── Attendance
+└── Leave
+
+People Development
+├── Performance
+├── PIP
+└── Training
+
+Recruitment
+├── Candidates
+├── Applications
+├── Interviews
+└── Job Offers
+
+Analytics
+└── HR Analytics
+```
+
+---
+
+## 15. Common UI Components
+
+Reusable components shall be created to maintain consistency.
+
+Examples:
+
+```text
+Navbar
+Sidebar
+PageHeader
+DashboardCard
+DataTable
+SearchBar
+FilterPanel
+StatusBadge
+Modal
+FormInput
+SelectInput
+DateInput
+Button
+LoadingSpinner
+ErrorMessage
+EmptyState
+Pagination
+ConfirmDialog
+ChartCard
+```
+
+Reusable components should be preferred over duplicated UI code.
+
+---
+
+## 16. API Service Architecture
+
+API communication shall be separated from page components.
+
+Example:
+
+```text
+React Page
+    ↓
+Service Function
+    ↓
+API Client
+    ↓
+Express REST API
+    ↓
+PostgreSQL
+```
+
+The frontend shall maintain a central API configuration.
+
+Example:
+
+```text
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+Production configuration shall use an environment-specific API URL.
+
+---
+
+## 17. State Management
+
+The initial frontend implementation shall use React state and reusable hooks where appropriate.
+
+Examples:
+
+```text
+useState
+useEffect
+useContext
+custom hooks
+```
+
+Global state should only be introduced where shared application state requires it.
+
+Potential future global state areas include:
+
+* authenticated user
+* permissions
+* application configuration
+* global filters
+* notification state
+
+---
+
+## 18. Loading and Error Handling
+
+The frontend shall provide clear user feedback for API operations.
+
+### Loading
+
+```text
+Loading employee data...
+Loading dashboard...
+Loading analytics...
+```
+
+### API failure
+
+The interface shall display a user-friendly error message rather than exposing raw server errors.
+
+Example:
+
+```text
+Unable to load employee information.
+Please try again.
+```
+
+### Empty data
+
+Example:
+
+```text
+No employees found.
+```
+
+---
+
+## 19. Form Validation
+
+Frontend validation shall provide immediate feedback for common input errors.
+
+Examples:
+
+* Required fields
+* Email format
+* Numeric values
+* Date validation
+* Salary validation
+* Duplicate identifiers
+* Invalid status values
+
+Backend validation remains authoritative.
+
+Frontend validation must not replace backend validation.
+
+---
+
+## 20. Responsive Design
+
+The frontend shall support:
+
+* Desktop
+* Laptop
+* Tablet
+
+The initial project is primarily designed for internal business desktop usage.
+
+The layout shall avoid unnecessary horizontal scrolling and maintain readable tables and dashboards.
+
+---
+
+## 21. Security Architecture
+
+The frontend shall follow these principles:
+
+1. No database credentials in frontend code.
+2. No PostgreSQL connection directly from React.
+3. API communication only through the backend.
+4. `.env` files containing secrets must not be committed.
+5. Authentication shall be added before production deployment.
+6. Authorization shall eventually be enforced by the backend.
+7. Sensitive information shall not be stored unnecessarily in browser storage.
+
+---
+
+## 22. Environment Configuration
+
+Development environment:
+
+```text
+frontend/.env
+```
+
+Example:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+Only frontend-safe configuration variables prefixed with `VITE_` shall be exposed to the Vite application.
+
+Database credentials must remain exclusively in the backend environment.
+
+---
+
+## 23. Frontend to Backend Integration
+
+The integration chain shall be:
+
+```text
+React Component
+      ↓
+Frontend Service
+      ↓
+HTTP Request
+      ↓
+Express Route
+      ↓
+Backend Business Logic
+      ↓
+PostgreSQL
+      ↓
+JSON Response
+      ↓
+React State
+      ↓
+UI Update
+```
+
+This separation ensures that the frontend does not directly access the database.
+
+---
+
+## 24. Traceability
+
+Frontend implementation shall remain aligned with existing project documentation.
+
+```text
+BRD
+ ↓
+Business Rule
+ ↓
+FRD
+ ↓
+User Story
+ ↓
+Acceptance Criteria
+ ↓
+API
+ ↓
+Frontend Page
+ ↓
+React Component
+ ↓
+Test Case
+```
+
+Example:
+
+```text
+BR-004
+ ↓
+FR-EMP-005
+ ↓
+US-EMP-005
+ ↓
+AC-EMP-006/007/008/009
+ ↓
+GET /api/employees
+ ↓
+Employee List
+ ↓
+Active Status Badge
+```
+
+---
+
+## 25. Performance Considerations
+
+The frontend should:
+
+* Avoid unnecessary API calls.
+* Load data asynchronously.
+* Reuse API results where appropriate.
+* Avoid unnecessary component re-renders.
+* Use pagination for large datasets.
+* Use appropriate chart rendering techniques.
+* Keep components modular.
+
+---
+
+## 26. Future Authentication & Authorization
+
+Authentication and authorization are future enhancements.
+
+Potential roles include:
+
+```text
+HR Administrator
+HR Manager
+Operations Manager
+Finance Manager
+Recruitment User
+Management User
+Employee
+```
+
+Future access control shall be enforced primarily by the backend.
+
+The frontend shall hide or disable functionality based on permissions only as a user-experience measure; backend authorization shall remain authoritative.
+
+---
+
+## 27. Power BI Integration
+
+The HR360 frontend and Power BI analytics layer shall remain logically separated.
+
+The architecture is:
+
+```text
+PostgreSQL
+     |
+     +------> HR360 Backend ------> React Frontend
+     |
+     +------> Power BI
+```
+
+The React application will provide operational dashboards while Power BI will provide advanced business intelligence and reporting.
+
+---
+
+## 28. Git & Source Control
+
+Frontend source code shall be maintained in Git.
+
+Recommended development cycle:
+
+```text
+Create Feature
+      ↓
+Develop
+      ↓
+Test
+      ↓
+Git Status
+      ↓
+Git Add
+      ↓
+Git Commit
+      ↓
+Git Push
+```
+
+Commits should describe the completed change.
+
+Examples:
+
+```text
+Add HR dashboard layout
+Add employee management UI
+Integrate employee APIs
+Add attendance dashboard
+Add recruitment pages
+Add analytics charts
+```
+
+---
+
+## 29. Non-Functional Requirements Alignment
+
+The frontend shall support the following existing requirements:
+
+| Requirement     | Frontend Implementation      |
+| --------------- | ---------------------------- |
+| Usability       | Consistent navigation and UI |
+| Performance     | Efficient API usage          |
+| Reliability     | Loading/error handling       |
+| Maintainability | Modular components           |
+| Scalability     | Feature-based architecture   |
+| Security        | Backend-mediated API access  |
+| Compatibility   | Modern browser support       |
+
+---
+
+## 30. Current Implementation Status
+
+The frontend architecture is defined.
+
+Current status:
+
+```text
+Frontend Documentation       Defined
+React Application             Planned
+Vite Setup                    Planned
+UI Components                 Planned
+API Integration               Planned
+Frontend Testing              Planned
+Power BI Integration          Planned
+Authentication                Future
+Authorization                Future
+```
+
+Backend APIs required for the initial frontend are already available.
+
+---
+
+## 31. Future Frontend Enhancements
+
+Potential future enhancements include:
+
+* Authentication
+* Role-based access control
+* Advanced dashboard filters
+* Notifications
+* Employee self-service
+* Document management
+* Export to Excel/PDF
+* Advanced Power BI embedding
+* Audit history
+* Mobile-responsive improvements
+
+These enhancements shall be evaluated through the Agile backlog before implementation.
+
+---
+
+## 32. Document Control
+
+**Document ID:** HR360-FE-001
+**Version:** 1.0
+**Status:** Draft for Review
+**Owner:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+**Review Frequency:** At major frontend architecture changes
+**Source Control:** Git/GitHub
+**Related Documents:**
+
+* HR360 Project Charter
+* HR360 BRD
+* HR360 FRD
+* HR360 Agile Backlog
+* HR360 Backend Architecture
+* HR360 API Documentation
+* HR360 Database Architecture
+* HR360 Backend Traceability
+
+---
+
+## 33. Revision History
+
+| Version | Date        | Description                   | Author    |
+| ------- | ----------- | ----------------------------- | --------- |
+| 1.0     | 20 Sep 2026 | Initial frontend architecture | Nida Khan |

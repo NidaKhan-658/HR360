@@ -1,0 +1,194 @@
+# HR360 — UI/UX Requirements Document
+
+**Document ID:** HR360-FE-002
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+
+## 1. Purpose
+
+This document defines the user interface and user experience requirements for HR360.
+
+The interface shall provide a professional, consistent and easy-to-use experience for HR, Operations, Finance, Recruitment and management users.
+
+## 2. UX Principles
+
+The application shall follow:
+
+* Simplicity
+* Consistency
+* Clear navigation
+* Minimal unnecessary clicks
+* Readable data presentation
+* Clear status indicators
+* Immediate validation feedback
+* Responsive layouts
+* Accessible forms and controls
+* Consistent error handling
+
+## 3. Main Layout
+
+The application shall use:
+
+```text
++------------------------------------------------+
+| Header / User Information                      |
++-------------+----------------------------------+
+| Sidebar     | Page Header                      |
+| Navigation  +----------------------------------+
+|             | Main Content                     |
+|             |                                  |
+|             | Tables / Cards / Forms / Charts |
++-------------+----------------------------------+
+```
+
+## 4. Dashboard UX
+
+Dashboard shall contain KPI cards for:
+
+* Total Employees
+* Active Employees
+* On Leave
+* On Bench
+* Training
+* PIP
+* Attendance
+* Recruitment
+
+Charts shall provide department, attendance, performance, training and recruitment insights.
+
+## 5. Employee UX
+
+Employee screen shall provide:
+
+* Search
+* Filter
+* Employee table
+* Employee details
+* Add employee
+* Edit employee
+* Lifecycle status
+* Department
+* Job role
+* Work status
+* Active status
+
+The department-specific active status shall be clearly displayed.
+
+## 6. Status Visualization
+
+Status badges shall be consistently used for:
+
+* ACTIVE
+* NOT ACTIVE
+* WORKING
+* ONLINE
+* TRAINING
+* ON_BENCH
+* PIP
+* ON_LEAVE
+* RESIGNED
+* TERMINATED
+* APPROVED
+* REJECTED
+* COMPLETED
+* PENDING
+
+## 7. Forms
+
+Forms shall:
+
+* Clearly identify required fields
+* Display validation errors near the relevant field
+* Prevent invalid submissions
+* Provide save/cancel actions
+* Display success feedback after successful operations
+
+## 8. Tables
+
+Tables shall support:
+
+* Sorting where appropriate
+* Search
+* Filtering
+* Pagination where required
+* Responsive layout
+* Clear column headers
+* Empty-state messages
+
+## 9. Notifications
+
+The application shall provide user-friendly feedback for:
+
+* Successful creation
+* Successful update
+* Successful deletion where applicable
+* Validation errors
+* API failures
+* Empty results
+
+## 10. Accessibility
+
+The frontend shall aim to provide:
+
+* Readable typography
+* Sufficient visual distinction between states
+* Keyboard-friendly controls
+* Meaningful labels
+* Accessible form controls
+* Clear error messages
+
+## 11. Responsive Design
+
+Primary target:
+
+* Desktop
+* Laptop
+* Tablet
+
+The interface shall remain usable at different screen sizes.
+
+## 12. Module UX
+
+### Workforce
+
+Employees, departments, roles and work statuses.
+
+### Operations
+
+Attendance and leave.
+
+### People Development
+
+Performance, PIP and training.
+
+### Recruitment
+
+Candidates, applications, interviews and offers.
+
+### Analytics
+
+Operational and management dashboards.
+
+## 13. UX Error Handling
+
+Raw technical errors shall not be shown directly to users.
+
+Example:
+
+```text
+Unable to load employee information.
+Please try again.
+```
+
+## 14. Design Consistency
+
+Buttons, forms, tables, badges, cards, headers and dialogs shall use reusable components wherever possible.
+
+## 15. Document Control
+
+**Owner:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+**Related:** BRD, FRD, Agile Backlog, Frontend Architecture

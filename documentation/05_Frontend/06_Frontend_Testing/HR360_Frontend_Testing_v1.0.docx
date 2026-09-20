@@ -1,0 +1,245 @@
+# HR360 — Frontend Testing Strategy
+
+**Document ID:** HR360-FE-006
+**Version:** 1.0
+**Status:** Draft for Review
+**Date:** 20 September 2026
+**Prepared By:** Nida Khan
+
+## 1. Purpose
+
+This document defines the testing approach for the HR360 React frontend.
+
+## 2. Testing Objectives
+
+Testing shall verify:
+
+* UI functionality
+* API integration
+* Form validation
+* Navigation
+* Error handling
+* Data presentation
+* Responsive behavior
+* Business-rule display
+* Acceptance criteria compliance
+
+## 3. Testing Levels
+
+### Component Testing
+
+Individual React components shall be tested independently.
+
+Examples:
+
+* Button
+* StatusBadge
+* DataTable
+* EmployeeForm
+* DashboardCard
+
+### Integration Testing
+
+Verify communication between:
+
+```text
+React → API → Backend → Database
+```
+
+### System Testing
+
+Verify complete user workflows.
+
+### UAT
+
+Business stakeholders shall validate business functionality against agreed acceptance criteria.
+
+## 4. Core Test Areas
+
+### Employee
+
+* Create employee
+* Retrieve employee
+* Update employee
+* Change lifecycle status
+* Display department-specific active status
+
+### Attendance
+
+* Record attendance
+* Display attendance
+* Display working hours
+* Handle invalid status
+
+### Leave
+
+* Submit leave
+* Approve/reject leave
+* Display leave types
+
+### Performance
+
+* Record review
+* Display history
+* Display PIP information
+
+### Training
+
+* Display programs
+* Enroll employee
+* Record completion
+* Display score
+
+### Recruitment
+
+* Create candidate
+* Update candidate status
+* Create application
+* Schedule interview
+* Record interview outcome
+* Create offer
+* Update offer status
+
+### Analytics
+
+* Load overview
+* Load department analytics
+* Load attendance analytics
+* Load leave analytics
+* Load performance analytics
+* Load training analytics
+* Load recruitment analytics
+
+## 5. Validation Testing
+
+Verify:
+
+* Required fields
+* Invalid email
+* Invalid numeric values
+* Invalid dates
+* Invalid status
+* Duplicate values
+* Missing records
+
+## 6. Error Testing
+
+The frontend shall correctly handle:
+
+* 400 validation errors
+* 404 not found
+* 500 server errors
+* Network failures
+* Empty results
+* Slow responses
+
+## 7. Responsive Testing
+
+Test at:
+
+* Desktop
+* Laptop
+* Tablet
+
+Verify that:
+
+* Navigation remains usable
+* Tables remain readable
+* Forms remain accessible
+* Charts remain visible
+* No critical content is hidden
+
+## 8. Business Rule Testing
+
+The frontend shall correctly display backend results for:
+
+### HR
+
+`EMPLOYED → ACTIVE`
+
+### Operations
+
+`WORKING / ONLINE → ACTIVE`
+
+### Finance
+
+`PAID → ACTIVE`
+
+Other conditions:
+
+`NOT ACTIVE`
+
+The frontend shall not independently override the backend result.
+
+## 9. Acceptance Criteria
+
+Frontend testing shall reference the existing Agile Backlog acceptance criteria.
+
+Examples:
+
+```text
+AC-EMP-006
+AC-EMP-007
+AC-EMP-008
+AC-EMP-009
+AC-ATT-001
+AC-LEAVE-001
+AC-PERF-001
+AC-TRAIN-001
+AC-REC-001
+AC-AN-001
+AC-API-001
+```
+
+## 10. Defect Management
+
+Defects shall be recorded with:
+
+* Defect ID
+* Description
+* Module
+* Severity
+* Steps to reproduce
+* Expected result
+* Actual result
+* Status
+* Resolution
+
+## 11. Regression Testing
+
+Regression testing shall be performed after significant frontend or backend changes.
+
+Particular attention shall be given to shared components and API services.
+
+## 12. UAT
+
+UAT shall validate that the frontend meets business requirements and acceptance criteria.
+
+Business acceptance shall be owned by the appropriate business stakeholder/Product Owner.
+
+## 13. Test Evidence
+
+Evidence may include:
+
+* Screenshots
+* API responses
+* Browser console results
+* Test case results
+* UAT sign-off
+* Defect records
+
+## 14. Planned Automation
+
+Future automated frontend testing may include:
+
+* Component tests
+* Integration tests
+* End-to-end tests
+
+Automation shall be introduced based on project priorities.
+
+## 15. Document Control
+
+**Owner:** Nida Khan
+**Product Owner:** HR Business Stakeholder
+**Related:** FRD, Agile Backlog, Acceptance Criteria, Frontend Architecture, Backend API Documentation
