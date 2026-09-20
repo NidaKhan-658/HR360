@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const pool = require("./db");
 const employeeRoutes = require("./routes/employees");
 const departmentRoutes = require("./routes/departments");
@@ -18,8 +19,13 @@ const jobOfferRoutes = require("./routes/jobOffers");
 const analyticsRoutes = require("./routes/analytics");
 
 const app = express();
-
 const PORT = 5000;
+
+app.use(cors({
+    origin: "http://localhost:5173"
+}));
+
+app.use(express.json());
 
 // Middleware
 app.use(express.json());
