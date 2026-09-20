@@ -11,6 +11,9 @@ const performanceReviewRoutes = require("./routes/performanceReviews");
 const pipRoutes = require("./routes/performanceImprovementPlans");
 const trainingProgramRoutes = require("./routes/trainingPrograms");
 const employeeTrainingRoutes = require("./routes/employeeTraining");
+const interviewRoutes = require("./routes/interviews");
+const candidateRoutes = require("./routes/candidates");
+const jobApplicationRoutes = require("./routes/jobApplications");
 
 const app = express();
 
@@ -31,6 +34,9 @@ app.use("/api/performance-reviews", performanceReviewRoutes);
 app.use("/api/pips", pipRoutes);
 app.use("/api/training-programs", trainingProgramRoutes);
 app.use("/api/employee-training", employeeTrainingRoutes);
+app.use("/api/interviews", interviewRoutes);
+app.use("/api/candidates", candidateRoutes);    
+app.use("/api/job-applications", jobApplicationRoutes);
 
 
 // Health check + database test
