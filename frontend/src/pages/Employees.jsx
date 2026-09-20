@@ -9,42 +9,22 @@ import {
   updateEmployeeEmploymentStatus,
 } from "../services/api";
 
-function getStatusClass(status) {
-  if (!status) {
-    return "status-badge neutral";
-  }
+const initialForm = {
+  employee_code: "",
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone: "",
+  department_id: "",
+  role_id: "",
+  work_status_id: "",
+  employment_status: "EMPLOYED",
+  joining_date: "",
+  salary_amount: "",
+  salary_status: "PAID",
+};
 
-  const normalizedStatus = String(status).toUpperCase();
-
-  if (
-    normalizedStatus === "ACTIVE" ||
-    normalizedStatus === "EMPLOYED" ||
-    normalizedStatus === "WORKING" ||
-    normalizedStatus === "ONLINE"
-  ) {
-    return "status-badge active";
-  }
-
-  if (
-    normalizedStatus === "PIP" ||
-    normalizedStatus === "TRAINING" ||
-    normalizedStatus === "ON_LEAVE" ||
-    normalizedStatus === "ON_BENCH"
-  ) {
-    return "status-badge attention";
-  }
-
-  if (
-    normalizedStatus === "RESIGNED" ||
-    normalizedStatus === "TERMINATED" ||
-    normalizedStatus === "RETIRED" ||
-    normalizedStatus === "NOT ACTIVE"
-  ) {
-    return "status-badge inactive";
-  }
-
-  return "status-badge neutral";
-}
+const PAGE_SIZE = 10;
 
 function Employees() {
   const [employees, setEmployees] = useState([]);
@@ -52,54 +32,45 @@ function Employees() {
   const [jobRoles, setJobRoles] = useState([]);
   const [workStatuses, setWorkStatuses] = useState([]);
 
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [formError, setFormError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
+  const [formData, setFormData] = useState(initialForm);
+  const [formError, setFormError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [editingEmployee, setEditingEmployee] = useState(null);
-  const [savingEmployee, setSavingEmployee] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [employeeToDeactivate, setEmployeeToDeactivate] = useState(null);
+  const [deactivating, setDeactivating] = useState(false);
 
-  const [deactivatingEmployee, setDeactivatingEmployee] = useState(null);
-  const [deactivationStatus, setDeactivationStatus] = useState("RESIGNED");
-  const [deactivationLoading, setDeactivationLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  const [employmentStatusFilter, setEmploymentStatusFilter] = useState("");
+  const [workStatusFilter, setWorkStatusFilter] = useState("");
+  const [activeStatusFilter, setActiveStatusFilter] = useState("");
 
-  const [formData, setFormData] = useState({
-    employee_code: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    department_id: "",
-    role_id: "",
-    work_status_id: "",
-    employment_status: "EMPLOYED",
-    salary_amount: "",
-    salary_status: "PAID",
-    joining_date: "",
+  const [sortConfig, setSortConfig] = useState({
+    key: "employee_code",
+    direction: "asc",
   });
 
-  async function loadEmployees() {
-    try {
-      const response = await getEmployees();
+  // =========================================================
+  // 27H - PAGINATION
+  // =========================================================
 
-      if (!response.success) {
-        throw new Error("Employees API returned an unsuccessful response");
-      }
+  const [currentPage, setCurrentPage] = useState(1);
 
-      setEmployees(response.data || []);
-    } catch (err) {
-      console.error(err);
-      setError("Unable to load employee data.");
-    }
-  }
+  // =========================================================
+  // LOAD DATA
+  // =========================================================
 
   useEffect(() => {
-    async function loadInitialData() {
+    async function loadData() {
       try {
         setLoading(true);
         setError("");
@@ -107,7 +78,7 @@ function Employees() {
         const [
           employeesResponse,
           departmentsResponse,
-          rolesResponse,
+          jobRolesResponse,
           workStatusesResponse,
         ] = await Promise.all([
           getEmployees(),
@@ -116,111 +87,24 @@ function Employees() {
           getWorkStatuses(),
         ]);
 
-        if (!employeesResponse.success) {
-          throw new Error("Failed to load employees");
-        }
-
-        if (!departmentsResponse.success) {
-          throw new Error("Failed to load departments");
-        }
-
-        if (!rolesResponse.success) {
-          throw new Error("Failed to load job roles");
-        }
-
-        if (!workStatusesResponse.success) {
-          throw new Error("Failed to load work statuses");
-        }
-
         setEmployees(employeesResponse.data || []);
         setDepartments(departmentsResponse.data || []);
-        setJobRoles(rolesResponse.data || []);
+        setJobRoles(jobRolesResponse.data || []);
         setWorkStatuses(workStatusesResponse.data || []);
       } catch (err) {
         console.error(err);
-        setError("Unable to load employee management data.");
+        setError(err.message || "Unable to load employee data.");
       } finally {
         setLoading(false);
       }
     }
 
-    loadInitialData();
+    loadData();
   }, []);
 
-  const employeeSummary = useMemo(() => {
-    const total = employees.length;
-
-    const employed = employees.filter(
-      (employee) => employee.employment_status === "EMPLOYED"
-    ).length;
-
-    const probation = employees.filter(
-      (employee) => employee.employment_status === "PROBATION"
-    ).length;
-
-    const onLeave = employees.filter(
-      (employee) => employee.employment_status === "ON_LEAVE"
-    ).length;
-
-    const onPip = employees.filter(
-      (employee) => String(employee.work_status).toUpperCase() === "PIP"
-    ).length;
-
-    const onBench = employees.filter(
-      (employee) =>
-        String(employee.work_status).toUpperCase() === "ON_BENCH"
-    ).length;
-
-    const active = employees.filter(
-      (employee) =>
-        String(employee.department_active_status).toUpperCase() ===
-        "ACTIVE"
-    ).length;
-
-    const inactive = employees.filter(
-      (employee) =>
-        String(employee.department_active_status).toUpperCase() ===
-        "NOT ACTIVE"
-    ).length;
-
-    return {
-      total,
-      employed,
-      probation,
-      onLeave,
-      onPip,
-      onBench,
-      active,
-      inactive,
-    };
-  }, [employees]);
-
-  const filteredEmployees = useMemo(() => {
-    const searchText = search.toLowerCase().trim();
-
-    if (!searchText) {
-      return employees;
-    }
-
-    return employees.filter((employee) =>
-      [
-        employee.employee_code,
-        employee.first_name,
-        employee.last_name,
-        employee.email,
-        employee.department_name,
-        employee.role_name,
-        employee.work_status,
-        employee.employment_status,
-        employee.salary_status,
-        employee.department_active_status,
-      ]
-        .filter(Boolean)
-        .some((value) =>
-          String(value).toLowerCase().includes(searchText)
-        )
-    );
-  }, [employees, search]);
+  // =========================================================
+  // FORM HANDLING
+  // =========================================================
 
   function handleFormChange(event) {
     const { name, value } = event.target;
@@ -231,49 +115,18 @@ function Employees() {
     }));
   }
 
-  function resetForm() {
-    setFormData({
-      employee_code: "",
-      first_name: "",
-      last_name: "",
-      email: "",
-      phone: "",
-      department_id: "",
-      role_id: "",
-      work_status_id: "",
-      employment_status: "EMPLOYED",
-      salary_amount: "",
-      salary_status: "PAID",
-      joining_date: "",
-    });
-  }
-
-  function handleOpenAddForm() {
-    resetForm();
+  function openAddEmployeeForm() {
     setEditingEmployee(null);
+    setFormData(initialForm);
     setFormError("");
     setSuccessMessage("");
-    setShowAddForm(true);
+    setShowForm(true);
   }
 
-  function handleEditEmployee(employee) {
-    const department = departments.find(
-      (item) =>
-        String(item.department_name).toLowerCase() ===
-        String(employee.department_name).toLowerCase()
-    );
-
-    const role = jobRoles.find(
-      (item) =>
-        String(item.role_name).toLowerCase() ===
-        String(employee.role_name).toLowerCase()
-    );
-
-    const workStatus = workStatuses.find(
-      (item) =>
-        String(item.status_name).toLowerCase() ===
-        String(employee.work_status).toLowerCase()
-    );
+  function openEditEmployeeForm(employee) {
+    setEditingEmployee(employee);
+    setFormError("");
+    setSuccessMessage("");
 
     setFormData({
       employee_code: employee.employee_code || "",
@@ -281,186 +134,537 @@ function Employees() {
       last_name: employee.last_name || "",
       email: employee.email || "",
       phone: employee.phone || "",
-      department_id: department?.department_id
-        ? String(department.department_id)
-        : "",
-      role_id: role?.role_id ? String(role.role_id) : "",
-      work_status_id: workStatus?.work_status_id
-        ? String(workStatus.work_status_id)
-        : "",
+      department_id: employee.department_id || "",
+      role_id: employee.role_id || "",
+      work_status_id: employee.work_status_id || "",
       employment_status: employee.employment_status || "EMPLOYED",
+      joining_date: employee.joining_date
+        ? employee.joining_date.substring(0, 10)
+        : "",
       salary_amount: employee.salary_amount || "",
       salary_status: employee.salary_status || "PAID",
-      joining_date: employee.joining_date
-        ? String(employee.joining_date).substring(0, 10)
-        : "",
     });
 
-    setEditingEmployee(employee);
-    setSelectedEmployee(null);
-    setFormError("");
-    setSuccessMessage("");
-    setShowAddForm(true);
+    setShowForm(true);
   }
 
-  async function handleSaveEmployee(event) {
+  function closeEmployeeForm() {
+    if (saving) {
+      return;
+    }
+
+    setShowForm(false);
+    setEditingEmployee(null);
+    setFormData(initialForm);
+    setFormError("");
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
 
     try {
-      setSavingEmployee(true);
+      setSaving(true);
       setFormError("");
       setSuccessMessage("");
 
-      const employeeData = {
-        first_name: formData.first_name.trim(),
-        last_name: formData.last_name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim() || null,
+      if (!formData.first_name.trim()) {
+        throw new Error("First name is required.");
+      }
+
+      if (!formData.last_name.trim()) {
+        throw new Error("Last name is required.");
+      }
+
+      if (!formData.email.trim()) {
+        throw new Error("Email is required.");
+      }
+
+      if (!formData.department_id) {
+        throw new Error("Department is required.");
+      }
+
+      if (!formData.role_id) {
+        throw new Error("Role is required.");
+      }
+
+      if (!formData.work_status_id) {
+        throw new Error("Work status is required.");
+      }
+
+      const payload = {
+        ...formData,
         department_id: Number(formData.department_id),
         role_id: Number(formData.role_id),
-        work_status_id: formData.work_status_id
-          ? Number(formData.work_status_id)
-          : null,
-        employment_status: formData.employment_status,
-        joining_date: formData.joining_date,
-        salary_amount: formData.salary_amount
-          ? Number(formData.salary_amount)
-          : null,
-        salary_status: formData.salary_status || null,
+        work_status_id: Number(formData.work_status_id),
+        salary_amount:
+          formData.salary_amount === ""
+            ? null
+            : Number(formData.salary_amount),
       };
 
-      let response;
-
       if (editingEmployee) {
-        response = await updateEmployee(
-          editingEmployee.employee_id,
-          employeeData
+        await updateEmployee(editingEmployee.employee_id, payload);
+
+        setSuccessMessage(
+          "Employee details updated successfully."
         );
       } else {
-        response = await createEmployee({
-          employee_code: formData.employee_code.trim(),
-          ...employeeData,
-        });
-      }
+        await createEmployee(payload);
 
-      if (!response.success) {
-        throw new Error(
-          response.message || "Unable to save employee"
+        setSuccessMessage(
+          "Employee added successfully."
         );
       }
 
-      setSuccessMessage(
-        editingEmployee
-          ? "Employee updated successfully."
-          : "Employee created successfully."
-      );
+      const employeesResponse = await getEmployees();
+      setEmployees(employeesResponse.data || []);
 
-      setShowAddForm(false);
+      setCurrentPage(1);
+      setShowForm(false);
       setEditingEmployee(null);
-      resetForm();
-
-      await loadEmployees();
+      setFormData(initialForm);
     } catch (err) {
       console.error(err);
-      setFormError(
-        err.message || "Unable to save employee. Please try again."
-      );
+      setFormError(err.message || "Unable to save employee.");
     } finally {
-      setSavingEmployee(false);
+      setSaving(false);
     }
   }
 
-  function handleCancelForm() {
-    setShowAddForm(false);
-    setEditingEmployee(null);
-    setFormError("");
-    resetForm();
+  // =========================================================
+  // VIEW EMPLOYEE
+  // =========================================================
+
+  function openEmployeeDetails(employee) {
+    setSelectedEmployee(employee);
   }
 
-  function handleOpenDeactivation(employee) {
-    setDeactivatingEmployee(employee);
-    setDeactivationStatus("RESIGNED");
-    setSuccessMessage("");
+  function closeEmployeeDetails() {
+    setSelectedEmployee(null);
   }
 
-  function handleCancelDeactivation() {
-    if (deactivationLoading) {
+  // =========================================================
+  // DEACTIVATE EMPLOYEE
+  // =========================================================
+
+  function openDeactivateModal(employee) {
+    setEmployeeToDeactivate(employee);
+    setShowDeactivateModal(true);
+  }
+
+  function closeDeactivateModal() {
+    if (deactivating) {
       return;
     }
 
-    setDeactivatingEmployee(null);
-    setDeactivationStatus("RESIGNED");
+    setShowDeactivateModal(false);
+    setEmployeeToDeactivate(null);
   }
 
-  async function handleConfirmDeactivation() {
-    if (!deactivatingEmployee) {
+  async function handleDeactivate() {
+    if (!employeeToDeactivate) {
       return;
     }
 
     try {
-      setDeactivationLoading(true);
+      setDeactivating(true);
       setError("");
+      setSuccessMessage("");
 
-      const response = await updateEmployeeEmploymentStatus(
-        deactivatingEmployee.employee_id,
-        deactivationStatus
+      await updateEmployeeEmploymentStatus(
+        employeeToDeactivate.employee_id,
+        "RESIGNED"
       );
 
-      if (!response.success) {
-        throw new Error(
-          response.message || "Failed to deactivate employee"
-        );
-      }
+      const employeesResponse = await getEmployees();
+      const updatedEmployees = employeesResponse.data || [];
+
+      setEmployees(updatedEmployees);
 
       setSuccessMessage(
-        `${deactivatingEmployee.first_name} ${deactivatingEmployee.last_name} was marked as ${deactivationStatus}.`
+        `${employeeToDeactivate.first_name} ${employeeToDeactivate.last_name} has been deactivated successfully.`
       );
 
-      setDeactivatingEmployee(null);
-      setSelectedEmployee(null);
+      setShowDeactivateModal(false);
+      setEmployeeToDeactivate(null);
 
-      await loadEmployees();
+      // Recalculate the page if the last record was removed
+      setCurrentPage((previousPage) => {
+        const newTotalPages = Math.max(
+          1,
+          Math.ceil(updatedEmployees.length / PAGE_SIZE)
+        );
+
+        return Math.min(previousPage, newTotalPages);
+      });
     } catch (err) {
       console.error(err);
-      setError(
-        err.message || "Unable to update employee status."
-      );
+      setError(err.message || "Unable to deactivate employee.");
     } finally {
-      setDeactivationLoading(false);
+      setDeactivating(false);
     }
   }
 
+  // =========================================================
+  // EMPLOYEE SUMMARY
+  // =========================================================
+
+  const employeeSummary = useMemo(() => {
+    return {
+      total: employees.length,
+
+      employed: employees.filter(
+        (employee) => employee.employment_status === "EMPLOYED"
+      ).length,
+
+      onLeave: employees.filter(
+        (employee) =>
+          employee.employment_status === "ON_LEAVE" ||
+          employee.work_status === "ON_LEAVE"
+      ).length,
+
+      onBench: employees.filter(
+        (employee) => employee.work_status === "ON_BENCH"
+      ).length,
+
+      onPip: employees.filter(
+        (employee) => employee.work_status === "PIP"
+      ).length,
+
+      inTraining: employees.filter(
+        (employee) => employee.work_status === "TRAINING"
+      ).length,
+
+      active: employees.filter(
+        (employee) =>
+          employee.department_active_status === "ACTIVE"
+      ).length,
+
+      inactive: employees.filter(
+        (employee) =>
+          employee.department_active_status !== "ACTIVE"
+      ).length,
+    };
+  }, [employees]);
+
+  // =========================================================
+  // FILTERING
+  // =========================================================
+
+  const filteredEmployees = useMemo(() => {
+    const search = searchTerm.trim().toLowerCase();
+
+    return employees.filter((employee) => {
+      const employeeName =
+        `${employee.first_name || ""} ${employee.last_name || ""}`
+          .trim()
+          .toLowerCase();
+
+      const matchesSearch =
+        !search ||
+        employeeName.includes(search) ||
+        String(employee.employee_code || "")
+          .toLowerCase()
+          .includes(search) ||
+        String(employee.email || "")
+          .toLowerCase()
+          .includes(search) ||
+        String(employee.department_name || "")
+          .toLowerCase()
+          .includes(search) ||
+        String(employee.role_name || "")
+          .toLowerCase()
+          .includes(search);
+
+      const matchesDepartment =
+        !departmentFilter ||
+        String(employee.department_id) === String(departmentFilter) ||
+        employee.department_name === departmentFilter;
+
+      const matchesEmploymentStatus =
+        !employmentStatusFilter ||
+        employee.employment_status === employmentStatusFilter;
+
+      const matchesWorkStatus =
+        !workStatusFilter ||
+        employee.work_status === workStatusFilter;
+
+      const matchesActiveStatus =
+        !activeStatusFilter ||
+        employee.department_active_status === activeStatusFilter;
+
+      return (
+        matchesSearch &&
+        matchesDepartment &&
+        matchesEmploymentStatus &&
+        matchesWorkStatus &&
+        matchesActiveStatus
+      );
+    });
+  }, [
+    employees,
+    searchTerm,
+    departmentFilter,
+    employmentStatusFilter,
+    workStatusFilter,
+    activeStatusFilter,
+  ]);
+
+  // =========================================================
+  // SORTING - 27G
+  // =========================================================
+
+  const sortedEmployees = useMemo(() => {
+    const sorted = [...filteredEmployees];
+
+    sorted.sort((a, b) => {
+      let valueA = "";
+      let valueB = "";
+
+      switch (sortConfig.key) {
+        case "employee_code":
+          valueA = a.employee_code || "";
+          valueB = b.employee_code || "";
+          break;
+
+        case "employee_name":
+          valueA =
+            `${a.first_name || ""} ${a.last_name || ""}`.trim();
+          valueB =
+            `${b.first_name || ""} ${b.last_name || ""}`.trim();
+          break;
+
+        case "department_name":
+          valueA = a.department_name || "";
+          valueB = b.department_name || "";
+          break;
+
+        case "role_name":
+          valueA = a.role_name || "";
+          valueB = b.role_name || "";
+          break;
+
+        case "work_status":
+          valueA = a.work_status || "";
+          valueB = b.work_status || "";
+          break;
+
+        case "employment_status":
+          valueA = a.employment_status || "";
+          valueB = b.employment_status || "";
+          break;
+
+        case "department_active_status":
+          valueA = a.department_active_status || "";
+          valueB = b.department_active_status || "";
+          break;
+
+        default:
+          valueA = "";
+          valueB = "";
+      }
+
+      const normalizedA = String(valueA).toLowerCase();
+      const normalizedB = String(valueB).toLowerCase();
+
+      if (normalizedA < normalizedB) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+
+      if (normalizedA > normalizedB) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
+
+      return 0;
+    });
+
+    return sorted;
+  }, [filteredEmployees, sortConfig]);
+
+  function handleSort(key) {
+    setSortConfig((previous) => {
+      if (previous.key === key) {
+        return {
+          key,
+          direction:
+            previous.direction === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        key,
+        direction: "asc",
+      };
+    });
+
+    // Start from first page after changing sort
+    setCurrentPage(1);
+  }
+
+  function renderSortIndicator(key) {
+    if (sortConfig.key !== key) {
+      return (
+        <span className="sort-indicator inactive">
+          ↕
+        </span>
+      );
+    }
+
+    return (
+      <span className="sort-indicator">
+        {sortConfig.direction === "asc" ? "↑" : "↓"}
+      </span>
+    );
+  }
+
+  // =========================================================
+  // PAGINATION - 27H
+  // =========================================================
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(sortedEmployees.length / PAGE_SIZE)
+  );
+
+  // Make sure the current page is always valid.
+  useEffect(() => {
+    setCurrentPage((previousPage) =>
+      Math.min(Math.max(previousPage, 1), totalPages)
+    );
+  }, [totalPages]);
+
+  // Reset pagination whenever filtering changes.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    searchTerm,
+    departmentFilter,
+    employmentStatusFilter,
+    workStatusFilter,
+    activeStatusFilter,
+  ]);
+
+  const paginatedEmployees = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+
+    return sortedEmployees.slice(startIndex, endIndex);
+  }, [sortedEmployees, currentPage]);
+
+  const startRecord =
+    sortedEmployees.length === 0
+      ? 0
+      : (currentPage - 1) * PAGE_SIZE + 1;
+
+  const endRecord = Math.min(
+    currentPage * PAGE_SIZE,
+    sortedEmployees.length
+  );
+
+  function goToPage(pageNumber) {
+    const safePage = Math.min(
+      Math.max(pageNumber, 1),
+      totalPages
+    );
+
+    setCurrentPage(safePage);
+  }
+
+  function goToPreviousPage() {
+    setCurrentPage((previousPage) =>
+      Math.max(previousPage - 1, 1)
+    );
+  }
+
+  function goToNextPage() {
+    setCurrentPage((previousPage) =>
+      Math.min(previousPage + 1, totalPages)
+    );
+  }
+
+  // =========================================================
+  // FILTER RESET
+  // =========================================================
+
+  function clearFilters() {
+    setSearchTerm("");
+    setDepartmentFilter("");
+    setEmploymentStatusFilter("");
+    setWorkStatusFilter("");
+    setActiveStatusFilter("");
+    setCurrentPage(1);
+  }
+
+  const hasActiveFilters =
+    searchTerm ||
+    departmentFilter ||
+    employmentStatusFilter ||
+    workStatusFilter ||
+    activeStatusFilter;
+
+  // =========================================================
+  // STATUS CLASS
+  // =========================================================
+
+  function getStatusClass(status) {
+    if (status === "ACTIVE") {
+      return "status-badge active-status";
+    }
+
+    if (
+      status === "ON_LEAVE" ||
+      status === "PIP" ||
+      status === "TRAINING"
+    ) {
+      return "status-badge attention";
+    }
+
+    return "status-badge inactive-status";
+  }
+
+  // =========================================================
+  // RENDER
+  // =========================================================
+
   return (
     <div className="employees-page">
+      {/* PAGE HEADER */}
+
       <div className="page-header">
         <div>
           <h1>Employees</h1>
           <p>
-            Employee master data and department-specific activity status.
+            Manage employee records, employment status and
+            workforce activity.
           </p>
         </div>
 
-        <div className="employee-header-actions">
-          <div className="employee-count">
-            {filteredEmployees.length} employee
-            {filteredEmployees.length !== 1 ? "s" : ""}
-          </div>
-
-          <button
-            type="button"
-            className="add-employee-button"
-            onClick={handleOpenAddForm}
-          >
-            + Add Employee
-          </button>
-        </div>
+        <button
+          type="button"
+          className="primary-action-button"
+          onClick={openAddEmployeeForm}
+        >
+          + Add Employee
+        </button>
       </div>
+
+      {/* SUCCESS */}
 
       {successMessage && (
         <div className="employee-success-message">
           {successMessage}
         </div>
       )}
+
+      {/* ERROR */}
+
+      {error && (
+        <div className="employee-form-error">
+          {error}
+        </div>
+      )}
+
+      {/* EMPLOYEE SUMMARY */}
 
       <div className="employee-summary-grid">
         <div className="employee-summary-card">
@@ -472,19 +676,31 @@ function Employees() {
         <div className="employee-summary-card">
           <span>Employed</span>
           <strong>{employeeSummary.employed}</strong>
-          <small>Current employees</small>
+          <small>Employment status</small>
         </div>
 
         <div className="employee-summary-card">
-          <span>Probation</span>
-          <strong>{employeeSummary.probation}</strong>
-          <small>Employees on probation</small>
+          <span>Active</span>
+          <strong>{employeeSummary.active}</strong>
+          <small>Department-specific active rule</small>
+        </div>
+
+        <div className="employee-summary-card">
+          <span>Inactive</span>
+          <strong>{employeeSummary.inactive}</strong>
+          <small>Outside active criteria</small>
         </div>
 
         <div className="employee-summary-card">
           <span>On Leave</span>
           <strong>{employeeSummary.onLeave}</strong>
-          <small>Employment status</small>
+          <small>Employees currently on leave</small>
+        </div>
+
+        <div className="employee-summary-card">
+          <span>On Bench</span>
+          <strong>{employeeSummary.onBench}</strong>
+          <small>Active bench employees</small>
         </div>
 
         <div className="employee-summary-card">
@@ -494,622 +710,908 @@ function Employees() {
         </div>
 
         <div className="employee-summary-card">
-          <span>On Bench</span>
-          <strong>{employeeSummary.onBench}</strong>
-          <small>Work status</small>
-        </div>
-
-        <div className="employee-summary-card">
-          <span>Active</span>
-          <strong>{employeeSummary.active}</strong>
-          <small>Department rule based</small>
-        </div>
-
-        <div className="employee-summary-card">
-          <span>Inactive</span>
-          <strong>{employeeSummary.inactive}</strong>
-          <small>Department rule based</small>
+          <span>Training</span>
+          <strong>{employeeSummary.inTraining}</strong>
+          <small>Employees in training</small>
         </div>
       </div>
 
-      {showAddForm && (
-        <div className="add-employee-panel">
-          <div className="add-employee-header">
-            <div>
-              <h2>
-                {editingEmployee ? "Edit Employee" : "Add Employee"}
-              </h2>
+      {/* FILTERS */}
 
-              <p>
-                {editingEmployee
-                  ? "Update the employee master information."
-                  : "Enter the employee master information."}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="close-form-button"
-              onClick={handleCancelForm}
-              disabled={savingEmployee}
-            >
-              Close
-            </button>
-          </div>
-
-          {formError && (
-            <div className="employee-form-error">
-              {formError}
-            </div>
-          )}
-
-          <form onSubmit={handleSaveEmployee}>
-            <div className="employee-form-grid">
-              <div className="form-field">
-                <label htmlFor="employee_code">Employee Code</label>
-
-                <input
-                  id="employee_code"
-                  name="employee_code"
-                  type="text"
-                  value={formData.employee_code}
-                  onChange={handleFormChange}
-                  disabled={Boolean(editingEmployee)}
-                  required
-                />
-
-                {editingEmployee && (
-                  <small className="form-help-text">
-                    Employee code cannot be changed.
-                  </small>
-                )}
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="first_name">First Name</label>
-
-                <input
-                  id="first_name"
-                  name="first_name"
-                  type="text"
-                  value={formData.first_name}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="last_name">Last Name</label>
-
-                <input
-                  id="last_name"
-                  name="last_name"
-                  type="text"
-                  value={formData.last_name}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="email">Email</label>
-
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="phone">Phone</label>
-
-                <input
-                  id="phone"
-                  name="phone"
-                  type="text"
-                  value={formData.phone}
-                  onChange={handleFormChange}
-                />
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="department_id">Department</label>
-
-                <select
-                  id="department_id"
-                  name="department_id"
-                  value={formData.department_id}
-                  onChange={handleFormChange}
-                  required
-                >
-                  <option value="">Select Department</option>
-
-                  {departments.map((department) => (
-                    <option
-                      key={department.department_id}
-                      value={department.department_id}
-                    >
-                      {department.department_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="role_id">Role</label>
-
-                <select
-                  id="role_id"
-                  name="role_id"
-                  value={formData.role_id}
-                  onChange={handleFormChange}
-                  required
-                >
-                  <option value="">Select Role</option>
-
-                  {jobRoles.map((role) => (
-                    <option
-                      key={role.role_id}
-                      value={role.role_id}
-                    >
-                      {role.role_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="work_status_id">Work Status</label>
-
-                <select
-                  id="work_status_id"
-                  name="work_status_id"
-                  value={formData.work_status_id}
-                  onChange={handleFormChange}
-                >
-                  <option value="">Select Work Status</option>
-
-                  {workStatuses.map((status) => (
-                    <option
-                      key={status.work_status_id}
-                      value={status.work_status_id}
-                    >
-                      {status.status_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="employment_status">
-                  Employment Status
-                </label>
-
-                <select
-                  id="employment_status"
-                  name="employment_status"
-                  value={formData.employment_status}
-                  onChange={handleFormChange}
-                >
-                  <option value="EMPLOYED">EMPLOYED</option>
-                  <option value="PROBATION">PROBATION</option>
-                  <option value="ON_LEAVE">ON_LEAVE</option>
-                  <option value="RESIGNED">RESIGNED</option>
-                  <option value="TERMINATED">TERMINATED</option>
-                  <option value="RETIRED">RETIRED</option>
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="salary_amount">Salary Amount</label>
-
-                <input
-                  id="salary_amount"
-                  name="salary_amount"
-                  type="number"
-                  min="0"
-                  value={formData.salary_amount}
-                  onChange={handleFormChange}
-                />
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="salary_status">Salary Status</label>
-
-                <select
-                  id="salary_status"
-                  name="salary_status"
-                  value={formData.salary_status}
-                  onChange={handleFormChange}
-                >
-                  <option value="PAID">PAID</option>
-                  <option value="PENDING">PENDING</option>
-                  <option value="ON_HOLD">ON_HOLD</option>
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="joining_date">Joining Date</label>
-
-                <input
-                  id="joining_date"
-                  name="joining_date"
-                  type="date"
-                  value={formData.joining_date}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="employee-form-actions">
-              <button
-                type="button"
-                className="cancel-form-button"
-                onClick={handleCancelForm}
-                disabled={savingEmployee}
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                className="save-employee-button"
-                disabled={savingEmployee}
-              >
-                {savingEmployee
-                  ? "Saving..."
-                  : editingEmployee
-                    ? "Update Employee"
-                    : "Save Employee"}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="active-rule-info">
-        <div className="active-rule-title">
-          Department Active Status Rules
-        </div>
-
-        <div className="active-rule-list">
-          <span>
-            <strong>HR:</strong> EMPLOYED
-          </span>
-
-          <span>
-            <strong>Operations:</strong> WORKING or ONLINE
-          </span>
-
-          <span>
-            <strong>Finance:</strong> Salary PAID
-          </span>
-        </div>
-      </div>
-
-      <div className="employee-toolbar">
+      <div className="employee-filter-toolbar">
         <input
           type="text"
-          placeholder="Search employee, department, role, status..."
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search employee, code, email, department..."
+          value={searchTerm}
+          onChange={(event) =>
+            setSearchTerm(event.target.value)
+          }
         />
+
+        <select
+          value={departmentFilter}
+          onChange={(event) =>
+            setDepartmentFilter(event.target.value)
+          }
+        >
+          <option value="">All Departments</option>
+
+          {departments.map((department) => (
+            <option
+              key={department.department_id}
+              value={department.department_id}
+            >
+              {department.department_name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={employmentStatusFilter}
+          onChange={(event) =>
+            setEmploymentStatusFilter(event.target.value)
+          }
+        >
+          <option value="">All Employment Status</option>
+          <option value="EMPLOYED">EMPLOYED</option>
+          <option value="PROBATION">PROBATION</option>
+          <option value="ON_LEAVE">ON_LEAVE</option>
+          <option value="RESIGNED">RESIGNED</option>
+          <option value="TERMINATED">TERMINATED</option>
+          <option value="RETIRED">RETIRED</option>
+        </select>
+
+        <select
+          value={workStatusFilter}
+          onChange={(event) =>
+            setWorkStatusFilter(event.target.value)
+          }
+        >
+          <option value="">All Work Status</option>
+
+          {workStatuses.map((status) => (
+            <option
+              key={status.work_status_id}
+              value={status.status_name}
+            >
+              {status.status_name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={activeStatusFilter}
+          onChange={(event) =>
+            setActiveStatusFilter(event.target.value)
+          }
+        >
+          <option value="">All Active Status</option>
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="NOT ACTIVE">NOT ACTIVE</option>
+        </select>
+
+        <button
+          type="button"
+          className="clear-filters-button"
+          onClick={clearFilters}
+          disabled={!hasActiveFilters}
+        >
+          Clear Filters
+        </button>
       </div>
 
-      {loading && <p>Loading employees...</p>}
+      {/* FILTER SUMMARY */}
 
-      {error && <p>{error}</p>}
+      <div className="employee-filter-summary">
+        {hasActiveFilters
+          ? `Showing ${sortedEmployees.length} matching employee${
+              sortedEmployees.length === 1 ? "" : "s"
+            }`
+          : `Showing all ${sortedEmployees.length} employees`}
+      </div>
 
-      {!loading && !error && (
-        <div className="employee-table-wrapper">
-          <table className="employee-table">
-            <thead>
+      {/* EMPLOYEE TABLE */}
+
+      <div className="table-wrapper">
+        <table className="data-table employee-table">
+          <thead>
+            <tr>
+              <th>
+                <button
+                  type="button"
+                  className="table-sort-button"
+                  onClick={() =>
+                    handleSort("employee_code")
+                  }
+                >
+                  Employee Code
+                  {renderSortIndicator("employee_code")}
+                </button>
+              </th>
+
+              <th>
+                <button
+                  type="button"
+                  className="table-sort-button"
+                  onClick={() =>
+                    handleSort("employee_name")
+                  }
+                >
+                  Employee
+                  {renderSortIndicator("employee_name")}
+                </button>
+              </th>
+
+              <th>
+                <button
+                  type="button"
+                  className="table-sort-button"
+                  onClick={() =>
+                    handleSort("department_name")
+                  }
+                >
+                  Department
+                  {renderSortIndicator("department_name")}
+                </button>
+              </th>
+
+              <th>
+                <button
+                  type="button"
+                  className="table-sort-button"
+                  onClick={() =>
+                    handleSort("role_name")
+                  }
+                >
+                  Role
+                  {renderSortIndicator("role_name")}
+                </button>
+              </th>
+
+              <th>
+                <button
+                  type="button"
+                  className="table-sort-button"
+                  onClick={() =>
+                    handleSort("work_status")
+                  }
+                >
+                  Work Status
+                  {renderSortIndicator("work_status")}
+                </button>
+              </th>
+
+              <th>
+                <button
+                  type="button"
+                  className="table-sort-button"
+                  onClick={() =>
+                    handleSort("employment_status")
+                  }
+                >
+                  Employment
+                  {renderSortIndicator("employment_status")}
+                </button>
+              </th>
+
+              <th>
+                <button
+                  type="button"
+                  className="table-sort-button"
+                  onClick={() =>
+                    handleSort("department_active_status")
+                  }
+                >
+                  Active Status
+                  {renderSortIndicator(
+                    "department_active_status"
+                  )}
+                </button>
+              </th>
+
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {loading ? (
               <tr>
-                <th>Employee</th>
-                <th>Department</th>
-                <th>Role</th>
-                <th>Work Status</th>
-                <th>Employment Status</th>
-                <th>Salary Status</th>
-                <th>Department Active Status</th>
-                <th>Joining Date</th>
-                <th>Action</th>
+                <td colSpan="8">
+                  Loading employees...
+                </td>
               </tr>
-            </thead>
+            ) : paginatedEmployees.length === 0 ? (
+              <tr>
+                <td colSpan="8">
+                  No employees found matching the selected
+                  criteria.
+                </td>
+              </tr>
+            ) : (
+              paginatedEmployees.map((employee) => (
+                <tr key={employee.employee_id}>
+                  <td>
+                    <strong>
+                      {employee.employee_code}
+                    </strong>
+                  </td>
 
-            <tbody>
-              {filteredEmployees.length === 0 ? (
-                <tr>
-                  <td colSpan="9">No employees found.</td>
+                  <td>
+                    <strong>
+                      {employee.first_name}{" "}
+                      {employee.last_name}
+                    </strong>
+
+                    <span className="table-secondary-text">
+                      {employee.email}
+                    </span>
+                  </td>
+
+                  <td>
+                    {employee.department_name || "-"}
+                  </td>
+
+                  <td>
+                    {employee.role_name || "-"}
+                  </td>
+
+                  <td>
+                    {employee.work_status ? (
+                      <span className="status-badge neutral">
+                        {employee.work_status}
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    <span
+                      className={
+                        employee.employment_status ===
+                        "EMPLOYED"
+                          ? "status-badge active-status"
+                          : "status-badge inactive-status"
+                      }
+                    >
+                      {employee.employment_status || "-"}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span
+                      className={getStatusClass(
+                        employee.department_active_status
+                      )}
+                    >
+                      {employee.department_active_status ||
+                        "NOT ACTIVE"}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div className="employee-action-buttons">
+                      <button
+                        type="button"
+                        className="view-employee-button"
+                        onClick={() =>
+                          openEmployeeDetails(employee)
+                        }
+                      >
+                        View
+                      </button>
+
+                      <button
+                        type="button"
+                        className="edit-employee-button"
+                        onClick={() =>
+                          openEditEmployeeForm(employee)
+                        }
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        className="deactivate-employee-button"
+                        onClick={() =>
+                          openDeactivateModal(employee)
+                        }
+                        disabled={
+                          employee.employment_status !==
+                          "EMPLOYED"
+                        }
+                      >
+                        Deactivate
+                      </button>
+                    </div>
+                  </td>
                 </tr>
-              ) : (
-                filteredEmployees.map((employee) => (
-                  <tr
-                    key={employee.employee_id}
-                    onClick={() => setSelectedEmployee(employee)}
-                    className="employee-row-clickable"
-                  >
-                    <td>
-                      <strong>
-                        {employee.first_name} {employee.last_name}
-                      </strong>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
-                      <span className="employee-code">
-                        {employee.employee_code}
-                      </span>
-                    </td>
+      {/* =====================================================
+          27H PAGINATION CONTROLS
+          ===================================================== */}
 
-                    <td>{employee.department_name || "-"}</td>
+      {!loading && sortedEmployees.length > 0 && (
+        <div className="employee-pagination">
+          <div className="pagination-summary">
+            Showing <strong>{startRecord}</strong>–{" "}
+            <strong>{endRecord}</strong> of{" "}
+            <strong>{sortedEmployees.length}</strong> employees
+          </div>
 
-                    <td>{employee.role_name || "-"}</td>
+          <div className="pagination-controls">
+            <button
+              type="button"
+              className="pagination-button"
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
 
-                    <td>
-                      <span
-                        className={getStatusClass(employee.work_status)}
-                      >
-                        {employee.work_status || "-"}
-                      </span>
-                    </td>
-
-                    <td>
-                      <span
-                        className={getStatusClass(
-                          employee.employment_status
-                        )}
-                      >
-                        {employee.employment_status || "-"}
-                      </span>
-                    </td>
-
-                    <td>{employee.salary_status || "-"}</td>
-
-                    <td>
-                      <span
-                        className={getStatusClass(
-                          employee.department_active_status
-                        )}
-                      >
-                        {employee.department_active_status ||
-                          "NOT ACTIVE"}
-                      </span>
-                    </td>
-
-                    <td>{employee.joining_date || "-"}</td>
-
-                    <td>
-                      <div className="employee-action-buttons">
-                        <button
-                          type="button"
-                          className="view-employee-button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setSelectedEmployee(employee);
-                          }}
-                        >
-                          View
-                        </button>
-
-                        <button
-                          type="button"
-                          className="edit-employee-button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleEditEmployee(employee);
-                          }}
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          type="button"
-                          className="deactivate-employee-button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleOpenDeactivation(employee);
-                          }}
-                          disabled={
-                            employee.employment_status !== "EMPLOYED" &&
-                            employee.employment_status !== "PROBATION"
-                          }
-                        >
-                          Deactivate
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {selectedEmployee && (
-        <div className="employee-details-panel">
-          <div className="employee-details-header">
-            <div>
-              <h2>
-                {selectedEmployee.first_name}{" "}
-                {selectedEmployee.last_name}
-              </h2>
-
-              <span className="employee-code">
-                {selectedEmployee.employee_code}
-              </span>
+            <div className="pagination-pages">
+              {Array.from(
+                { length: totalPages },
+                (_, index) => index + 1
+              ).map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className={
+                    currentPage === pageNumber
+                      ? "pagination-page active"
+                      : "pagination-page"
+                  }
+                  onClick={() =>
+                    goToPage(pageNumber)
+                  }
+                >
+                  {pageNumber}
+                </button>
+              ))}
             </div>
 
             <button
               type="button"
-              className="close-details-button"
-              onClick={() => setSelectedEmployee(null)}
+              className="pagination-button"
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
             >
-              Close
+              Next
             </button>
           </div>
-
-          <div className="employee-details-grid">
-            <div className="detail-item">
-              <span>Email</span>
-              <strong>{selectedEmployee.email || "-"}</strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Phone</span>
-              <strong>{selectedEmployee.phone || "-"}</strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Department</span>
-              <strong>{selectedEmployee.department_name || "-"}</strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Role</span>
-              <strong>{selectedEmployee.role_name || "-"}</strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Work Status</span>
-              <strong>
-                <span
-                  className={getStatusClass(selectedEmployee.work_status)}
-                >
-                  {selectedEmployee.work_status || "-"}
-                </span>
-              </strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Employment Status</span>
-              <strong>
-                <span
-                  className={getStatusClass(
-                    selectedEmployee.employment_status
-                  )}
-                >
-                  {selectedEmployee.employment_status || "-"}
-                </span>
-              </strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Salary Status</span>
-              <strong>{selectedEmployee.salary_status || "-"}</strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Department Active Status</span>
-              <strong>
-                <span
-                  className={getStatusClass(
-                    selectedEmployee.department_active_status
-                  )}
-                >
-                  {selectedEmployee.department_active_status ||
-                    "NOT ACTIVE"}
-                </span>
-              </strong>
-            </div>
-
-            <div className="detail-item">
-              <span>Joining Date</span>
-              <strong>{selectedEmployee.joining_date || "-"}</strong>
-            </div>
-          </div>
-
-          {(selectedEmployee.employment_status === "EMPLOYED" ||
-            selectedEmployee.employment_status === "PROBATION") && (
-            <div className="employee-details-actions">
-              <button
-                type="button"
-                className="deactivate-employee-button"
-                onClick={() => handleOpenDeactivation(selectedEmployee)}
-              >
-                Deactivate Employee
-              </button>
-            </div>
-          )}
         </div>
       )}
 
-      {deactivatingEmployee && (
-        <div className="deactivation-overlay">
-          <div className="deactivation-modal">
-            <div className="deactivation-header">
-              <h2>Deactivate Employee</h2>
+      {/* =====================================================
+          ADD / EDIT EMPLOYEE MODAL
+          ===================================================== */}
+
+      {showForm && (
+        <div className="employee-form-overlay">
+          <div className="employee-form-modal">
+            <div className="employee-form-header">
+              <div>
+                <h2>
+                  {editingEmployee
+                    ? "Edit Employee"
+                    : "Add Employee"}
+                </h2>
+
+                <p>
+                  {editingEmployee
+                    ? "Update employee information and workforce details."
+                    : "Enter the employee information required for HR360."}
+                </p>
+              </div>
 
               <button
                 type="button"
                 className="close-modal-button"
-                onClick={handleCancelDeactivation}
-                disabled={deactivationLoading}
+                onClick={closeEmployeeForm}
+                disabled={saving}
               >
                 ×
               </button>
             </div>
 
-            <p>
-              You are changing the employment status of{" "}
-              <strong>
-                {deactivatingEmployee.first_name}{" "}
-                {deactivatingEmployee.last_name}
-              </strong>
-              .
-            </p>
+            {formError && (
+              <div className="employee-form-error">
+                {formError}
+              </div>
+            )}
 
-            <div className="form-field">
-              <label htmlFor="deactivation_status">
-                New Employment Status
-              </label>
+            <form onSubmit={handleSubmit}>
+              <div className="employee-form-grid">
+                <div className="form-field">
+                  <label htmlFor="employee_code">
+                    Employee Code
+                  </label>
 
-              <select
-                id="deactivation_status"
-                value={deactivationStatus}
-                onChange={(event) =>
-                  setDeactivationStatus(event.target.value)
-                }
-                disabled={deactivationLoading}
-              >
-                <option value="RESIGNED">RESIGNED</option>
-                <option value="TERMINATED">TERMINATED</option>
-                <option value="RETIRED">RETIRED</option>
-              </select>
-            </div>
+                  <input
+                    id="employee_code"
+                    name="employee_code"
+                    type="text"
+                    value={formData.employee_code}
+                    onChange={handleFormChange}
+                    placeholder="EMP001"
+                    disabled={Boolean(editingEmployee)}
+                  />
+                </div>
 
-            <div className="deactivation-warning">
-              The employee record will be retained. Only the employment
-              status will be changed.
-            </div>
+                <div className="form-field">
+                  <label htmlFor="first_name">
+                    First Name *
+                  </label>
 
-            <div className="deactivation-actions">
+                  <input
+                    id="first_name"
+                    name="first_name"
+                    type="text"
+                    value={formData.first_name}
+                    onChange={handleFormChange}
+                    placeholder="First name"
+                    required
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="last_name">
+                    Last Name *
+                  </label>
+
+                  <input
+                    id="last_name"
+                    name="last_name"
+                    type="text"
+                    value={formData.last_name}
+                    onChange={handleFormChange}
+                    placeholder="Last name"
+                    required
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="email">
+                    Email *
+                  </label>
+
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    placeholder="employee@company.com"
+                    required
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="phone">
+                    Phone
+                  </label>
+
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="text"
+                    value={formData.phone}
+                    onChange={handleFormChange}
+                    placeholder="Phone number"
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="department_id">
+                    Department *
+                  </label>
+
+                  <select
+                    id="department_id"
+                    name="department_id"
+                    value={formData.department_id}
+                    onChange={handleFormChange}
+                    required
+                  >
+                    <option value="">
+                      Select department
+                    </option>
+
+                    {departments.map((department) => (
+                      <option
+                        key={department.department_id}
+                        value={department.department_id}
+                      >
+                        {department.department_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="role_id">
+                    Role *
+                  </label>
+
+                  <select
+                    id="role_id"
+                    name="role_id"
+                    value={formData.role_id}
+                    onChange={handleFormChange}
+                    required
+                  >
+                    <option value="">
+                      Select role
+                    </option>
+
+                    {jobRoles.map((role) => (
+                      <option
+                        key={role.role_id}
+                        value={role.role_id}
+                      >
+                        {role.role_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="work_status_id">
+                    Work Status *
+                  </label>
+
+                  <select
+                    id="work_status_id"
+                    name="work_status_id"
+                    value={formData.work_status_id}
+                    onChange={handleFormChange}
+                    required
+                  >
+                    <option value="">
+                      Select work status
+                    </option>
+
+                    {workStatuses.map((status) => (
+                      <option
+                        key={status.work_status_id}
+                        value={status.work_status_id}
+                      >
+                        {status.status_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="employment_status">
+                    Employment Status
+                  </label>
+
+                  <select
+                    id="employment_status"
+                    name="employment_status"
+                    value={formData.employment_status}
+                    onChange={handleFormChange}
+                  >
+                    <option value="EMPLOYED">
+                      EMPLOYED
+                    </option>
+
+                    <option value="PROBATION">
+                      PROBATION
+                    </option>
+
+                    <option value="ON_LEAVE">
+                      ON_LEAVE
+                    </option>
+
+                    <option value="RESIGNED">
+                      RESIGNED
+                    </option>
+
+                    <option value="TERMINATED">
+                      TERMINATED
+                    </option>
+
+                    <option value="RETIRED">
+                      RETIRED
+                    </option>
+                  </select>
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="joining_date">
+                    Joining Date
+                  </label>
+
+                  <input
+                    id="joining_date"
+                    name="joining_date"
+                    type="date"
+                    value={formData.joining_date}
+                    onChange={handleFormChange}
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="salary_amount">
+                    Salary Amount
+                  </label>
+
+                  <input
+                    id="salary_amount"
+                    name="salary_amount"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.salary_amount}
+                    onChange={handleFormChange}
+                    placeholder="Salary amount"
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="salary_status">
+                    Salary Status
+                  </label>
+
+                  <select
+                    id="salary_status"
+                    name="salary_status"
+                    value={formData.salary_status}
+                    onChange={handleFormChange}
+                  >
+                    <option value="PAID">
+                      PAID
+                    </option>
+
+                    <option value="PENDING">
+                      PENDING
+                    </option>
+
+                    <option value="HOLD">
+                      HOLD
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="employee-form-actions">
+                <button
+                  type="button"
+                  className="cancel-form-button"
+                  onClick={closeEmployeeForm}
+                  disabled={saving}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="save-employee-button"
+                  disabled={saving}
+                >
+                  {saving
+                    ? "Saving..."
+                    : editingEmployee
+                    ? "Update Employee"
+                    : "Save Employee"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================
+          EMPLOYEE DETAILS MODAL
+          ===================================================== */}
+
+      {selectedEmployee && (
+        <div className="employee-details-overlay">
+          <div className="employee-details-panel">
+            <div className="employee-details-header">
+              <div>
+                <h2>
+                  {selectedEmployee.first_name}{" "}
+                  {selectedEmployee.last_name}
+                </h2>
+
+                <p>
+                  {selectedEmployee.employee_code}
+                </p>
+              </div>
+
               <button
                 type="button"
-                className="cancel-form-button"
-                onClick={handleCancelDeactivation}
-                disabled={deactivationLoading}
+                className="close-modal-button"
+                onClick={closeEmployeeDetails}
               >
-                Cancel
+                ×
               </button>
+            </div>
 
+            <div className="employee-details-grid">
+              <div>
+                <span>Employee Code</span>
+                <strong>
+                  {selectedEmployee.employee_code ||
+                    "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Full Name</span>
+                <strong>
+                  {selectedEmployee.first_name}{" "}
+                  {selectedEmployee.last_name}
+                </strong>
+              </div>
+
+              <div>
+                <span>Email</span>
+                <strong>
+                  {selectedEmployee.email || "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Phone</span>
+                <strong>
+                  {selectedEmployee.phone || "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Department</span>
+                <strong>
+                  {selectedEmployee.department_name ||
+                    "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Role</span>
+                <strong>
+                  {selectedEmployee.role_name || "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Work Status</span>
+                <strong>
+                  {selectedEmployee.work_status || "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Employment Status</span>
+                <strong>
+                  {selectedEmployee.employment_status ||
+                    "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Active Status</span>
+                <strong>
+                  {selectedEmployee.department_active_status ||
+                    "NOT ACTIVE"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Joining Date</span>
+                <strong>
+                  {selectedEmployee.joining_date
+                    ? selectedEmployee.joining_date.substring(
+                        0,
+                        10
+                      )
+                    : "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Salary Amount</span>
+                <strong>
+                  {selectedEmployee.salary_amount ??
+                    "-"}
+                </strong>
+              </div>
+
+              <div>
+                <span>Salary Status</span>
+                <strong>
+                  {selectedEmployee.salary_status || "-"}
+                </strong>
+              </div>
+            </div>
+
+            <div className="employee-details-actions">
               <button
                 type="button"
-                className="confirm-deactivation-button"
-                onClick={handleConfirmDeactivation}
-                disabled={deactivationLoading}
+                className="edit-employee-button"
+                onClick={() => {
+                  closeEmployeeDetails();
+                  openEditEmployeeForm(selectedEmployee);
+                }}
               >
-                {deactivationLoading
-                  ? "Updating..."
-                  : "Confirm Deactivation"}
+                Edit Employee
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* =====================================================
+          DEACTIVATION MODAL
+          ===================================================== */}
+
+      {showDeactivateModal &&
+        employeeToDeactivate && (
+          <div className="deactivation-overlay">
+            <div className="deactivation-modal">
+              <div className="deactivation-header">
+                <h2>Deactivate Employee</h2>
+
+                <button
+                  type="button"
+                  className="close-modal-button"
+                  onClick={closeDeactivateModal}
+                  disabled={deactivating}
+                >
+                  ×
+                </button>
+              </div>
+
+              <p>
+                Are you sure you want to deactivate{" "}
+                <strong>
+                  {employeeToDeactivate.first_name}{" "}
+                  {employeeToDeactivate.last_name}
+                </strong>
+                ?
+              </p>
+
+              <div className="deactivation-warning">
+                This action will change the employee's
+                employment status to <strong>RESIGNED</strong>.
+                The employee record will remain in HR360 for
+                historical and reporting purposes.
+              </div>
+
+              <div className="deactivation-actions">
+                <button
+                  type="button"
+                  className="cancel-form-button"
+                  onClick={closeDeactivateModal}
+                  disabled={deactivating}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="confirm-deactivation-button"
+                  onClick={handleDeactivate}
+                  disabled={deactivating}
+                >
+                  {deactivating
+                    ? "Deactivating..."
+                    : "Confirm Deactivation"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 }
