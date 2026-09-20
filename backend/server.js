@@ -15,6 +15,7 @@ const interviewRoutes = require("./routes/interviews");
 const candidateRoutes = require("./routes/candidates");
 const jobApplicationRoutes = require("./routes/jobApplications");
 const jobOfferRoutes = require("./routes/jobOffers");
+const analyticsRoutes = require("./routes/analytics");
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use("/api/interviews", interviewRoutes);
 app.use("/api/candidates", candidateRoutes);    
 app.use("/api/job-applications", jobApplicationRoutes);
 app.use("/api/job-offers", jobOfferRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 
 
